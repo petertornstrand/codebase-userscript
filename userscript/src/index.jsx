@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import HarvestApp from './HarvestApp';
+import CodebaseApp from './CodebaseApp';
 import { awaitElement, log, addLocationChangeCallback } from './utils';
 
 log('React script has successfully started');
@@ -15,7 +15,7 @@ async function main() {
     const container = document.createElement('div');
     target.appendChild(container);
     const root = createRoot(container);
-    root.render(<HarvestApp />);
+    root.render(<CodebaseApp />);
 }
 
 // Call `main()` every time the page URL changes, including on the first load.

@@ -1,13 +1,13 @@
-.HarvestApp {
+.CodebaseApp {
 
     /* HarvestComponent ----------------------------------------------------- */
 
-    .HarvestComponent {
+    .CodebaseComponent {
         padding-bottom: 16px;
         border-bottom: 1px solid #eee;
         margin-bottom: 16px;
 
-        .HarvestComponent__title {
+        .CodebaseComponent__title {
             color: #777777;
             font-size: 11px;
             font-weight: bold;
@@ -16,21 +16,11 @@
         }
     }
 
-    .HarvestComponent:last-of-type {
+    .CodebaseComponent:last-of-type {
         padding-bottom: 0;
         border-bottom: none;
         margin-bottom: 0;
     }
-
-    /* HarvestReportTime ---------------------------------------------------- */
-
-    .HarvestReportTime {}
-
-    /* HarvestTimeEntries --------------------------------------------------- */
-
-    .HarvestTimeEntries {}
-
-    /* Properties ----------------------------------------------------------- */
 
     .Properties {
         display: flex;

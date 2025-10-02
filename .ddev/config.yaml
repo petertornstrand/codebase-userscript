@@ -1,4 +1,4 @@
-name: codebase-harvest
+name: codebase
 type: generic
 docroot: dist
 php_version: "8.3"

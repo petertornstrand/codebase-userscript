@@ -17,7 +17,7 @@ export default defineConfig(({ mode }) => {
             lib: {
                 entry: 'userscript/src/index.jsx',
                 name: 'userscript',
-                fileName: (_format) => `codebase-harvest.user.js`,
+                fileName: (_format) => `codebase.user.js`,
                 formats: ['iife'],
             },
             rollupOptions: {
