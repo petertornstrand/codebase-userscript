@@ -1,8 +1,6 @@
 import React from 'react';
 import './styles/Codebase.css';
 
-
-
 /**
  * Main application element.
  *
@@ -46,9 +44,18 @@ export default function CodebaseApp() {
                                     </p>
                                 </li>
                                 <li className="Properties__item">
-                                    <h3 className="Properties__title">Sub-issues</h3>
-                                    <p className="Properties__value"><a href="#">#3434 Roller saknar rättighet att lägga till bilder</a></p>
-                                    <p className="Properties__value"><a href="#">#3436 Ändra text på engelska programsidor</a></p>
+                                    <h3 className="Properties__title">Referenced tickets</h3>
+                                    <div className="Properties__value Properties__value--list">
+                                        <p className="Properties__value">
+                                            <a className="is-status-completed" href="#">#3434 Roller saknar rättighet att lägga till bilder</a>
+                                        </p>
+                                        <p className="Properties__value">
+                                            <a className="is-status-new" href="#">#3436 Ändra text på engelska programsidor</a>
+                                        </p>
+                                        <p className="Properties__value">
+                                            <a className="is-status-invalid" href="#">#332 Cron has not run for over 4 hours on fedora</a>
+                                        </p>
+                                    </div>
                                 </li>
                                 <li className="Properties__item">
                                     <h3 className="Properties__title">Blockers</h3>
@@ -60,9 +67,9 @@ export default function CodebaseApp() {
                             <ul className="Properties Properties--column">
                                 <li className="Properties__item">
                                     <h3 className="Properties__title">Tags</h3>
-                                    <p className="Properties__value">
-                                        <span className="TicketProperties__tag col-grey">Needs test</span>
-                                        <span className="TicketProperties__tag col-grey">Intermediate</span>
+                                    <p className="Properties__value Properties__value--tags">
+                                        <span className="tag">Needs test</span>
+                                        <span className="tag">Intermediate</span>
                                     </p>
                                     <p className="Properties__value hidden"><span className="empty">No tags</span></p>
                                 </li>

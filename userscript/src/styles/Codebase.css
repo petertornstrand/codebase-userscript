@@ -1,6 +1,6 @@
 .CodebaseApp {
 
-    /* HarvestComponent ----------------------------------------------------- */
+    /* CodebaseComponent ----------------------------------------------------- */
 
     .CodebaseComponent {
         padding-bottom: 16px;
@@ -14,6 +14,20 @@
             text-transform: uppercase;
             margin-bottom: 16px;
         }
+    }
+
+    a {
+        color: #459dca;
+    }
+
+    a.is-status-completed {
+        text-decoration: line-through;
+        color: darkgreen;
+    }
+
+    a.is-status-invalid {
+        text-decoration: line-through;
+        color: darkred;
     }
 
     .CodebaseComponent:last-of-type {
@@ -60,6 +74,9 @@
             span.primary {
                 color: #333333;
                 font-weight: bold;
+                a {
+                    color: inherit;
+                }
             }
             span.empty {
                 color: #666666;
@@ -71,6 +88,38 @@
             span.user {
                 color: #333333;
                 font-weight: bold;
+                a {
+                    color: inherit;
+                }
+            }
+            span.text--code {
+                a {
+                    color: inherit;
+                }
+            }
+        }
+
+        .Properties__value--list {
+            .Properties__value {
+                margin-bottom: 4px;
+            }
+            .Properties__value:last-of-type {
+                margin-bottom: 0;
+            }
+        }
+
+        .Properties__value--tags {
+            display: flex;
+            gap: 6px;
+
+            .tag {
+                display: inline-flex;
+                padding: 3px 8px;
+                border-radius: 8px;
+                line-height: 13px;
+                font-weight: bold;
+                text-transform: lowercase;
+                background-color: #dcdcdc;
             }
         }
 
@@ -128,4 +177,8 @@
 #content .right {
     position: sticky;
     top: 0;
+}
+
+#content .right > .sidebar__module--medium {
+    display: none;
 }

@@ -108,7 +108,7 @@ export function notify (message)  {
 }
 
 /**
- * @typedef {Object} CodebaseConfig
+ * @typedef {Object} URLContext
  * @property {string} id - The ticket/milestone/repository ID
  * @property {string} project_id - The project ID
  * @property {string} account_id - The hostname
@@ -116,10 +116,11 @@ export function notify (message)  {
  */
 
 /**
+ * Get URL context.
  *
- * @return {CodebaseConfig}
+ * @return {URLContext}
  */
-export function getCodebaseConfig() {
+export function getURLContext() {
     const url = new URL(window.location);
     const path = url.pathname.replace(/^\/+|\/+$/g, '').split('/');
     return {
@@ -131,33 +132,31 @@ export function getCodebaseConfig() {
 }
 
 /**
- * @typedef {Object} HarvestConfig
- * @property {string} account_id
- * @property {string} access_token
- * @property {string} user_agent
+ * @typedef {Object} CodebaseConfig
+ * @property {string} username
+ * @property {string} api_key
  */
 
 /**
- * Get Harvest config.
+ * Get Codebase config.
  *
- * @return {HarvestConfig}
+ * @return {CodebaseConfig}
  */
-export function getHarvestConfig() {
+export function getCodebaseConfig() {
     if (typeof GM_getValues === 'function') {
-        const values = GM_getValues(['harvest_account_id', 'harvest_access_token', 'harvest_user_agent' ]);
+        const values = GM_getValues(['codebase_username', 'codebase_api_key' ]);
         Object.entries(values).forEach(([key, value]) => {
             if (!value) {
                 throw new Error(`Missing configuration value for key ${key}.`);
             }
         })
         return {
-            account_id: values.harvest_account_id,
-            access_token: values.harvest_access_token,
-            user_agent: values.harvest_user_agent
+            username: values.codebase_username,
+            api_key: values.codebase_api_key
         };
     }
     else {
-        throw new Error('No Harvest API config found.');
+        throw new Error('No Codebase API config found.');
     }
 
 }
