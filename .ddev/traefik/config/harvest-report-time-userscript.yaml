@@ -1,0 +1,77 @@
+#ddev-generated
+# If you remove the ddev-generated line above you
+# are responsible for maintaining this file. DDEV will not then
+# update it, for example if you add `additional_hostnames`, etc.
+
+http:
+  routers:
+    harvest-report-time-userscript-web-80-http:
+      entrypoints:
+        - http-80
+      rule: HostRegexp(`^harvest-report-time-userscript\.ddev\.site$`)
+      
+      service: "harvest-report-time-userscript-web-80"
+      ruleSyntax: v3
+      tls: false
+      # middlewares:
+      #   - "harvest-report-time-userscript-redirectHttps"
+    harvest-report-time-userscript-web-8025-http:
+      entrypoints:
+        - http-8025
+      rule: HostRegexp(`^harvest-report-time-userscript\.ddev\.site$`)
+      
+      service: "harvest-report-time-userscript-web-8025"
+      ruleSyntax: v3
+      tls: false
+      # middlewares:
+      #   - "harvest-report-time-userscript-redirectHttps"
+    
+    
+    
+    harvest-report-time-userscript-web-80-https:
+      entrypoints:
+        - http-443
+      rule: HostRegexp(`^harvest-report-time-userscript\.ddev\.site$`)
+      
+      service: "harvest-report-time-userscript-web-80"
+      ruleSyntax: v3
+      
+      tls: true
+      
+    harvest-report-time-userscript-web-8025-https:
+      entrypoints:
+        - http-8026
+      rule: HostRegexp(`^harvest-report-time-userscript\.ddev\.site$`)
+      
+      service: "harvest-report-time-userscript-web-8025"
+      ruleSyntax: v3
+      
+      tls: true
+      
+    
+
+  middlewares:
+    harvest-report-time-userscript-redirectHttps:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+  services:
+    harvest-report-time-userscript-web-80:
+      loadbalancer:
+        servers:
+          - url: http://ddev-harvest-report-time-userscript-web:80
+        
+    harvest-report-time-userscript-web-8025:
+      loadbalancer:
+        servers:
+          - url: http://ddev-harvest-report-time-userscript-web:8025
+        
+    
+    
+    
+
+tls:
+  certificates:
+    - certFile: /mnt/ddev-global-cache/traefik/certs/harvest-report-time-userscript.crt
+      keyFile: /mnt/ddev-global-cache/traefik/certs/harvest-report-time-userscript.key

@@ -1,0 +1,121 @@
+.HarvestApp {
+
+    /* HarvestComponent ----------------------------------------------------- */
+
+    .HarvestComponent {
+        padding-bottom: 16px;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 16px;
+
+        .HarvestComponent__title {
+            color: #777777;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+    }
+
+    .HarvestComponent:last-of-type {
+        padding-bottom: 0;
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+
+    /* HarvestReportTime ---------------------------------------------------- */
+
+    .HarvestReportTime {}
+
+    /* HarvestTimeEntries --------------------------------------------------- */
+
+    .HarvestTimeEntries {}
+
+    /* Properties ----------------------------------------------------------- */
+
+    .Properties {
+        display: flex;
+        flex-basis: auto;
+        gap: 16px;
+
+        list-style: none;
+        padding: 0;
+        margin-bottom: 8px;
+
+        .Properties__item {
+            flex: 1;
+        }
+
+        .Properties__item--table {
+            padding: 8px;
+            border-top: 1px solid #eaeaea;
+        }
+
+        .Properties__item--table:nth-child(odd) {
+            background-color: #f5f7f8;
+        }
+
+        .Properties__title {
+            color: #999999;
+            display: block;
+            font-size: 10px;
+            margin: 0 0 8px;
+            text-transform: uppercase;
+
+            &.Properties__prop {
+                margin: 0;
+            }
+        }
+
+        .Properties__value {}
+
+        .Properties__input {
+            textarea {
+                width: 100%;
+            }
+
+            input[type="number"] {
+                width: auto;
+                padding: 5px 3px 4px 8px;
+            }
+        }
+
+        .Properties__list {
+            display: flex;
+            gap: 8px;
+
+            .Properties__prop {
+                flex: 1 1 0;
+            }
+
+            .Prop__name {
+                flex: 1 1 0;
+            }
+
+            .Prop__time {
+                flex: 0.3 1 0;
+            }
+        }
+    }
+
+    .Properties:last-of-type {
+        margin-bottom: 0;
+    }
+
+    .Properties--table {
+        row-gap: 0;
+    }
+
+    .Properties--row {
+        flex-direction: row;
+    }
+
+    .Properties--column {
+        flex-direction: column;
+    }
+
+}
+
+#content .right {
+    position: sticky;
+    top: 0;
+}
