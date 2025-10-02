@@ -13,7 +13,7 @@ async function main() {
     // the page has loaded enough for that element to exist.
     const target = await awaitElement('div#content div.right');
     const container = document.createElement('div');
-    target.appendChild(container);
+    target.prepend(container);
     const root = createRoot(container);
     root.render(<CodebaseApp />);
 }

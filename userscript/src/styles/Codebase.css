@@ -56,7 +56,27 @@
             }
         }
 
-        .Properties__value {}
+        .Properties__value {
+            span.primary {
+                color: #333333;
+                font-weight: bold;
+            }
+            span.empty {
+                color: #666666;
+            }
+            span.date {
+                color: #999999;
+            }
+
+            span.user {
+                color: #333333;
+                font-weight: bold;
+            }
+        }
+
+        .Properties__value--long {
+            color: #666666;
+        }
 
         .Properties__input {
             textarea {
