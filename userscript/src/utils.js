@@ -124,8 +124,8 @@ export function getURLContext() {
     const url = new URL(window.location);
     const path = url.pathname.replace(/^\/+|\/+$/g, '').split('/');
     return {
-        id: path?.[3],
-        project_id: path?.[1],
+        id: path?.[3] || '3434',
+        project_id: path?.[1] || 'ki-profile',
         account_id: url.host,
         url: url.href
     };

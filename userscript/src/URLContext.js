@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { getUrlContext } from "./utils";
+import { getURLContext } from "./utils";
 
 /**
  * @typedef {Object} URLContext
@@ -10,6 +10,6 @@ import { getUrlContext } from "./utils";
  */
 
 /** @var {URLContext} initalValue */
-const initialValue = getUrlContext();
+const initialValue = getURLContext();
 
 export const URLContext = createContext(initialValue);

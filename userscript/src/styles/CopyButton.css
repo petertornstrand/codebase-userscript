@@ -1,0 +1,29 @@
+@keyframes textCopied {
+    0% {
+        content: "\F164";
+        color: darkgreen;
+    }
+    100% {
+        content: "\F01C";
+        color: inherit;
+    }
+}
+
+.icon-copy:before {
+    content:"\F01C"
+}
+
+.icon-copy:focus:before {
+    animation: textCopied 1s linear 1;
+}
+
+.CopyButton {
+    display: inline-block;
+}
+
+.CopyButton__button {
+    cursor: pointer;
+    border: 0;
+    background: none;
+}
+

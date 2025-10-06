@@ -1,6 +1,8 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import CodebaseApp from './CodebaseApp';
+import './styles/Global.css';
+import TicketSidebar from './TicketSidebar';
+import TicketSubject from './TicketSubject';
 import { awaitElement, log, addLocationChangeCallback } from './utils';
 
 log('React script has successfully started');
@@ -14,8 +16,11 @@ async function main() {
     const target = await awaitElement('div#content div.right');
     const container = document.createElement('div');
     target.prepend(container);
-    const root = createRoot(container);
-    root.render(<CodebaseApp />);
+    const ticketSidebarRoot = createRoot(container);
+    ticketSidebarRoot.render(<TicketSidebar />);
+    const subject = document.querySelector('h2.Thread__subject.heading--delta');
+    const ticketSubjectRoot = createRoot(subject);
+    ticketSubjectRoot.render(<TicketSubject title={subject.innerText} />);
 }
 
 // Call `main()` every time the page URL changes, including on the first load.
