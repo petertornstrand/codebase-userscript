@@ -137,7 +137,6 @@
     font-weight: bold;
     border-radius: 50%;
     vertical-align: middle;
-    margin-right: 0.5em;
     width: 56px;
     height: 56px;
     font-size: 28px;
@@ -153,23 +152,27 @@
     background: #4f0433;
 }
 
-.avatar--small,
+.avatar--small:before,
 .gravatar--small {
     width: 24px;
     height: 24px;
     font-size: 12px;
 }
 
-.avatar--medium,
+.avatar--medium:before,
 .gravatar--medium {
     width: 28px;
     height: 28px;
     font-size: 14px;
 }
 
-.avatar--large,
+.avatar--large:before,
 .gravatar--large {
     width: 56px;
     height: 56px;
     font-size: 28px;
+}
+
+.PostForm__avatar {
+    display: none;
 }

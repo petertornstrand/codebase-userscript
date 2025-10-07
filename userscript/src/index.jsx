@@ -1,7 +1,8 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import {QueryClient,QueryClientProvider} from "react-query";
 import './styles/Global.css';
-import TicketSidebar from './TicketSidebar';
+import TicketSidebar, { ReplaceAvatars } from './TicketSidebar';
 import TicketSubject from './TicketSubject';
 import { awaitElement, log, addLocationChangeCallback } from './utils';
 
@@ -11,16 +12,30 @@ log('React script has successfully started');
 // so that elements can be re-inserted as a user navigates a page with
 // different routes.
 async function main() {
-    // Find <body/>. This can be any element. We wait until
-    // the page has loaded enough for that element to exist.
-    const target = await awaitElement('div#content div.right');
-    const container = document.createElement('div');
+    const queryClient = new QueryClient();
+
+    // Ticket sidebar.
+    let target = await awaitElement('div#content div.right');
+    let container = document.createElement('div');
     target.prepend(container);
-    const ticketSidebarRoot = createRoot(container);
-    ticketSidebarRoot.render(<TicketSidebar />);
-    const subject = document.querySelector('h2.Thread__subject.heading--delta');
-    const ticketSubjectRoot = createRoot(subject);
-    ticketSubjectRoot.render(<TicketSubject title={subject.innerText} />);
+    let root = createRoot(container);
+    root.render(<TicketSidebar />);
+
+    // Ticket subject.
+    container = document.querySelector('h2.Thread__subject.heading--delta');
+    root = createRoot(container);
+    root.render(<TicketSubject title={container.innerText} />);
+
+    // Avatars.
+    target = await awaitElement('div#content div.left');
+    container = document.createElement('div');
+    target.prepend(container);
+    root = createRoot(container);
+    root.render(
+        <QueryClientProvider client={queryClient}>
+            <ReplaceAvatars />
+        </QueryClientProvider>
+    );
 }
 
 // Call `main()` every time the page URL changes, including on the first load.

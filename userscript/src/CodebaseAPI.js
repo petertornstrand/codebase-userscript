@@ -90,4 +90,27 @@ export class CodebaseAPI {
             notify({ title: error.name, text: error.message, tag: 'error' });
         }
     }
+
+    /**
+     * Get project statuses.
+     *
+     * @param {string} projectId
+     * @return {Promise<any>}
+     */
+    async getStatuses(projectId) {
+        //const url = this.#baseUrl + `/${projectId}/tickets/statuses`;
+        const url = 'https://codebase.ddev.site/statuses.json';
+        try {
+            const response = await fetch(url, {
+                headers: this.#getHeaders(),
+            });
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            }
+
+            return await response.json();
+        } catch (error) {
+            notify({ title: error.name, text: error.message, tag: 'error' });
+        }
+    }
 }

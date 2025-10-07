@@ -1,12 +1,27 @@
 import React, { useContext, useState } from 'react';
+import { ReactDOM } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import {QueryClient,QueryClientProvider,useQuery} from "react-query";
 import './styles/TicketSidebar.css';
 import CopyButton from './CopyButton';
 import Avatar from './Avatar';
+import { parseDate } from 'date-parrot'
 import { CodebaseContext } from './CodebaseContext';
 import { log } from './utils';
 
 const queryClient = new QueryClient();
+const dateTimeFormat = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute:'2-digit'
+};
+const dateFormat = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+};
 
 /**
  * Ticket sidebar element.
@@ -27,8 +42,10 @@ export default function TicketSidebar() {
                             </ul>
                         </div>
                         <div className="CodebaseComponent">
+                            <Milestone />
+                        </div>
+                        <div className="CodebaseComponent">
                             <ul className="Properties Properties--column">
-                                <Milestone />
                                 <ReferencedTickets />
                                 <Blockers />
                             </ul>
@@ -49,12 +66,14 @@ export default function TicketSidebar() {
 
 function Reporter() {
     const user = document.querySelector(".ThreadMeta ul.layout-list .ThreadMeta__item.icon-user span.text--bold").innerHTML;
-    const date = document.querySelector(".ThreadMeta ul.layout-list .ThreadMeta__item.icon-user span.timestamp").innerHTML;
+    const date = document.querySelector(".ThreadMeta ul.layout-list .ThreadMeta__item.icon-user span.timestamp").getAttribute('title');
+    const parsedDate = new Date(Date.parse(date));
+
     return (
         <li className="Properties__item">
             <h3 className="Properties__title">Reported by</h3>
-            <p className="Properties__value Properties__value--long">
-                <span className="user" dangerouslySetInnerHTML={{__html: user}} /> <span className="date">{date}</span>
+            <p className="Properties__value">
+                <span className="user" dangerouslySetInnerHTML={{__html: user}} /> on {parsedDate.toLocaleString('sv-SE', dateTimeFormat)}
             </p>
         </li>
     );
@@ -125,33 +144,80 @@ function Participants() {
 }
 
 function Milestone() {
+    const milestone = document.querySelector(".sidebar__module .related-milestone__heading a");
+    const date = parseDate(document.querySelector(".sidebar__module .related-milestone__date").innerText);
+    const passed = (() => Date.parse(date.date) < Date.now());
+    const user = document.querySelector(".sidebar__module .box__footer .text--bold").innerHTML;
+    const data = {
+        name: milestone.getAttribute('title'),
+        link: milestone.getAttribute('href'),
+        date: new Date(Date.parse(date.date)),
+        user: user,
+        passed: passed() ? 'date--passed' : 'date--not-passed'
+    };
     return (
-        <li className="Properties__item">
-            <h3 className="Properties__title">Milestone</h3>
-            <p className="Properties__value Properties__value--long">
-                <span className="primary"><a href="">Rel 2025-86</a></span> due <span
-                className="date">October 23rd, 2025</span> &ndash; <span className="user"><a
-                href="#">Erik P</a></span>
-            </p>
-        </li>
+        <ul className="Properties Properties--row">
+            <li className="Properties__item">
+                <h3 className="Properties__title icon icon-milestone">Milestone</h3>
+                <p className="Properties__value">
+                    <span className="primary"><a href={data.link}>{data.name}</a></span>
+                </p>
+            </li>
+            <li className="Properties__item">
+                <h3 className="Properties__title icon icon-calendar">Due</h3>
+                <p className="Properties__value"><span className={data.passed}>{data.date.toLocaleDateString('sv-SE', dateFormat)}</span></p>
+            </li>
+            <li className="Properties__item">
+                <h3 className="Properties__title icon icon-user">PM</h3>
+                <p className="Properties__value">
+                    <span className="user" dangerouslySetInnerHTML={{__html: data.user}} />
+                </p>
+                <p className="Properties__value hidden"><span className="empty">No milestone</span></p>
+            </li>
+        </ul>
     );
 }
 
 function ReferencedTickets() {
+    const references = document.querySelectorAll('a[rel="codebase-internal"]');
+    const tickets = [];
+    references.forEach((reference) => {
+        const classes = reference.classList;
+        classes.remove('text--positive', 'text-subtle');
+        tickets.push({
+            id: reference.innerText.match(/\d+/)[0],
+            text: reference.innerText.replace(/^#\d+\s-\s/, ''),
+            href: reference.href,
+            title: classes.item(0).replace('is-status-', '').replace('-',' '),
+            rel: 'ticket',
+            class: classes.toString()
+        });
+    });
+
+    const renderReferences = () => {
+        if (tickets.length === 0) {
+            return (
+                <p className="Properties__value"><span className="empty">None</span></p>
+            );
+        }
+
+        return (
+            <ul className="Properties__value Properties__value--list">
+                { tickets.map((ticket) => {
+                    return (
+                        <li className="Properties__value" key={ticket.id}>
+                            <a className={ticket.class} href={ticket.href} rel={ticket.rel} title={ticket.title}><span className="id">#{ticket.id}</span> <span className="subject">{ticket.text}</span></a>
+                        </li>
+                    );
+                })}
+            </ul>
+        );
+    }
+
     return (
         <li className="Properties__item">
             <h3 className="Properties__title">Referenced tickets</h3>
-            <div className="Properties__value Properties__value--list">
-                <p className="Properties__value">
-                    <a className="is-status-completed" href="#">#3434 Roller saknar rättighet att lägga till bilder</a>
-                </p>
-                <p className="Properties__value">
-                    <a className="is-status-new" href="#">#3436 Ändra text på engelska programsidor</a>
-                </p>
-                <p className="Properties__value">
-                    <a className="is-status-invalid" href="#">#332 Cron has not run for over 4 hours on fedora</a>
-                </p>
-            </div>
+            {renderReferences()}
         </li>
     )
 }
@@ -198,5 +264,36 @@ function Access() {
             <p className="Properties__value"><span className="icon icon-unlock">Anyone with access</span></p>
             <p className="Properties__value text--negative hidden"><span className="icon icon-lock">Only users from <strong>Happiness</strong></span></p>
         </li>
+    );
+}
+
+export function ReplaceAvatars() {
+    const context = useContext(CodebaseContext);
+    const { data, status, error } = useQuery('Participants', async () => {
+        return await context.api.getUsers('ki-profile');
+    });
+
+    if (status === 'loading') return ( <p className="Loading">Loading...</p> );
+    if (error) return ( <p className="Error">{error.message}</p> );
+
+    const avatars = document.querySelectorAll('.Thread__timeline .ThreadChanges__event, .Thread__timeline .Post__header');
+    avatars.forEach((avatar) => {
+        const image = avatar.querySelector('img.Post__avatar, img.ThreadChanges__avatar');
+        const parent = image.parentElement;
+        const container = document.createElement('div');
+        image.classList.forEach((v) => container.classList.add(v));
+        parent.replaceChild(container, image);
+
+        const name = avatar.querySelector('.text--bold > a.text--link').innerText;
+        const matches = data.filter((v) => v.name === name);
+
+        if (matches.length) {
+            const root = createRoot(container);
+            root.render(<Avatar user={matches[0]} size="small" tooltip={false} />);
+        }
+    });
+
+    return (
+        <div></div>
     );
 }
