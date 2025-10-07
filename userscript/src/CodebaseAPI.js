@@ -1,4 +1,5 @@
 import { notify } from './utils';
+import { convertXML} from 'simple-xml-to-json';
 
 /**
  * @typedef {Object} CodebaseConfig
@@ -50,7 +51,8 @@ export class CodebaseAPI {
      * @return {Promise<any>}
      */
     async getTicket(projectId, ticketId) {
-        const url = this.#baseUrl + `/${projectId}/tickets?query=id:${ticketId}`;
+        //const url = this.#baseUrl + `/${projectId}/tickets?query=id:${ticketId}`;
+        const url = 'https://codebase.ddev.site/tickets.xml';
         try {
             const response = await fetch(url, {
                 headers: this.#getHeaders()
@@ -59,8 +61,8 @@ export class CodebaseAPI {
                 throw new Error(`Response status: ${response.status}`);
             }
 
-            // str => new window.DOMParser().parseFromString(str, "text/xml")
-            return await response.text();
+            const xml = await response.text();
+            return convertXML(xml);
         } catch (error) {
             notify({ title: error.name, text: error.message, tag: 'error' });
         }
@@ -73,7 +75,8 @@ export class CodebaseAPI {
      * @return {Promise<any>}
      */
     async getUsers(projectId) {
-        const url = this.#baseUrl + `/${projectId}/assignments`;
+        //const url = this.#baseUrl + `/${projectId}/assignments`;
+        const url = 'https://codebase.ddev.site/users.json';
         try {
             const response = await fetch(url, {
                 headers: this.#getHeaders(),
@@ -82,8 +85,7 @@ export class CodebaseAPI {
                 throw new Error(`Response status: ${response.status}`);
             }
 
-            // str => new window.DOMParser().parseFromString(str, "text/xml")
-            return await response.text();
+            return await response.json();
         } catch (error) {
             notify({ title: error.name, text: error.message, tag: 'error' });
         }

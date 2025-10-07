@@ -1,6 +1,7 @@
-import {createContext} from 'react';
+import {createContext,useContext} from 'react';
 import {CodebaseAPI} from './CodebaseAPI';
 import {getCodebaseConfig} from "./utils";
+import {URLContext} from './URLContext';
 
 /**
  * @typedef {Object} CodebaseContext
@@ -9,11 +10,13 @@ import {getCodebaseConfig} from "./utils";
  * @property {array} users - The users
  */
 
+
 /** @var {CodebaseContext} initalValue */
 const initialValue = (() => {
     const config = getCodebaseConfig();
+    const api = new CodebaseAPI(config);
     return {
-        api: new CodebaseAPI(config),
+        api: api,
         ticket: [],
         users: []
     };

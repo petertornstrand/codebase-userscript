@@ -55,7 +55,8 @@
         background-color: #f5f7f8;
     }
 
-    .Properties__title {
+    .Properties__title,
+    .Properties__label {
         color: #999999;
         display: block;
         font-size: 10px;
@@ -67,10 +68,20 @@
         }
     }
 
+    .Properties__label {
+        display: inline-block;
+    }
+
     .Properties__value {
         span.primary {
             color: #333333;
             font-weight: bold;
+            a {
+                color: inherit;
+            }
+        }
+        span.secondary {
+            color: #333333;
             a {
                 color: inherit;
             }
@@ -81,7 +92,6 @@
         span.date {
             color: #999999;
         }
-
         span.user {
             color: #333333;
             font-weight: bold;
@@ -109,14 +119,8 @@
         display: flex;
         gap: 6px;
 
-        .tag {
-            display: inline-flex;
-            padding: 3px 8px;
-            border-radius: 8px;
-            line-height: 13px;
-            font-weight: bold;
+        .TicketProperties__tag {
             text-transform: lowercase;
-            background-color: #dcdcdc;
         }
     }
 
@@ -167,6 +171,20 @@
 
 .CodebaseComponent .Properties--column {
     flex-direction: column;
+}
+
+.CodebaseComponent .Properties--tight {
+    gap: 6px;
+}
+
+
+.Participant__list {
+    display: flex;
+    gap: 8px;
+}
+
+.Tooltip a {
+    color: inherit;
 }
 
 #content .right {

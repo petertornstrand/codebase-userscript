@@ -1,6 +1,7 @@
 .TicketSubject {
     display: flex;
 }
+
 .TicketId {
     color: #59636e;
 }

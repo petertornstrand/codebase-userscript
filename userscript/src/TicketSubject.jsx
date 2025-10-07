@@ -12,7 +12,6 @@ import { log } from './utils';
  */
 export default function TicketSubject({ title }) {
     const context = useContext(URLContext);
-    log(context);
     return (
         <div className="TicketSubject">
             <h2 id="ticket-subject"><span className="TicketId">#{context.id}</span> {title}</h2>
