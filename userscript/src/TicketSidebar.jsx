@@ -1,4 +1,5 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
+import { ReactDOM } from 'react-dom';
 import { createRoot } from 'react-dom/client';
 import {QueryClient,QueryClientProvider,useQuery} from "react-query";
 import './styles/TicketSidebar.css';
@@ -6,6 +7,7 @@ import CopyButton from './CopyButton';
 import Avatar from './Avatar';
 import { parseDate } from 'date-parrot'
 import { CodebaseContext } from './CodebaseContext';
+import { log } from './utils';
 
 const queryClient = new QueryClient();
 const dateTimeFormat = {
@@ -183,45 +185,35 @@ function Milestone() {
 }
 
 function ReferencedTickets() {
-    const references = document.querySelectorAll('a[rel="codebase-internal"]');
-    const tickets = [];
-    references.forEach((reference) => {
-        const classes = reference.classList;
-        classes.remove('text--positive', 'text-subtle');
-        tickets.push({
-            id: reference.innerText.match(/\d+/)[0],
-            text: reference.innerText.replace(/^#\d+\s-\s/, ''),
-            href: reference.href,
-            title: classes.item(0).replace('is-status-', '').replace('-',' '),
-            rel: 'codebase-internal',
-            class: classes.toString()
+
+    // TODO: Links not found! Use the new API instead.
+
+    useEffect(()=>{
+        const references = document.querySelectorAll('li.Post a[rel="codebase-internal"]');
+        log(document.querySelectorAll('a[rel]'));
+        references.forEach((element) => {
+            const ref = element.cloneNode(true);
+            const container = document.querySelector('ul.ReferencedTickets');
+            const item = document.createElement('li');
+            item.classList.add('Properties__value');
+            item.appendChild(ref);
+            container.appendChild(item);
         });
-    });
 
-    const renderReferences = () => {
-        if (tickets.length === 0) {
-            return (
-                <p className="Properties__value"><span className="empty">None</span></p>
-            );
+        if (references.length === 0) {
+            const container = document.querySelector('ul.ReferencedTickets');
+            const item = document.createElement('li');
+            item.classList.add('Properties__value');
+            item.innerHTML = '<span className="empty">No references</span>';
+            container.appendChild(item);
         }
-
-        return (
-            <ul className="Properties__value Properties__value--list">
-                { tickets.map((ticket) => {
-                    return (
-                        <li className="Properties__value" key={ticket.id}>
-                            <a className={ticket.class} href={ticket.href} rel={ticket.rel} title={ticket.title}><span className="id">#{ticket.id}</span> <span className="subject">{ticket.text}</span></a>
-                        </li>
-                    );
-                })}
-            </ul>
-        );
-    }
+    }, [])
 
     return (
         <li className="Properties__item">
             <h3 className="Properties__title">Referenced tickets</h3>
-            {renderReferences()}
+            <ul className="Properties__value Properties__value--list ReferencedTickets">
+            </ul>
         </li>
     )
 }
