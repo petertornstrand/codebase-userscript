@@ -185,32 +185,32 @@
 
 /* Ticket links ------------------------------------------------------------- */
 
-a[rel="ticket"] .id {
+a[rel="codebase-internal"] .id {
     font-weight: bold;
 }
 
-a[rel="ticket"].is-status-new {
+a[rel="codebase-internal"].is-status-new {
     color: #69a523;
 }
 
-a[rel="ticket"].is-status-accepted {
+a[rel="codebase-internal"].is-status-accepted {
     color: #a37c20;
 }
 
-a[rel="ticket"].is-status-in-progress {
+a[rel="codebase-internal"].is-status-in-progress {
     color: #278fbf;
 }
 
-a[rel="ticket"].is-status-completed {
+a[rel="codebase-internal"].is-status-completed {
     color: darkgreen;
 }
 
-a[rel="ticket"].is-status-invalid  {
+a[rel="codebase-internal"].is-status-invalid  {
     color: darkred;
 }
 
-a[rel="ticket"].is-status-completed .subject,
-a[rel="ticket"].is-status-invalid .subject{
+a[rel="codebase-internal"].is-status-completed .subject,
+a[rel="codebase-internal"].is-status-invalid .subject{
     text-decoration: line-through;
 }
 

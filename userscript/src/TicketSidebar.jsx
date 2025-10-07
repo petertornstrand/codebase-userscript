@@ -28,6 +28,8 @@ const dateFormat = {
  * @constructor
  */
 export default function TicketSidebar() {
+    ReplaceTicketLinks();
+
     return (
         <QueryClientProvider client={queryClient} contextSharing={true}>
             <div className="sidebar__module sidebar__module--medium">
@@ -52,6 +54,10 @@ export default function TicketSidebar() {
                             <ul className="Properties Properties--column">
                                 <Tags />
                                 <Branch />
+                            </ul>
+                        </div>
+                        <div className="CodebaseComponent">
+                            <ul className="Properties Properties--column">
                                 <Access />
                             </ul>
                         </div>
@@ -187,7 +193,7 @@ function ReferencedTickets() {
             text: reference.innerText.replace(/^#\d+\s-\s/, ''),
             href: reference.href,
             title: classes.item(0).replace('is-status-', '').replace('-',' '),
-            rel: 'ticket',
+            rel: 'codebase-internal',
             class: classes.toString()
         });
     });
@@ -286,9 +292,9 @@ function Tags() {
 function Branch() {
     return (
         <li className="Properties__item">
-            <h3 className="Properties__title">Branch</h3>
+            <h3 className="Properties__title icon icon-branch">Branch</h3>
             <p className="Properties__value">
-                <span id="ticket-branch" className="text--code icon icon-branch"><a href="https://code.happiness.se/projects/ki-profile/repositories/kimulti/tree/3434-ladok-editor-qbank">3434-ladok-roles-qbank</a></span>
+                <span id="ticket-branch" className="text--code"><a href="https://code.happiness.se/projects/ki-profile/repositories/kimulti/tree/3434-ladok-editor-qbank">3434-ladok-roles-qbank</a></span>
                 <CopyButton title="Copy branch link" elementId="#ticket-branch" />
             </p>
             <p className="Properties__value hidden"><span className="empty">No branch configured</span></p>
@@ -315,13 +321,14 @@ export function ReplaceAvatars() {
     if (status === 'loading') return ( <p className="Loading">Loading...</p> );
     if (error) return ( <p className="Error">{error.message}</p> );
 
-    const avatars = document.querySelectorAll('.Thread__timeline .ThreadChanges__event, .Thread__timeline .Post__header');
+    const avatars = document.querySelectorAll('.Thread__timeline .ThreadChanges__event:not([data-replaced="true"]), .Thread__timeline .Post__header:not([data-replaced="true"])');
     avatars.forEach((avatar) => {
         const image = avatar.querySelector('img.Post__avatar, img.ThreadChanges__avatar');
         const parent = image.parentElement;
         const container = document.createElement('div');
         image.classList.forEach((v) => container.classList.add(v));
         parent.replaceChild(container, image);
+        avatar.setAttribute('data-replaced', 'true');
 
         const name = avatar.querySelector('.text--bold > a.text--link').innerText;
         const matches = data.filter((v) => v.name === name);
@@ -335,4 +342,32 @@ export function ReplaceAvatars() {
     return (
         <div></div>
     );
+}
+
+function ReplaceTicketLinks() {
+
+    function TicketLink({ props }) {
+        return (
+            <a className={props.class} href={props.href} rel={props.rel} title={props.title}  data-replaced="true"><span className="id">#{props.id}</span> <span className="subject">{props.text}</span></a>
+        );
+    }
+
+    const links = document.querySelectorAll('#content .left a[rel="codebase-internal"]:not([data-replaced="true"])');
+    links.forEach((link) => {
+        link.classList.remove('text--positive', 'text-subtle');
+        const props = {
+            id: link.innerText.match(/\d+/)[0],
+            text: link.innerText.replace(/^#\d+\s-\s/, ''),
+            href: link.href,
+            title: link.classList.item(0).replace('is-status-', '').replace('-',' '),
+            rel: 'codebase-internal',
+            class: link.classList.toString()
+        };
+
+        const parent = link.parentElement;
+        const placeholder = document.createElement('span');
+        parent.replaceChild(placeholder, link);
+        const root = createRoot(placeholder);
+        root.render(<TicketLink props={props} />);
+    });
 }
