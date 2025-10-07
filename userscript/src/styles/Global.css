@@ -41,8 +41,19 @@
     line-height: 20px;
 }
 
+.btn.btn--positive {
+    text-shadow: none;
+    background: #709540;
+    border-color: #557824;
+    color: white;
+}
+
 .btn:hover {
     background: #e1e1e1;
+}
+
+.btn.btn--positive:hover {
+    background: #4a671e;
 }
 
 /* Tags --------------------------------------------------------------------- */
@@ -124,6 +135,14 @@
 
 .icon-role:before {
     content: "\F146"
+}
+
+.icon-new:before {
+    content: "\F14C"
+}
+
+.icon-back:before {
+    content: "\F158"
 }
 
 /* Avatars ------------------------------------------------------------------ */

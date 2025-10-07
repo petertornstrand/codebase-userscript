@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import { ReactDOM } from 'react-dom';
 import { createRoot } from 'react-dom/client';
 import {QueryClient,QueryClientProvider,useQuery} from "react-query";
 import './styles/TicketSidebar.css';
@@ -7,7 +6,6 @@ import CopyButton from './CopyButton';
 import Avatar from './Avatar';
 import { parseDate } from 'date-parrot'
 import { CodebaseContext } from './CodebaseContext';
-import { log } from './utils';
 
 const queryClient = new QueryClient();
 const dateTimeFormat = {
@@ -232,14 +230,55 @@ function Blockers() {
 }
 
 function Tags() {
+    const elements = document.querySelectorAll('.TagList .TagList__item span.js-tags-text');
+
+    const tags = [];
+    elements.forEach(function (e, i) {
+        let elem = e.cloneNode(true);
+        elem.classList.add('icon');
+        if (elem.innerText.match(/^branch:/g)) {
+            elem.innerText = elem.innerText.replace(/^branch:/g, '');
+            elem.classList.add('col-orange', 'icon-branch');
+        }
+        else if (elem.innerText.match(/^note:/g)) {
+            elem.innerText = elem.innerText.replace(/^note:/g, '');
+            elem.classList.add('col-red', 'icon-status_id');
+        }
+        else {
+            elem.classList.remove('icon');
+            elem.classList.add('col-grey');
+        }
+        elem.classList.replace('js-tags-text', 'TicketProperties__tag');
+        tags.push({
+            index: i,
+            text: elem.innerText,
+            class: elem.classList.toString(),
+        });
+        elem.remove();
+    });
+
+    function renderTags() {
+        if (tags.length === 0) {
+            return (
+                <p className="Properties__value"><span className="empty">No tags</span></p>
+            );
+        }
+
+        return (
+            <p className="Properties__value Properties__value--tags">
+                { tags.map((tag) => {
+                    return (
+                        <span className={tag.class} key={tag.index}>{tag.text}</span>
+                    );
+                })}
+            </p>
+        );
+    }
+
     return (
         <li className="Properties__item">
-            <h3 className="Properties__title">Tags</h3>
-            <p className="Properties__value Properties__value--tags">
-                <span className="TicketProperties__tag">Needs test</span>
-                <span className="TicketProperties__tag">Intermediate</span>
-            </p>
-            <p className="Properties__value hidden"><span className="empty">No tags</span></p>
+            <h3 className="Properties__title icon icon-tags">Tags</h3>
+            {renderTags()}
         </li>
     );
 }
