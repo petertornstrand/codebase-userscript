@@ -1,6 +1,4 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { ReactDOM } from 'react-dom';
-import { createRoot } from 'react-dom/client';
 import {QueryClient,QueryClientProvider,useQuery} from "react-query";
 import './styles/TicketSidebar.css';
 import CopyButton from './CopyButton';
@@ -8,8 +6,12 @@ import Avatar from './Avatar';
 import { parseDate } from 'date-parrot'
 import { CodebaseContext } from './CodebaseContext';
 import { log } from './utils';
+import { ReplaceTicketLinks, ReplaceAvatars, ReplaceSubject } from './Ticket.jsx';
 
+// Global query client.
 const queryClient = new QueryClient();
+
+// Datetime format.
 const dateTimeFormat = {
     year: 'numeric',
     month: '2-digit',
@@ -17,6 +19,8 @@ const dateTimeFormat = {
     hour: '2-digit',
     minute:'2-digit'
 };
+
+// Date format.
 const dateFormat = {
     year: 'numeric',
     month: '2-digit',
@@ -30,10 +34,11 @@ const dateFormat = {
  * @constructor
  */
 export default function TicketSidebar() {
-    ReplaceTicketLinks();
-
     return (
         <QueryClientProvider client={queryClient} contextSharing={true}>
+            <ReplaceSubject />
+            <ReplaceAvatars />
+            <ReplaceTicketLinks />
             <div className="sidebar__module sidebar__module--medium">
                 <div className="box box--sidebar">
                     <div className="island">
@@ -70,6 +75,12 @@ export default function TicketSidebar() {
     );
 }
 
+/**
+ * Reporter component.
+ *
+ * @return {JSX.Element}
+ * @constructor
+ */
 function Reporter() {
     const user = document.querySelector(".ThreadMeta ul.layout-list .ThreadMeta__item.icon-user span.text--bold").innerHTML;
     const date = document.querySelector(".ThreadMeta ul.layout-list .ThreadMeta__item.icon-user span.timestamp").getAttribute('title');
@@ -85,6 +96,12 @@ function Reporter() {
     );
 }
 
+/**
+ * Participants component.
+ *
+ * @return {JSX.Element}
+ * @constructor
+ */
 function Participants() {
 
     const context = useContext(CodebaseContext);
@@ -149,6 +166,12 @@ function Participants() {
     );
 }
 
+/**
+ * Milestone component.
+ *
+ * @return {JSX.Element}
+ * @constructor
+ */
 function Milestone() {
     const milestone = document.querySelector(".sidebar__module .related-milestone__heading a");
     const date = parseDate(document.querySelector(".sidebar__module .related-milestone__date").innerText);
@@ -184,6 +207,12 @@ function Milestone() {
     );
 }
 
+/**
+ * Referenced tickets component.
+ *
+ * @return {JSX.Element}
+ * @constructor
+ */
 function ReferencedTickets() {
 
     // TODO: Links not found! Use the new API instead.
@@ -218,6 +247,14 @@ function ReferencedTickets() {
     )
 }
 
+/**
+ * Blockers component.
+ *
+ * @todo Implement.
+ *
+ * @return {JSX.Element}
+ * @constructor
+ */
 function Blockers() {
     return (
         <li className="Properties__item">
@@ -227,6 +264,12 @@ function Blockers() {
     );
 }
 
+/**
+ * Tags component.
+ *
+ * @return {JSX.Element}
+ * @constructor
+ */
 function Tags() {
     const elements = document.querySelectorAll('.TagList .TagList__item span.js-tags-text');
 
@@ -281,6 +324,12 @@ function Tags() {
     );
 }
 
+/**
+ * Branch component.
+ *
+ * @return {JSX.Element}
+ * @constructor
+ */
 function Branch() {
     return (
         <li className="Properties__item">
@@ -294,6 +343,14 @@ function Branch() {
     );
 }
 
+/**
+ * Access component.
+ *
+ * @todo Implement.
+ *
+ * @return {JSX.Element}
+ * @constructor
+ */
 function Access() {
     return (
         <li className="Properties__item">
@@ -302,64 +359,4 @@ function Access() {
             <p className="Properties__value text--negative hidden"><span className="icon icon-lock">Only users from <strong>Happiness</strong></span></p>
         </li>
     );
-}
-
-export function ReplaceAvatars() {
-    const context = useContext(CodebaseContext);
-    const { data, status, error } = useQuery('Participants', async () => {
-        return await context.api.getUsers('ki-profile');
-    });
-
-    if (status === 'loading') return ( <p className="Loading">Loading...</p> );
-    if (error) return ( <p className="Error">{error.message}</p> );
-
-    const avatars = document.querySelectorAll('.Thread__timeline .ThreadChanges__event:not([data-replaced="true"]), .Thread__timeline .Post__header:not([data-replaced="true"])');
-    avatars.forEach((avatar) => {
-        const image = avatar.querySelector('img.Post__avatar, img.ThreadChanges__avatar');
-        const parent = image.parentElement;
-        const container = document.createElement('div');
-        image.classList.forEach((v) => container.classList.add(v));
-        parent.replaceChild(container, image);
-        avatar.setAttribute('data-replaced', 'true');
-
-        const name = avatar.querySelector('.text--bold > a.text--link').innerText;
-        const matches = data.filter((v) => v.name === name);
-
-        if (matches.length) {
-            const root = createRoot(container);
-            root.render(<Avatar user={matches[0]} size="small" tooltip={false} />);
-        }
-    });
-
-    return (
-        <div></div>
-    );
-}
-
-function ReplaceTicketLinks() {
-
-    function TicketLink({ props }) {
-        return (
-            <a className={props.class} href={props.href} rel={props.rel} title={props.title}  data-replaced="true"><span className="id">#{props.id}</span> <span className="subject">{props.text}</span></a>
-        );
-    }
-
-    const links = document.querySelectorAll('#content .left a[rel="codebase-internal"]:not([data-replaced="true"])');
-    links.forEach((link) => {
-        link.classList.remove('text--positive', 'text-subtle');
-        const props = {
-            id: link.innerText.match(/\d+/)[0],
-            text: link.innerText.replace(/^#\d+\s-\s/, ''),
-            href: link.href,
-            title: link.classList.item(0).replace('is-status-', '').replace('-',' '),
-            rel: 'codebase-internal',
-            class: link.classList.toString()
-        };
-
-        const parent = link.parentElement;
-        const placeholder = document.createElement('span');
-        parent.replaceChild(placeholder, link);
-        const root = createRoot(placeholder);
-        root.render(<TicketLink props={props} />);
-    });
 }
