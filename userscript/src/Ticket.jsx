@@ -3,8 +3,7 @@ import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import { createRoot } from 'react-dom/client';
 import { log } from './utils';
 import CopyButton from './CopyButton';
-import { DecoratedTicketLinks, DecoratedAvatars, Avatar, dateFormat, dateTimeFormat } from './Global';
-import { CodebaseContext } from './CodebaseContext';
+import { DecoratedTicketLinks, DecoratedAvatars, Avatar, api, dateFormat, dateTimeFormat } from './Global';
 import { URLContext } from './URLContext';
 import './styles/TicketSidebar.css';
 import './styles/TicketSubject.css';
@@ -25,20 +24,24 @@ export default function Ticket() {
     );
 }
 
+/**
+ * Actual ticket element.
+ *
+ * @return {JSX.Element}
+ */
 function ActualTicket() {
-    const context = useContext(CodebaseContext);
     const urlContext = useContext(URLContext);
     const id = 3434; // TODO: Change to use urlContext.id.
     const project_id = 'ki-profile'; // TODO: Change to use urlContext.project_id.
     const { data, status, error } = useQuery(['Context', id], async () => {
-        return await context.api.getContext(project_id, id);
+        return await api.getContext(project_id, id);
     }, { refetchOnMount: false, refetchOnWindowFocus: false});
 
     if (status === 'loading') return;
 
     return (
         <div>
-            <Subject ticketId={data.ticket.id} projectId={urlContext.project_id} title={data.ticket.subject} />
+            <Subject ticket={data.ticket} projectId={project_id} />
             <Sidebar data={data} />
             <DecoratedAvatars />
             <DecoratedTicketLinks />
@@ -49,13 +52,13 @@ function ActualTicket() {
 /**
  * Subject element.
  *
- * @param {int} ticketId
+ * @param {object} ticket
  * @param {string} projectId
  * @param {string} title
  *
  * @return {JSX.Element}
  */
-function Subject({ticketId, projectId, title}) {
+function Subject({ticket, projectId }) {
     const target = document.querySelector('.Thread__header');
     let container = target.querySelector('div.TicketSubjectComponent');
     if (!container) {
@@ -63,7 +66,7 @@ function Subject({ticketId, projectId, title}) {
         container.classList.add('TicketSubjectComponent');
         target.prepend(container);
         const root = createRoot(container);
-        root.render(renderSubject(ticketId, projectId, title));
+        root.render(renderSubject(ticket.id, projectId, ticket.subject));
     }
 
     function renderSubject(ticketId, projectId, title) {
@@ -107,14 +110,10 @@ function Sidebar({ data }) {
                 <div className="box box--sidebar">
                     <div className="island">
                         <div className="CodebaseComponent">
-                            <ul className="Properties Properties--column">
-                                <Reporter userUrl="#" userName={data.ticket.username} dateTime={data.ticket.created} />
-                                <Participants users={data.participants} />
-                            </ul>
+                            <Reporter userUrl="#" userName={data.ticket.reporter.username} dateTime={data.ticket.created} />
+                            <Participants users={data.participants} />
                         </div>
-                        <div className="CodebaseComponent">
-                            <Milestone milestone={data.ticket.milestone} userUrl="#" userName={data.ticket.milestone.responsibleUserId} />
-                        </div>
+                        <Milestone ticket={data.ticket} />
                         <div className="CodebaseComponent">
                             <ul className="Properties Properties--column">
                                 <ReferencedTickets tickets={data.links} />
@@ -132,10 +131,6 @@ function Sidebar({ data }) {
             </div>
         );
     }
-
-
-
-
 }
 
 /**
@@ -144,23 +139,26 @@ function Sidebar({ data }) {
  * @return {JSX.Element}
  */
 function Reporter({userUrl, userName, dateTime}) {
-    const user = document.querySelector(".ThreadMeta ul.layout-list .ThreadMeta__item.icon-user span.text--bold").innerHTML;
     const parsedDate = new Date(Date.parse(dateTime));
 
+    // TODO: Add user avatar to component.
+
     return (
-        <li className="Properties__item">
-            <h3 className="Properties__title">Reported by</h3>
-            <p className="Properties__value">
-                <a href={userUrl} className="text--link">{userName}</a> on {parsedDate.toLocaleString('sv-SE', dateTimeFormat)}
-            </p>
-        </li>
+        <ul className="Properties Properties--row">
+            <li className="Properties__item">
+                <h3 className="Properties__title">Reported by</h3>
+                <p className="Properties__value">
+                    <a href={userUrl} className="text--link">{userName}</a> on {parsedDate.toLocaleString('sv-SE', dateTimeFormat)}
+                </p>
+            </li>
+        </ul>
     );
 }
 
 /**
  * Participants component.
  *
- * @return {JSX.Element}
+ * @return {JSX.Element|null}
  */
 function Participants({users}) {
 
@@ -169,61 +167,72 @@ function Participants({users}) {
     }
 
     return (
-        <li className="Properties__item">
-            <h3 className="Properties__title">Participants</h3>
-            <div className="Participant__list">
-            { users.map((user) => {
-                return (
-                    <Avatar user={user} size="large" key={user.id} />
-                );
-            })}
-            </div>
-        </li>
-    );
-}
-
-/**
- * Milestone component.
- *
- * @return {JSX.Element}
- */
-function Milestone({milestone, userUrl, userName}) {
-    const urlContext = useContext(URLContext);
-    const endDate = new Date(Date.parse(milestone.endDate));
-    const passed = (() => Date.parse(milestone.endDate) < Date.now());
-
-    //<p className="Properties__value hidden"><span className="empty">No milestone</span></p>
-
-    return (
-        <ul className="Properties Properties--row">
+        <ul className="Properties Properties--column">
             <li className="Properties__item">
-                <h3 className="Properties__title icon icon-milestone">Milestone</h3>
-                <p className="Properties__value">
-                    <span className="primary"><a href={`/projects/${urlContext.project_id}/milestone/` + milestone.guid}>{milestone.name}</a></span>
-                </p>
-            </li>
-            <li className="Properties__item">
-                <h3 className="Properties__title icon icon-calendar">Due</h3>
-                <p className="Properties__value"><span className={passed ? 'date--passed' : 'date--not-passed'}>{endDate.toLocaleDateString('sv-SE', dateFormat)}</span></p>
-            </li>
-            <li className="Properties__item">
-                <h3 className="Properties__title icon icon-user">PM</h3>
-                <p className="Properties__value">
-                    <a href={userUrl} className="text--link">{userName}</a>
-                </p>
+                <h3 className="Properties__title">Participants</h3>
+                <div className="Participant__list">
+                { users.map((user) => {
+                    return (
+                        <Avatar user={user} size="large" key={user.id} />
+                    );
+                })}
+                </div>
             </li>
         </ul>
     );
 }
 
 /**
+ * Milestone component.
+ *
+ * @return {JSX.Element|null}
+ */
+function Milestone({ ticket }) {
+    if (!ticket.hasOwnProperty('milestone')) {
+        return null;
+    }
+
+    const urlContext = useContext(URLContext);
+    const endDate = new Date(Date.parse(ticket.milestone.endDate));
+    const passed = (() => Date.parse(ticket.milestone.endDate) < Date.now());
+    const userUrl = '#', userName = 'John Doe';
+
+    return (
+        <div className="CodebaseComponent">
+            <ul className="Properties Properties--row">
+                <li className="Properties__item">
+                    <h3 className="Properties__title icon icon-milestone">Milestone</h3>
+                    <p className="Properties__value">
+                        <span className="primary"><a href={`/projects/${urlContext.project_id}/milestone/` + ticket.milestone.guid}>{ticket.milestone.name}</a></span>
+                    </p>
+                </li>
+                <li className="Properties__item">
+                    <h3 className="Properties__title icon icon-calendar">Due</h3>
+                    <p className="Properties__value"><span className={passed ? 'date--passed' : 'date--not-passed'}>{endDate.toLocaleDateString('sv-SE', dateFormat)}</span></p>
+                </li>
+                <li className="Properties__item">
+                    <h3 className="Properties__title icon icon-user">PM</h3>
+                    <p className="Properties__value">
+                        <a href={userUrl} className="text--link">{userName}</a>
+                    </p>
+                </li>
+            </ul>
+        </div>
+    );
+}
+
+/**
  * Referenced tickets component.
  *
- * @todo Implement.
+ * @param {Array} tickets
  *
- * @return {JSX.Element}
+ * @return {JSX.Element|null}
  */
-function ReferencedTickets({links}) {
+function ReferencedTickets({tickets}) {
+
+    if (tickets.length === 0) {
+        return null;
+    }
 
     return (
         <li className="Properties__item">
@@ -255,30 +264,30 @@ function Blockers() {
  *
  * @param {Array} tags
  *
- * @return {JSX.Element}
+ * @return {JSX.Element|null}
  */
 function Tags({ tags }) {
     const items = [];
-    tags.forEach(function (tag, index) {
-        let classes = ['icon'];
-        if (tag.match(/^branch:/g)) {
-            return;
-            // tag.replace(/^branch:/g, '');
-            // classes.push('col-orange', 'icon-branch');
-        }
-        else if (tag.match(/^alert:/g)) {
-            tag.replace(/^alert:/g, '');
-            classes.push('col-red', 'icon-status_id');
-        }
-        else {
-            classes.push('col-grey');
-        }
-        items.push({
-            index: index,
-            text: tag,
-            class: classes.join(' '),
+    if (tags) {
+        tags.forEach(function (tag, index) {
+            let classes = ['icon'];
+            if (tag.match(/^branch:/g)) {
+                return;
+                // tag.replace(/^branch:/g, '');
+                // classes.push('col-orange', 'icon-branch');
+            } else if (tag.match(/^alert:/g)) {
+                tag.replace(/^alert:/g, '');
+                classes.push('col-red', 'icon-status_id');
+            } else {
+                classes.push('col-grey');
+            }
+            items.push({
+                index: index,
+                text: tag,
+                class: classes.join(' '),
+            });
         });
-    });
+    }
 
     if (items.length === 0) {
         return null;

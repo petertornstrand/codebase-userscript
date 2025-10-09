@@ -2,8 +2,9 @@ import React, { useContext } from 'react';
 import { createRoot } from 'react-dom/client';
 import { useQuery } from 'react-query';
 import { Tooltip } from 'react-tooltip';
-import { CodebaseContext } from './CodebaseContext';
 import { URLContext } from './URLContext';
+import { getCodebaseConfig } from "./utils.js";
+import CodebaseAPI from "./CodebaseAPI.js";
 
 /**
  * Date and time format.
@@ -16,6 +17,9 @@ export const dateTimeFormat = {
     hour: '2-digit',
     minute:'2-digit'
 };
+
+const config = getCodebaseConfig();
+export const api = new CodebaseAPI(config);
 
 /**
  * Date format.
@@ -82,11 +86,10 @@ export function DecoratedTicketLinks() {
  * @return {JSX.Element}
  */
 export function DecoratedAvatars() {
-    const context = useContext(CodebaseContext);
     const urlContext = useContext(URLContext);
     const project_id = 'ki-profile'; // TODO: Change to use urlContext.project_id.
     const { data, status, error } = useQuery(['Participants', project_id], async () => {
-        return await context.api.getUsers(project_id);
+        return await api.getUsers(project_id);
     }, { refetchOnMount: false, refetchOnWindowFocus: false});
 
     if (status === 'loading') return;

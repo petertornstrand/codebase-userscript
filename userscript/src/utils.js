@@ -144,15 +144,14 @@ export function getURLContext() {
  */
 export function getCodebaseConfig() {
     if (typeof GM_getValues === 'function') {
-        const values = GM_getValues(['codebase_username', 'codebase_api_key' ]);
+        const values = GM_getValues(['cbapi_key']);
         Object.entries(values).forEach(([key, value]) => {
             if (!value) {
                 throw new Error(`Missing configuration value for key ${key}.`);
             }
         })
         return {
-            username: values.codebase_username,
-            api_key: values.codebase_api_key
+            api_key: values.cbapi_key
         };
     }
     else {

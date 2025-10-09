@@ -1,9 +1,7 @@
 import { notify } from './utils';
-import { convertXML} from 'simple-xml-to-json';
 
 /**
  * @typedef {Object} CodebaseConfig
- * @property {string} username
  * @property {string} api_key
  */
 
@@ -12,7 +10,7 @@ import { convertXML} from 'simple-xml-to-json';
  *
  * @class
  */
-export class CodebaseAPI {
+export default class CodebaseAPI {
 
     #baseUrl = 'https://cbapi.ddev.site';
 
@@ -37,7 +35,7 @@ export class CodebaseAPI {
     #getHeaders(headers = {}) {
         const defaultHeaders = {
             'Accept': 'application/json',
-            'X-API-Key': 'EqEwutMou0jdPEHQCumTeGxbL81VzovVxQhZhg653fUtfihJOuSARBwkh1LnZzmN',
+            'X-API-Key': this.#config.api_key,
             'Content-Type': 'application/json'
         };
         return Object.assign({}, defaultHeaders, headers);
@@ -70,7 +68,7 @@ export class CodebaseAPI {
      * Get a context.
      *
      * @param {string} projectId
-     * @param {string} ticketId
+     * @param {number} ticketId
      * @return {Promise<any>}
      */
     async getContext(projectId, ticketId) {
