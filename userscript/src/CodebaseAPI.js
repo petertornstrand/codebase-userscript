@@ -14,7 +14,7 @@ import { convertXML} from 'simple-xml-to-json';
  */
 export class CodebaseAPI {
 
-    #baseUrl = 'https://api3.codebasehq.com';
+    #baseUrl = 'https://cbapi.ddev.site';
 
     /** @var {CodebaseConfig} */
     #config;
@@ -36,9 +36,9 @@ export class CodebaseAPI {
      */
     #getHeaders(headers = {}) {
         const defaultHeaders = {
-            'Accept': 'application/xml',
-            'Authorization': 'Basic ' + btoa(this.#config.username + ':' + this.#config.api_key),
-            'Content-Type': 'application/xml'
+            'Accept': 'application/json',
+            'X-API-Key': 'EqEwutMou0jdPEHQCumTeGxbL81VzovVxQhZhg653fUtfihJOuSARBwkh1LnZzmN',
+            'Content-Type': 'application/json'
         };
         return Object.assign({}, defaultHeaders, headers);
     }
@@ -51,8 +51,7 @@ export class CodebaseAPI {
      * @return {Promise<any>}
      */
     async getTicket(projectId, ticketId) {
-        //const url = this.#baseUrl + `/${projectId}/tickets?query=id:${ticketId}`;
-        const url = 'https://codebase.ddev.site/tickets.xml';
+        const url = this.#baseUrl + `/${projectId}/ticket/${ticketId}`;
         try {
             const response = await fetch(url, {
                 headers: this.#getHeaders()
@@ -61,8 +60,30 @@ export class CodebaseAPI {
                 throw new Error(`Response status: ${response.status}`);
             }
 
-            const xml = await response.text();
-            return convertXML(xml);
+            return await response.json();
+        } catch (error) {
+            notify({ title: error.name, text: error.message, tag: 'error' });
+        }
+    }
+
+    /**
+     * Get a context.
+     *
+     * @param {string} projectId
+     * @param {string} ticketId
+     * @return {Promise<any>}
+     */
+    async getContext(projectId, ticketId) {
+        const url = this.#baseUrl + `/${projectId}/ticket/${ticketId}/context`;
+        try {
+            const response = await fetch(url, {
+                headers: this.#getHeaders()
+            });
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            }
+
+            return await response.json();
         } catch (error) {
             notify({ title: error.name, text: error.message, tag: 'error' });
         }
@@ -75,8 +96,7 @@ export class CodebaseAPI {
      * @return {Promise<any>}
      */
     async getUsers(projectId) {
-        //const url = this.#baseUrl + `/${projectId}/assignments`;
-        const url = 'https://codebase.ddev.site/users.json';
+        const url = this.#baseUrl + `/${projectId}/assignments`;
         try {
             const response = await fetch(url, {
                 headers: this.#getHeaders(),
@@ -98,8 +118,7 @@ export class CodebaseAPI {
      * @return {Promise<any>}
      */
     async getStatuses(projectId) {
-        //const url = this.#baseUrl + `/${projectId}/tickets/statuses`;
-        const url = 'https://codebase.ddev.site/statuses.json';
+        const url = this.#baseUrl + `/${projectId}/statuses`;
         try {
             const response = await fetch(url, {
                 headers: this.#getHeaders(),

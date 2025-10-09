@@ -195,3 +195,34 @@
 .PostForm__avatar {
     display: none;
 }
+
+/* Ticket links ------------------------------------------------------------- */
+
+a[rel="codebase-internal"] .id {
+    font-weight: bold;
+}
+
+a[rel="codebase-internal"].is-status-new {
+    color: #69a523;
+}
+
+a[rel="codebase-internal"].is-status-accepted {
+    color: #a37c20;
+}
+
+a[rel="codebase-internal"].is-status-in-progress {
+    color: #278fbf;
+}
+
+a[rel="codebase-internal"].is-status-completed {
+    color: darkgreen;
+}
+
+a[rel="codebase-internal"].is-status-invalid  {
+    color: darkred;
+}
+
+a[rel="codebase-internal"].is-status-completed .subject,
+a[rel="codebase-internal"].is-status-invalid .subject{
+    text-decoration: line-through;
+}

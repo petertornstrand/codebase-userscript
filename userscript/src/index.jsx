@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles/Global.css';
-import TicketSidebar from './TicketSidebar';
+import Ticket from './Ticket';
 import { awaitElement, log, addLocationChangeCallback } from './utils';
 
 log('React script has successfully started');
@@ -10,12 +10,13 @@ log('React script has successfully started');
 // so that elements can be re-inserted as a user navigates a page with
 // different routes.
 async function main() {
-    // Ticket sidebar.
-    let target = await awaitElement('div#content div.right');
+    // TODO: Replace this with a dynamic initialization function that creates
+    //  different components based on the current URL.
+    let target = await awaitElement('body');
     let container = document.createElement('div');
-    target.prepend(container);
+    target.appendChild(container);
     let root = createRoot(container);
-    root.render(<TicketSidebar />);
+    root.render(<Ticket />);
 }
 
 // Call `main()` every time the page URL changes, including on the first load.
