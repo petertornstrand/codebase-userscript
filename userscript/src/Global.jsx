@@ -1,10 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { useQuery } from 'react-query';
 import { Tooltip } from 'react-tooltip';
 import { URLContext } from './URLContext';
 import { getCodebaseConfig } from "./utils.js";
 import CodebaseAPI from "./CodebaseAPI.js";
+import './styles/Global.css';
 
 /**
  * Date and time format.
@@ -19,6 +20,12 @@ export const dateTimeFormat = {
 };
 
 const config = getCodebaseConfig();
+
+/**
+ * Codebase API.
+ *
+ * @type {CodebaseAPI}
+ */
 export const api = new CodebaseAPI(config);
 
 /**
@@ -104,11 +111,13 @@ export function DecoratedAvatars() {
         avatar.setAttribute('data-replaced', 'true');
 
         const name = avatar.querySelector('.text--bold > a.text--link').innerText;
-        const matches = data.filter((v) => v.name === name);
+        const matches = data.filter((v) => v.fullName === name);
+
+        const size = parent.classList.contains('Post__header') ? 'medium' : 'small';
 
         if (matches.length) {
             const root = createRoot(container);
-            root.render(<Avatar user={matches[0]} size="small" tooltip={false} />);
+            root.render(<Avatar user={matches[0]} size={size} tooltip={false} />);
         }
     });
 }
@@ -152,7 +161,7 @@ export function Avatar({ user, size = 'medium', tooltip = true }) {
                     <p className="Properties__value">
                         <a href={user.url}>
                             <span className="primary">@{user.username}</span>&nbsp;
-                            <span className="secondary">{user.name}</span>
+                            <span className="secondary">{user.fullName}</span>
                         </a>
 
                     </p>

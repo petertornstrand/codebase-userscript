@@ -41,11 +41,39 @@
     line-height: 20px;
 }
 
+a.btn {
+    color: #25292e;
+}
+
+.btn.btn--small {
+    font-size: 10px;
+    line-height: 1;
+    padding: 5px 5px 3px;
+    font-weight: normal;
+    text-transform: uppercase;
+}
+
+.btn.btn--medium {
+    font-size: 12px;
+    line-height: 1;
+    padding: 7px 7px 5px;
+    font-weight: normal;
+    text-transform: uppercase;
+}
+
 .btn.btn--positive {
     text-shadow: none;
     background: #709540;
     border-color: #557824;
     color: white;
+}
+
+.btn.btn--stealth {
+    background: #fff;
+}
+
+.btn.btn--stealth:hover {
+    background: #efefef;
 }
 
 .btn:hover {
@@ -54,6 +82,12 @@
 
 .btn.btn--positive:hover {
     background: #4a671e;
+}
+
+.help:last-child {
+    font-size: 12px;
+    color: #999999;
+    margin: 8px 0 0;
 }
 
 /* Tags --------------------------------------------------------------------- */
@@ -145,7 +179,23 @@
     content: "\F158"
 }
 
+.icon-subscribe:before {
+    content: "\F132";
+}
+
+.icon-unsubscribe:before {
+    content: "\F134";
+}
+
+a.text--link {
+    color: inherit;
+}
+
 /* Avatars ------------------------------------------------------------------ */
+
+img.gravatar {
+    padding: 0;
+}
 
 [data-initials]:before {
     background: #150547;
@@ -173,16 +223,16 @@
 
 .avatar--small:before,
 .gravatar--small {
-    width: 24px;
-    height: 24px;
-    font-size: 12px;
+    width: 16px;
+    height: 16px;
+    font-size: 8px;
 }
 
 .avatar--medium:before,
 .gravatar--medium {
-    width: 28px;
-    height: 28px;
-    font-size: 14px;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
 }
 
 .avatar--large:before,
@@ -190,6 +240,11 @@
     width: 56px;
     height: 56px;
     font-size: 28px;
+}
+
+.Post__avatar {
+    position: absolute;
+    left: -44px;
 }
 
 .PostForm__avatar {

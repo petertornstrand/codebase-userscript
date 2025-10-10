@@ -1,12 +1,11 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import { createRoot } from 'react-dom/client';
 import { log } from './utils';
 import CopyButton from './CopyButton';
 import { DecoratedTicketLinks, DecoratedAvatars, Avatar, api, dateFormat, dateTimeFormat } from './Global';
 import { URLContext } from './URLContext';
-import './styles/TicketSidebar.css';
-import './styles/TicketSubject.css';
+import './styles/Ticket.css';
 
 // Query client.
 const queryClient = new QueryClient();
@@ -27,7 +26,7 @@ export default function Ticket() {
 /**
  * Actual ticket element.
  *
- * @return {JSX.Element}
+ * @return {JSX.Element|null}
  */
 function ActualTicket() {
     const urlContext = useContext(URLContext);
@@ -37,7 +36,7 @@ function ActualTicket() {
         return await api.getContext(project_id, id);
     }, { refetchOnMount: false, refetchOnWindowFocus: false});
 
-    if (status === 'loading') return;
+    if (status === 'loading') return null;
 
     return (
         <div>
@@ -91,6 +90,12 @@ function Subject({ticket, projectId }) {
  * @return {JSX.Element}
  */
 function Sidebar({ data }) {
+    const reporterId = data.ticket.reporter.id;
+    const reporter = data.assignments.find((assignment) => assignment.id === reporterId);
+
+    const managerId = data.ticket.milestone.responsibleUserId;
+    const manager = data.assignments.find((assignment) => assignment.id === managerId);
+
     const target = document.querySelector('div#content div.right');
     let container = target.querySelector('div.TicketSidebarComponent');
     if (!container) {
@@ -98,33 +103,29 @@ function Sidebar({ data }) {
         container.classList.add('TicketSidebarComponent');
         target.prepend(container);
         const root = createRoot(container);
-        root.render(renderSidebar(data));
+        root.render(renderSidebar(data, reporter, manager));
     }
 
-    // TODO: Get value for userUrl variable.
-    // TODO: Get value for userName variable.
-
-    function renderSidebar(data) {
+    function renderSidebar(data, reporter, manager) {
         return (
             <div className="sidebar__module sidebar__module--medium">
                 <div className="box box--sidebar">
                     <div className="island">
+                        <Reporter user={reporter} dateTime={data.ticket.created} />
+                        <Participants users={data.participants} />
+                        <Milestone user={manager} ticket={data.ticket} />
                         <div className="CodebaseComponent">
-                            <Reporter userUrl="#" userName={data.ticket.reporter.username} dateTime={data.ticket.created} />
-                            <Participants users={data.participants} />
-                        </div>
-                        <Milestone ticket={data.ticket} />
-                        <div className="CodebaseComponent">
-                            <ul className="Properties Properties--column">
-                                <ReferencedTickets tickets={data.links} />
-                                <Blockers />
-                            </ul>
+                            <ReferencedTickets tickets={data.links} />
+                            <Blockers />
                         </div>
                         <div className="CodebaseComponent">
                             <ul className="Properties Properties--column">
                                 <Tags tags={data.ticket.tags} />
                                 <Branch url="#" name="master" />
                             </ul>
+                        </div>
+                        <div className="CodebaseComponent">
+                            <Watchers />
                         </div>
                     </div>
                 </div>
@@ -136,58 +137,69 @@ function Sidebar({ data }) {
 /**
  * Reporter component.
  *
+ * @param {Object} user
+ * @param {string} dateTime
+ *
  * @return {JSX.Element}
  */
-function Reporter({userUrl, userName, dateTime}) {
+function Reporter({user, dateTime}) {
     const parsedDate = new Date(Date.parse(dateTime));
 
     // TODO: Add user avatar to component.
 
     return (
-        <ul className="Properties Properties--row">
-            <li className="Properties__item">
-                <h3 className="Properties__title">Reported by</h3>
-                <p className="Properties__value">
-                    <a href={userUrl} className="text--link">{userName}</a> on {parsedDate.toLocaleString('sv-SE', dateTimeFormat)}
-                </p>
-            </li>
-        </ul>
+        <div className="CodebaseComponent">
+            <ul className="Properties Properties--row">
+                <li className="Properties__item">
+                    <h3 className="Properties__title">Reported by</h3>
+                    <p className="Properties__value">
+                        <span className="text--bold"><a href="#" className="text--link">{user.fullName}</a></span> on {parsedDate.toLocaleString('sv-SE', dateTimeFormat)}
+                    </p>
+                </li>
+            </ul>
+        </div>
     );
 }
 
 /**
  * Participants component.
  *
+ * @param {Array} users
+ *
  * @return {JSX.Element|null}
  */
 function Participants({users}) {
-
     if (users.length === 0) {
         return null;
     }
 
     return (
-        <ul className="Properties Properties--column">
-            <li className="Properties__item">
-                <h3 className="Properties__title">Participants</h3>
-                <div className="Participant__list">
-                { users.map((user) => {
-                    return (
-                        <Avatar user={user} size="large" key={user.id} />
-                    );
-                })}
-                </div>
-            </li>
-        </ul>
+        <div className="CodebaseComponent">
+            <ul className="Properties Properties--column">
+                <li className="Properties__item">
+                    <h3 className="Properties__title">Participants</h3>
+                    <div className="Participant__list">
+                    { users.map((user) => {
+                        return (
+                            <Avatar user={user} size="medium" key={user.id} />
+                        );
+                    })}
+                    </div>
+                </li>
+            </ul>
+        </div>
     );
 }
 
 /**
  * Milestone component.
  *
+ * @param {Object} user
+ * @param {Object} ticket
+ *
  * @return {JSX.Element|null}
  */
-function Milestone({ ticket }) {
+function Milestone({ user, ticket }) {
     if (!ticket.hasOwnProperty('milestone')) {
         return null;
     }
@@ -195,7 +207,7 @@ function Milestone({ ticket }) {
     const urlContext = useContext(URLContext);
     const endDate = new Date(Date.parse(ticket.milestone.endDate));
     const passed = (() => Date.parse(ticket.milestone.endDate) < Date.now());
-    const userUrl = '#', userName = 'John Doe';
+    const userUrl = '#'; // TODO: Fix this.
 
     return (
         <div className="CodebaseComponent">
@@ -213,7 +225,7 @@ function Milestone({ ticket }) {
                 <li className="Properties__item">
                     <h3 className="Properties__title icon icon-user">PM</h3>
                     <p className="Properties__value">
-                        <a href={userUrl} className="text--link">{userName}</a>
+                        <a href={userUrl} className="text--link">{user.fullName}</a>
                     </p>
                 </li>
             </ul>
@@ -235,11 +247,13 @@ function ReferencedTickets({tickets}) {
     }
 
     return (
-        <li className="Properties__item">
-            <h3 className="Properties__title">Referenced tickets</h3>
-            <ul className="Properties__value Properties__value--list ReferencedTickets">
-            </ul>
-        </li>
+        <ul className="Properties Properties--column">
+            <li className="Properties__item">
+                <h3 className="Properties__title">Referenced tickets</h3>
+                <ul className="Properties__value Properties__value--list ReferencedTickets">
+                </ul>
+            </li>
+        </ul>
     )
 }
 
@@ -251,11 +265,27 @@ function ReferencedTickets({tickets}) {
  * @return {JSX.Element}
  */
 function Blockers() {
+
+    useEffect(() => {
+        const parent = document.querySelector('.relationships');
+        const link = parent.querySelector('a');
+        const target = document.querySelector('.Blockers');
+        parent.removeChild(link);
+        link.classList.remove('btn', 'btn--neutral');
+        link.classList.add('AddBlockersLink', 'icon-only', 'icon-add');
+        link.innerText = '';
+        target.appendChild(link);
+    })
+
     return (
-        <li className="Properties__item">
-            <h3 className="Properties__title">Blockers</h3>
-            <p className="Properties__value"><span className="empty">None</span></p>
-        </li>
+        <div className="Blockers">
+            <ul className="Properties Properties--column">
+                <li className="Properties__item">
+                    <h3 className="Properties__title">Blockers</h3>
+                    <p className="Properties__value"><span className="empty">None</span></p>
+                </li>
+            </ul>
+        </div>
     );
 }
 
@@ -325,4 +355,31 @@ function Branch({url, name}) {
             <p className="Properties__value hidden"><span className="empty">No branch configured</span></p>
         </li>
     );
+}
+
+/**
+ * Watchers component.
+ *
+ * @todo Implement.
+ *
+ * @return {JSX.Element}
+ */
+function Watchers() {
+    return (
+        <ul className="Properties Properties--column">
+            <li className="Properties__item">
+                <h3 className="Properties__title">Notifications</h3>
+                <p className="Properties__value">
+                    <button className="btn btn--medium icon icon-unsubscribe">Unsubscribe</button>
+                </p>
+                <p className="help">You're receiving notifications because you're subscribed to this ticket.</p>
+            </li>
+            <li className="Properties__item">
+                <p className="Properties__value">
+                    <button className="btn btn--medium icon icon-subscribe">Subscribe</button>
+                </p>
+                <p className="help">You're not receiving notifications from this ticket.</p>
+            </li>
+        </ul>
+    )
 }

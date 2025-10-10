@@ -88,32 +88,30 @@ export async function awaitElement(selector) {
 }
 
 /**
- * Send notification to browser.
- *
- * @param {object} message - The message object.
- * @param {string} message.title - The message title.
- * @param {string} message.text - The message text.
- * @param {string} [message.tag] - The message tag.
- * @return {void}
+ * @typedef {Object} GM_Notification
+ * @property {object} message - The message object.
+ * @property {string} message.title - The message title.
+ * @property {string} message.text - The message text.
+ * @property {string} [message.tag] - The message tag.
  */
-export function notify (message)  {
-    const defaultValues = { 'tag': 'harvest'};
-    message = Object.assign({}, defaultValues, message)
-    if (typeof GM_notification === 'function') {
-        GM_notification(message);
-    }
-    else {
-        console.log('Notify', message);
-    }
-}
 
 /**
- * @typedef {Object} URLContext
- * @property {string} id - The ticket/milestone/repository ID
- * @property {string} project_id - The project ID
- * @property {string} account_id - The hostname
- * @property {string} url - The full URL
+ * Send notification to browser.
+ *
+ * @param {GM_Notification} notification - The message object.
+ *
+ * @return {void}
  */
+export function notify (notification)  {
+    const defaultValues = { 'tag': 'harvest'};
+    notification = Object.assign({}, defaultValues, notification)
+    if (typeof GM_notification === 'function') {
+        GM_notification(notification);
+    }
+    else {
+        console.log('Notify', notification);
+    }
+}
 
 /**
  * Get URL context.
@@ -133,8 +131,10 @@ export function getURLContext() {
 
 /**
  * @typedef {Object} CodebaseConfig
- * @property {string} username
- * @property {string} api_key
+ * @property {string} cbapi_key
+ * @property {string} cbapi_base_url
+ * @property {string} cb_username
+ * @property {string} cb_key
  */
 
 /**
@@ -144,49 +144,21 @@ export function getURLContext() {
  */
 export function getCodebaseConfig() {
     if (typeof GM_getValues === 'function') {
-        const values = GM_getValues(['cbapi_key']);
+        const values = GM_getValues(['cbapi_key', 'cbapi_base_url', 'cb_username', 'cb_key']);
         Object.entries(values).forEach(([key, value]) => {
             if (!value) {
                 throw new Error(`Missing configuration value for key ${key}.`);
             }
         })
         return {
-            api_key: values.cbapi_key
+            cbapi_key: values.cbapi_key,
+            cbapi_base_url: values.cbapi_base_url,
+            cb_username: values.cb_username,
+            cb_key: values.cb_key
         };
     }
     else {
         throw new Error('No Codebase API config found.');
     }
 
-}
-
-/**
- * @typedef {Object} CodebaseHarvestMapItem
- * @property {string} codebase_project_id
- * @property {string} harvest_project_id
- * @property {string} harvest_client_id
- */
-
-/**
- * Get Codebase <> Harvest map.
- *
- * @param {string} codebaseProjectId
- * @return {Array<CodebaseHarvestMapItem>}
- */
-export function getCodebaseHavestMap(codebaseProjectId) {
-    if (typeof GM_getValue === 'function') {
-        const value = GM_getValue(codebaseProjectId);
-        if (!value) {
-            throw new Error(`No mapping found for codebase project ID: ${codebaseProjectId}`);
-        }
-        const searchParams = new URLSearchParams(value);
-        return {
-            codebase_project_id: codebaseProjectId,
-            harvest_project_id: searchParams.get('project_id'),
-            harvest_client_id: searchParams.get('client_id'),
-        }
-    }
-    else {
-        throw new Error('No Codebase <> Harvest map config found.');
-    }
 }

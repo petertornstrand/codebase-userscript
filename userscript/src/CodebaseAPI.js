@@ -2,7 +2,10 @@ import { notify } from './utils';
 
 /**
  * @typedef {Object} CodebaseConfig
- * @property {string} api_key
+ * @property {string} cbapi_key
+ * @property {string} cbapi_base_url
+ * @property {string} cb_username
+ * @property {string} cb_key
  */
 
 /**
@@ -11,8 +14,6 @@ import { notify } from './utils';
  * @class
  */
 export default class CodebaseAPI {
-
-    #baseUrl = 'https://cbapi.ddev.site';
 
     /** @var {CodebaseConfig} */
     #config;
@@ -35,8 +36,9 @@ export default class CodebaseAPI {
     #getHeaders(headers = {}) {
         const defaultHeaders = {
             'Accept': 'application/json',
-            'X-API-Key': this.#config.api_key,
-            'Content-Type': 'application/json'
+            'X-API-Key': this.#config.cbapi_key,
+            'Content-Type': 'application/json',
+            'Authorization': 'Basic ' + btoa(this.#config.cb_username + ':' + this.#config.cb_key)
         };
         return Object.assign({}, defaultHeaders, headers);
     }
@@ -49,7 +51,7 @@ export default class CodebaseAPI {
      * @return {Promise<any>}
      */
     async getTicket(projectId, ticketId) {
-        const url = this.#baseUrl + `/${projectId}/ticket/${ticketId}`;
+        const url = this.#config.cbapi_base_url + `/${projectId}/ticket/${ticketId}`;
         try {
             const response = await fetch(url, {
                 headers: this.#getHeaders()
@@ -72,7 +74,7 @@ export default class CodebaseAPI {
      * @return {Promise<any>}
      */
     async getContext(projectId, ticketId) {
-        const url = this.#baseUrl + `/${projectId}/ticket/${ticketId}/context`;
+        const url = this.#config.cbapi_base_url + `/${projectId}/ticket/${ticketId}/context`;
         try {
             const response = await fetch(url, {
                 headers: this.#getHeaders()
@@ -94,7 +96,7 @@ export default class CodebaseAPI {
      * @return {Promise<any>}
      */
     async getUsers(projectId) {
-        const url = this.#baseUrl + `/${projectId}/assignments`;
+        const url = this.#config.cbapi_base_url + `/${projectId}/assignments`;
         try {
             const response = await fetch(url, {
                 headers: this.#getHeaders(),
@@ -116,7 +118,7 @@ export default class CodebaseAPI {
      * @return {Promise<any>}
      */
     async getStatuses(projectId) {
-        const url = this.#baseUrl + `/${projectId}/statuses`;
+        const url = this.#config.cbapi_base_url + `/${projectId}/statuses`;
         try {
             const response = await fetch(url, {
                 headers: this.#getHeaders(),

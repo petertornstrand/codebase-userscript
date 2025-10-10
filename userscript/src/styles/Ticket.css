@@ -13,10 +13,6 @@
     margin-bottom: 16px;
 }
 
-.CodebaseComponent a {
-    color: #459dca;
-}
-
 .CodebaseComponent:last-of-type {
     padding-bottom: 0;
     border-bottom: none;
@@ -179,6 +175,50 @@
     gap: 8px;
 }
 
+.Blockers {
+    position: relative;
+}
+
+a.AddBlockersLink {
+    color: #666666;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.Post--full {
+    margin: 8px 0 0;
+}
+
+.Post__meta {
+    margin-left: 0;
+}
+
+.ThreadChanges {
+    margin-top: 0;
+}
+
+.ThreadChanges__event {
+    padding-left: 76px;
+}
+
+.ThreadChanges__event::before {
+    border-radius: 8px;
+}
+
+.ThreadChanges__avatar {
+    width: auto;
+    top: calc(50% + 4px);
+}
+
+.Push__meta {
+    padding-bottom: 0;
+}
+
+.Push__commit {
+    margin-top: 0;
+}
+
 .Tooltip a {
     color: inherit;
 }
@@ -188,6 +228,60 @@
     top: 0;
 }
 
-#content .right > .sidebar__module--medium {
+#content .right > .sidebar__module--medium:nth-child(2),
+#content .right > .sidebar__module--medium:nth-child(3) {
     display: none;
+}
+
+/* Ticket subject ----------------------------------------------------------- */
+
+.TicketSubject {
+    display: flex;
+    margin: 0;
+    padding: 12px 0;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 32px;
+}
+
+.TicketId {
+    color: #59636e;
+}
+
+.ThreadMeta { display: none; }
+
+.Thread__header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #fff;
+    margin: 0 0 30px;
+}
+
+.TicketProperties {
+    border-color: #e5ebee;
+}
+
+.Thread__timeline .box {
+    border-color: #e5ebee;
+}
+
+.u-text-center {
+    text-align: left;
+}
+
+.TicketId__actions {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+}
+
+#sub-header h2.u-ellipsis,
+#sub-header .buttons,
+h2.Thread__subject.heading--delta {
+    display: none;
+}
+
+#sub-header {
+    min-height: auto;
 }
