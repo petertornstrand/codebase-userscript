@@ -9,7 +9,21 @@ import { notify } from './utils';
  */
 
 /**
+ * Ticket formats.
+ * @type {{FULL: symbol, MIN: symbol}}
+ */
+export const TICKET_FORMAT = {
+    FULL: Symbol('full'),
+    MIN: Symbol('min'),
+};
+
+/**
  * Class CodebaseAPI.
+ *
+ * This class provides a wrapper around the Codebase API Gateway that acts as a
+ * proxy for the Codebase API. The gateway uses simple authentication and
+ * modifies the responses to use JSON instead of XML. It also decorates the
+ * data with additional information.
  *
  * @class
  */
@@ -65,6 +79,35 @@ export default class CodebaseAPI {
             notify({ title: error.name, text: error.message, tag: 'error' });
         }
     }
+    /**
+     * Get multiple ticket.
+     *
+     * @param {string} projectId
+     * @param {Array} ticketIds
+     * @param {Symbol} [format=TICKET_FORMAT.FULL]
+     * @return {Promise<any>}
+     */
+    async getMultipleTickets(projectId, ticketIds, format=TICKET_FORMAT.FULL) {
+        const query = ticketIds.map(id => `id:${id}`).join('+');
+        const url = this.#config.cbapi_base_url + `/${projectId}/tickets?query=${query}`;
+        let headers = {};
+        if (format !== TICKET_FORMAT.FULL) {
+           headers = { 'Prefer': 'format=' + format.description };
+        }
+        try {
+            const response = await fetch(url, {
+                headers: this.#getHeaders(headers)
+            });
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            }
+
+            return await response.json();
+        } catch (error) {
+            notify({ title: error.name, text: error.message, tag: 'error' });
+        }
+    }
+
 
     /**
      * Get a context.

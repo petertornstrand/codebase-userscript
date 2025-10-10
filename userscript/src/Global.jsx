@@ -3,8 +3,8 @@ import { createRoot } from 'react-dom/client';
 import { useQuery } from 'react-query';
 import { Tooltip } from 'react-tooltip';
 import { URLContext } from './URLContext';
-import { getCodebaseConfig } from "./utils.js";
-import CodebaseAPI from "./CodebaseAPI.js";
+import { log, getCodebaseConfig } from "./utils.js";
+import CodebaseAPI, { TICKET_FORMAT } from "./CodebaseAPI.js";
 import './styles/Global.css';
 
 /**
@@ -55,7 +55,7 @@ export const dateFormat = {
 export function TicketLink({ props }) {
     return (
         <a className={'TicketLink ' + props.class} href={props.href} rel={props.rel} title={props.title} data-replaced="true">
-            <span className="id">#{props.id}</span> <span className="subject">{props.text}</span>
+            <span className="TicketLink__id">#{props.id}</span> <span className="TicketLink__subject">{props.text}</span>
         </a>
     );
 }
@@ -63,27 +63,33 @@ export function TicketLink({ props }) {
 /**
  * Replace links to tickets with TicketLink elements.
  *
- * @return {JSX.Element}
+ * @return {void}
  */
 export function DecoratedTicketLinks() {
-    const links = document.querySelectorAll('#content a[rel="codebase-internal"]:not(.TicketLink)');
+    const links = Array.from(document.querySelectorAll('#content a[rel="codebase-internal"]:not(.TicketLink)'));
+    const found = [];
     links.forEach((link) => {
-        link.classList.remove('text--positive', 'text-subtle');
-        const props = {
-            id: link.innerText.match(/\d+/)[0],
-            text: link.innerText.replace(/^#\d+\s-\s/, ''),
-            href: link.href,
-            title: link.classList.item(0).replace('is-status-', '').replace('-',' '),
-            rel: 'codebase-internal',
-            class: link.classList.toString()
-        };
+        found.push(link.href.split('/').pop());
+    });
+    const ids = found.filter((value, index, array) => array.indexOf(value) === index);
 
+    const urlContext = useContext(URLContext);
+    const project_id = 'ki-profile'; // TODO: Change to use urlContext.project_id.
+
+    const { data, status, error } = useQuery(['MinimalTickets', ids], async () => {
+        return await api.getMultipleTickets(project_id, ids, TICKET_FORMAT.MIN);
+    }, { refetchOnMount: false, refetchOnWindowFocus: false});
+
+    if (status === 'loading') return;
+
+    links.forEach((link) => {
+        const linkId = parseInt(link.href.split('/').pop());
+        const match = data.find((v) => v.id === linkId);
         const parent = link.parentElement;
-        const placeholder = document.createElement('span');
-        parent.replaceChild(placeholder, link);
+        const template = document.createElement('template');
+        template.innerHTML = match.htmlLink;
+        parent.replaceChild(template.content.firstChild, link);
         link.remove();
-        const root = createRoot(placeholder);
-        root.render(<TicketLink props={props} />);
     });
 }
 

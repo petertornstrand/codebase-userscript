@@ -253,7 +253,7 @@ img.gravatar {
 
 /* Ticket links ------------------------------------------------------------- */
 
-a[rel="codebase-internal"] .id {
+a[rel="codebase-internal"] .TicketLink__id {
     font-weight: bold;
 }
 
@@ -277,7 +277,7 @@ a[rel="codebase-internal"].is-status-invalid  {
     color: darkred;
 }
 
-a[rel="codebase-internal"].is-status-completed .subject,
-a[rel="codebase-internal"].is-status-invalid .subject{
+a[rel="codebase-internal"].is-status-completed .TicketLink__subject,
+a[rel="codebase-internal"].is-status-invalid .TicketLink__subject {
     text-decoration: line-through;
 }
