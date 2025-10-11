@@ -1,36 +1,19 @@
 import React, { useContext, useEffect } from 'react';
-import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { createRoot } from 'react-dom/client';
 import { log } from './utils';
 import CopyButton from './CopyButton';
 import Loading from "./styles/Loading.svg?react";
 import { DecoratedTicketLinks, DecoratedAvatars, Avatar, api, dateFormat, dateTimeFormat } from './Global';
-import { TICKET_FORMAT } from "./CodebaseAPI.js";
 import { URLContext } from './URLContext';
 import './styles/Ticket.css';
-
-// Query client.
-const queryClient = new QueryClient();
 
 /**
  * Ticket element.
  *
- * @return {JSX.Element}
- */
-export default function Ticket() {
-    return (
-        <QueryClientProvider client={queryClient} contextSharing={true}>
-            <ActualTicket />
-        </QueryClientProvider>
-    );
-}
-
-/**
- * Actual ticket element.
- *
  * @return {JSX.Element|null}
  */
-function ActualTicket() {
+export default function Ticket() {
     const urlContext = useContext(URLContext);
     const id = parseInt(urlContext.id);
     const { isLoading, error, data } = useQuery(['Context', id], async () => {
@@ -62,15 +45,17 @@ function ActualTicket() {
  * @return {JSX.Element}
  */
 function Subject({ticket, projektPermalink }) {
-    const target = document.querySelector('.Thread__header');
-    let container = target.querySelector('div.TicketSubjectComponent');
-    if (!container) {
-        container = document.createElement('div');
+
+    useEffect(() => {
+        const target = document.querySelector('.Thread__header');
+        const parent = target.parentElement;
+        const container = document.createElement('div');
         container.classList.add('TicketSubjectComponent');
-        target.prepend(container);
+        parent.replaceChild(container, target);
+        target.remove();
         const root = createRoot(container);
         root.render(renderSubject(ticket.id, projektPermalink, ticket.subject));
-    }
+    }, []);
 
     function renderSubject(ticketId, projektPermalink, title) {
         return (
@@ -106,15 +91,14 @@ function Sidebar({ data, projektPermalink }) {
         branch = data.ticket.tags.filter((tag) => tag.startsWith('branch:')).map((tag) => tag.replace('branch:', ''))[0];
     }
 
-    const target = document.querySelector('div#content div.right');
-    let container = target.querySelector('div.TicketSidebarComponent');
-    if (!container) {
-        container = document.createElement('div');
+    useEffect(() => {
+        const target = document.querySelector('div#content div.right');
+        const container = document.createElement('div');
         container.classList.add('TicketSidebarComponent');
         target.prepend(container);
         const root = createRoot(container);
         root.render(renderSidebar(data, reporter, manager));
-    }
+    }, []);
 
     function renderSidebar(data, reporter, manager) {
         return (
@@ -312,8 +296,6 @@ function Tags({ tags }) {
             let classes = ['icon'];
             if (tag.match(/^branch:/g)) {
                 return;
-                // tag.replace(/^branch:/g, '');
-                // classes.push('col-orange', 'icon-branch');
             } else if (tag.match(/^alert:/g)) {
                 tag.replace(/^alert:/g, '');
                 classes.push('col-red', 'icon-status_id');

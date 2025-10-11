@@ -1,5 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import './styles/Global.css';
 import Ticket from './Ticket';
 import { awaitElement, log, addLocationChangeCallback } from './utils';
@@ -10,13 +11,18 @@ log('React script has successfully started');
 // so that elements can be re-inserted as a user navigates a page with
 // different routes.
 async function main() {
+    const queryClient = new QueryClient();
     // TODO: Replace this with a dynamic initialization function that creates
     //  different components based on the current URL.
     let target = await awaitElement('body');
     let container = document.createElement('div');
     target.appendChild(container);
     let root = createRoot(container);
-    root.render(<Ticket />);
+    root.render(
+        <QueryClientProvider client={queryClient} contextSharing={false}>
+            <Ticket />
+        </QueryClientProvider>
+    );
 }
 
 // Call `main()` every time the page URL changes, including on the first load.
