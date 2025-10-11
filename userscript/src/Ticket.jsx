@@ -32,10 +32,9 @@ export default function Ticket() {
  */
 function ActualTicket() {
     const urlContext = useContext(URLContext);
-    const id = 3434; // TODO: Change to use urlContext.id.
-    const projektPermalink = 'ki-profile'; // TODO: Change to use urlContext.project_id.
+    const id = parseInt(urlContext.id);
     const { isLoading, error, data } = useQuery(['Context', id], async () => {
-        return await api.getContext(projektPermalink, id);
+        return await api.getContext(urlContext.project_id, id);
     }, { refetchOnMount: false, refetchOnWindowFocus: false});
 
     if (isLoading) return (
@@ -46,10 +45,10 @@ function ActualTicket() {
 
     return (
         <div className="ReactComponentWrapper">
-            <Subject ticket={data.ticket} projektPermalink={projektPermalink} />
-            <Sidebar data={data} projektPermalink={projektPermalink} />
+            <Subject ticket={data.ticket} projektPermalink={urlContext.project_id} />
+            <Sidebar data={data} projektPermalink={urlContext.project_id} />
             <DecoratedAvatars assignments={data.assignments} />
-            <DecoratedTicketLinks ticketIds={data.referencedTickets} projectPermalink={projektPermalink} />
+            <DecoratedTicketLinks ticketIds={data.referencedTickets} projectPermalink={urlContext.project_id} />
         </div>
     );
 }
@@ -218,7 +217,7 @@ function Milestone({ user, ticket }) {
                 <li className="Properties__item">
                     <h3 className="Properties__title icon icon-milestone">Milestone</h3>
                     <p className="Properties__value">
-                        <span className="primary"><a href={`/projects/${urlContext.project_id}/milestone/` + ticket.milestone.guid}>{ticket.milestone.name}</a></span>
+                        <span className="primary"><a href={`/projects/${urlContext.project_id}/milestones/` + ticket.milestone.guid}>{ticket.milestone.name}</a></span>
                     </p>
                 </li>
                 <li className="Properties__item">
@@ -382,7 +381,6 @@ function Branch({url, name}) {
                         <span id="ticket-branch" className="text--code"><a href={url}>{name}</a></span>
                         <CopyButton title="Copy branch link" elementId="#ticket-branch" />
                     </p>
-                    <p className="Properties__value hidden"><span className="empty">No branch configured</span></p>
                 </li>
             </ul>
         </div>
