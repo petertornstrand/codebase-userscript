@@ -1,8 +1,8 @@
-import React, { useContext, useState } from 'react';
+import React, { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { useQuery } from 'react-query';
 import { Tooltip } from 'react-tooltip';
-import { URLContext } from './URLContext';
+import Loading from "./styles/Loading.svg?react";
 import { log, getCodebaseConfig } from "./utils.js";
 import CodebaseAPI, { TICKET_FORMAT } from "./CodebaseAPI.js";
 import './styles/Global.css';
@@ -63,69 +63,63 @@ export function TicketLink({ props }) {
 /**
  * Replace links to tickets with TicketLink elements.
  *
+ * @todo Can we pass the data from the ticket context instead of using useQuery?
+ *
+ * @param {Array} ticketIds
+ * @param {string} projectPermalink
+ *
  * @return {void}
  */
-export function DecoratedTicketLinks() {
+export function DecoratedTicketLinks({ ticketIds, projectPermalink }) {
     const links = Array.from(document.querySelectorAll('#content a[rel="codebase-internal"]:not(.TicketLink)'));
-    const found = [];
-    links.forEach((link) => {
-        found.push(link.href.split('/').pop());
-    });
-    const ids = found.filter((value, index, array) => array.indexOf(value) === index);
 
-    const urlContext = useContext(URLContext);
-    const project_id = 'ki-profile'; // TODO: Change to use urlContext.project_id.
-
-    const { data, status, error } = useQuery(['MinimalTickets', ids], async () => {
-        return await api.getMultipleTickets(project_id, ids, TICKET_FORMAT.MIN);
-    }, { refetchOnMount: false, refetchOnWindowFocus: false});
-
-    if (status === 'loading') return;
-
-    links.forEach((link) => {
-        const linkId = parseInt(link.href.split('/').pop());
-        const match = data.find((v) => v.id === linkId);
-        const parent = link.parentElement;
-        const template = document.createElement('template');
-        template.innerHTML = match.htmlLink;
-        parent.replaceChild(template.content.firstChild, link);
-        link.remove();
-    });
+    useEffect(() => {
+        links.forEach((link) => {
+            const linkId = parseInt(link.href.split('/').pop());
+            const match = ticketIds.find((v) => parseInt(v) === linkId);
+            if (!match) { return; }
+            const parent = link.parentElement;
+            const container = document.createElement('div');
+            container.classList.add('ReactComponentWrapper');
+            parent.replaceChild(container, link);
+            const root = createRoot(container);
+            root.render(<TicketLink />);
+            link.remove();
+        });
+    }, [links]);
 }
 
 /**
  * Replace avatars.
  *
- * @return {JSX.Element}
+ * @param {string} projectPermalink
+ *
+ * @return {void}
  */
-export function DecoratedAvatars() {
-    const urlContext = useContext(URLContext);
-    const project_id = 'ki-profile'; // TODO: Change to use urlContext.project_id.
-    const { data, status, error } = useQuery(['Participants', project_id], async () => {
-        return await api.getUsers(project_id);
-    }, { refetchOnMount: false, refetchOnWindowFocus: false});
+export function DecoratedAvatars({ assignments }) {
+    // TODO: Explicit DOM mutations should be done after rendering, not during rendering.
+    //   useEffect(() => ref.replaceChildren(node), [node])
 
-    if (status === 'loading') return;
+    const avatars = document.querySelectorAll('img.Post__avatar, img.ThreadChanges__avatar');
 
-    const avatars = document.querySelectorAll('.Thread__timeline .ThreadChanges__event:not([data-replaced="true"]), .Thread__timeline .Post__header:not([data-replaced="true"])');
-    avatars.forEach((avatar) => {
-        const image = avatar.querySelector('img.Post__avatar, img.ThreadChanges__avatar');
-        const parent = image.parentElement;
-        const container = document.createElement('div');
-        image.classList.forEach((v) => container.classList.add(v));
-        parent.replaceChild(container, image);
-        avatar.setAttribute('data-replaced', 'true');
+    useEffect(() => {
+        avatars.forEach((avatar) => {
+            const name = avatar.parentElement.querySelector('.text--bold > a.text--link').innerText;
+            const matches = assignments.filter((v) => v.fullName === name);
 
-        const name = avatar.querySelector('.text--bold > a.text--link').innerText;
-        const matches = data.filter((v) => v.fullName === name);
+            const parent = avatar.parentElement;
+            const container = document.createElement('div');
+            container.classList.add('ReactComponentWrapper');
+            const size = parent.classList.contains('Post__header') ? 'medium' : 'small';
+            const postType = avatar.classList.contains('Post__avatar') ? 'full' : 'change';
 
-        const size = parent.classList.contains('Post__header') ? 'medium' : 'small';
-
-        if (matches.length) {
-            const root = createRoot(container);
-            root.render(<Avatar user={matches[0]} size={size} tooltip={false} />);
-        }
-    });
+            if (matches.length) {
+                parent.replaceChild(container, avatar);
+                const root = createRoot(container);
+                root.render(<Avatar user={matches[0]} size={size} tooltip={false} postType={postType} />);
+            }
+        });
+    }, []);
 }
 
 /**
@@ -134,11 +128,11 @@ export function DecoratedAvatars() {
  * @param {object} user
  * @param {string} [size]
  * @param {boolean} [tooltip]
+ * @param {string} [postType]
  *
  * @return {JSX.Element}
  */
-export function Avatar({ user, size = 'medium', tooltip = true }) {
-
+export function Avatar({ user, size = 'medium', tooltip = true, postType = 'full'}) {
     let avatar;
     if (user.profileImage) {
         avatar = AvatarImage({ src: user.profileImage.large, alt: user.name, size: size, id: user.id });
@@ -149,14 +143,14 @@ export function Avatar({ user, size = 'medium', tooltip = true }) {
 
     if (!tooltip) {
         return (
-            <div className={'Avatar Avatar--' + size}>
+            <div className={'Avatar Avatar--' + size + ' Avatar--post-type-' + postType}>
                 {avatar}
             </div>
         );
     }
 
     return (
-        <div className={'Avatar Avatar--' + size}>
+        <div className={'Avatar Avatar--' + size + ' Avatar--' + postType}>
             <a id={'Avatar--' + user.id}
                data-tooltip-place="bottom"
                data-tooltip-variant="light">
@@ -255,5 +249,18 @@ function AvatarInitials({ initials, id, color = 'darkblue', size = 'medium' }) {
 function AvatarImage({ src, id, alt, size = 'medium' }) {
     return (
         <img src={src} alt={alt} className={'gravatar gravatar--' + size} data-id={id} />
+    );
+}
+
+/**
+ * Loading component.
+ *
+ * @return {JSX.Element}
+ */
+export function ComponentLoading() {
+    return (
+        <div className="CodebaseComponent CodebaseComponent--loading">
+            <Loading />
+        </div>
     );
 }

@@ -193,6 +193,25 @@ a.text--link {
 
 /* Avatars ------------------------------------------------------------------ */
 
+.Post__meta {
+    margin: 9px 0 0;
+}
+
+.Avatar--post-type-full {
+    position: absolute;
+    left: -44px;
+}
+
+.Avatar--post-type-change {
+    display: block;
+    left: 48px;
+    height: auto;
+    margin-top: -10px;
+    position: absolute;
+    top: 50%;
+    width: 16px;
+}
+
 img.gravatar {
     padding: 0;
 }
@@ -242,11 +261,6 @@ img.gravatar {
     font-size: 28px;
 }
 
-.Post__avatar {
-    position: absolute;
-    left: -44px;
-}
-
 .PostForm__avatar {
     display: none;
 }
@@ -280,4 +294,10 @@ a[rel="codebase-internal"].is-status-invalid  {
 a[rel="codebase-internal"].is-status-completed .TicketLink__subject,
 a[rel="codebase-internal"].is-status-invalid .TicketLink__subject {
     text-decoration: line-through;
+}
+
+/* Misc --------------------------------------------------------------------- */
+
+.ReactComponentWrapper {
+    display: contents;
 }

@@ -3,7 +3,9 @@ import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import { createRoot } from 'react-dom/client';
 import { log } from './utils';
 import CopyButton from './CopyButton';
+import Loading from "./styles/Loading.svg?react";
 import { DecoratedTicketLinks, DecoratedAvatars, Avatar, api, dateFormat, dateTimeFormat } from './Global';
+import { TICKET_FORMAT } from "./CodebaseAPI.js";
 import { URLContext } from './URLContext';
 import './styles/Ticket.css';
 
@@ -31,19 +33,23 @@ export default function Ticket() {
 function ActualTicket() {
     const urlContext = useContext(URLContext);
     const id = 3434; // TODO: Change to use urlContext.id.
-    const project_id = 'ki-profile'; // TODO: Change to use urlContext.project_id.
-    const { data, status, error } = useQuery(['Context', id], async () => {
-        return await api.getContext(project_id, id);
+    const projektPermalink = 'ki-profile'; // TODO: Change to use urlContext.project_id.
+    const { isLoading, error, data } = useQuery(['Context', id], async () => {
+        return await api.getContext(projektPermalink, id);
     }, { refetchOnMount: false, refetchOnWindowFocus: false});
 
-    if (status === 'loading') return null;
+    if (isLoading) return (
+        <div className="CodebaseComponent CodebaseComponent--loading">
+            <Loading />
+        </div>
+    );
 
     return (
-        <div>
-            <Subject ticket={data.ticket} projectId={project_id} />
-            <Sidebar data={data} />
-            <DecoratedAvatars />
-            <DecoratedTicketLinks />
+        <div className="ReactComponentWrapper">
+            <Subject ticket={data.ticket} projektPermalink={projektPermalink} />
+            <Sidebar data={data} projektPermalink={projektPermalink} />
+            <DecoratedAvatars assignments={data.assignments} />
+            <DecoratedTicketLinks ticketIds={data.referencedTickets} projectPermalink={projektPermalink} />
         </div>
     );
 }
@@ -52,12 +58,11 @@ function ActualTicket() {
  * Subject element.
  *
  * @param {object} ticket
- * @param {string} projectId
- * @param {string} title
+ * @param {string} projektPermalink
  *
  * @return {JSX.Element}
  */
-function Subject({ticket, projectId }) {
+function Subject({ticket, projektPermalink }) {
     const target = document.querySelector('.Thread__header');
     let container = target.querySelector('div.TicketSubjectComponent');
     if (!container) {
@@ -65,17 +70,17 @@ function Subject({ticket, projectId }) {
         container.classList.add('TicketSubjectComponent');
         target.prepend(container);
         const root = createRoot(container);
-        root.render(renderSubject(ticket.id, projectId, ticket.subject));
+        root.render(renderSubject(ticket.id, projektPermalink, ticket.subject));
     }
 
-    function renderSubject(ticketId, projectId, title) {
+    function renderSubject(ticketId, projektPermalink, title) {
         return (
             <div className="TicketSubject">
                 <h2 id="ticket-subject"><span className="TicketId">#{ticketId}</span> {title}</h2>
                 <CopyButton title="Copy ticket link" elementId="#ticket-subject"/>
                 <div className="TicketId__actions">
-                    <a className="btn" href={'/projects/' + projectId + '/tickets/new'}>New ticket</a>
-                    <a className="btn" href={'/projects/' + projectId + '/tickets'}>Back to list</a>
+                    <a className="btn" href={'/projects/' + projektPermalink + '/tickets/new'}>New ticket</a>
+                    <a className="btn" href={'/projects/' + projektPermalink + '/tickets'}>Back to list</a>
                 </div>
             </div>
         );
@@ -86,15 +91,21 @@ function Subject({ticket, projectId }) {
  * Sidebar element.
  *
  * @param {Object} data
+ * @param {string} projektPermalink
  *
  * @return {JSX.Element}
  */
-function Sidebar({ data }) {
+function Sidebar({ data, projektPermalink }) {
     const reporterId = data.ticket.reporter.id;
     const reporter = data.assignments.find((assignment) => assignment.id === reporterId);
 
     const managerId = data.ticket.milestone.responsibleUserId;
     const manager = data.assignments.find((assignment) => assignment.id === managerId);
+
+    let branch = null;
+    if (data.ticket.hasOwnProperty('tags')) {
+        branch = data.ticket.tags.filter((tag) => tag.startsWith('branch:')).map((tag) => tag.replace('branch:', ''))[0];
+    }
 
     const target = document.querySelector('div#content div.right');
     let container = target.querySelector('div.TicketSidebarComponent');
@@ -115,18 +126,12 @@ function Sidebar({ data }) {
                         <Participants users={data.participants} />
                         <Milestone user={manager} ticket={data.ticket} />
                         <div className="CodebaseComponent">
-                            <ReferencedTickets tickets={data.links} />
+                            <ReferencedTickets ticketIds={data.referencedTickets} projectPermalink={projektPermalink} />
                             <Blockers />
                         </div>
-                        <div className="CodebaseComponent">
-                            <ul className="Properties Properties--column">
-                                <Tags tags={data.ticket.tags} />
-                                <Branch url="#" name="master" />
-                            </ul>
-                        </div>
-                        <div className="CodebaseComponent">
-                            <Watchers />
-                        </div>
+                        <Tags tags={data.ticket.tags} />
+                        <Branch url="#" name={branch} />
+                        <Watchers />
                     </div>
                 </div>
             </div>
@@ -144,8 +149,6 @@ function Sidebar({ data }) {
  */
 function Reporter({user, dateTime}) {
     const parsedDate = new Date(Date.parse(dateTime));
-
-    // TODO: Add user avatar to component.
 
     return (
         <div className="CodebaseComponent">
@@ -236,24 +239,46 @@ function Milestone({ user, ticket }) {
 /**
  * Referenced tickets component.
  *
- * @param {Array} tickets
+ * @todo Implement.
+ *
+ * @param {Array} ticketIds
+ * @param {string} projectPermalink
  *
  * @return {JSX.Element|null}
  */
-function ReferencedTickets({tickets}) {
+function ReferencedTickets({ticketIds, projectPermalink}) {
 
-    if (tickets.length === 0) {
+    return null;
+
+    if (ticketIds.length === 0) {
         return null;
     }
 
+    const { isLoading, error, data } = useQuery(['MinimalTickets', ticketIds], async () => {
+        return await api.getMultipleTickets(projectPermalink, ticketIds, TICKET_FORMAT.MIN);
+    }, { refetchOnMount: false, refetchOnWindowFocus: false});
+
+    if (isLoading) return (
+        <div className="CodebaseComponent CodebaseComponent--loading">
+            <Loading />
+        </div>
+    );
+
     return (
-        <ul className="Properties Properties--column">
-            <li className="Properties__item">
-                <h3 className="Properties__title">Referenced tickets</h3>
-                <ul className="Properties__value Properties__value--list ReferencedTickets">
-                </ul>
-            </li>
-        </ul>
+        <div className="CodebaseComponent">
+            <ul className="Properties Properties--column">
+                <li className="Properties__item">
+                    <h3 className="Properties__title">Referenced tickets</h3>
+                    <ul className="Properties__value Properties__value--list ReferencedTickets">
+                        { data.map((ticket) => {
+                            return (
+                                <li key={ticket.id} dangerouslySetInnerHTML={{__html: ticket.htmlLink}} />
+                            );
+                        })}
+                    </ul>
+                </li>
+            </ul>
+        </div>
     )
 }
 
@@ -323,8 +348,6 @@ function Tags({ tags }) {
         return null;
     }
 
-    log(items);
-
     return (
         <li className="Properties__item">
             <h3 className="Properties__title icon icon-tags">Tags</h3>
@@ -345,16 +368,51 @@ function Tags({ tags }) {
  * @return {JSX.Element}
  */
 function Branch({url, name}) {
+
+    if (!name) {
+        return null;
+    }
+
     return (
-        <li className="Properties__item">
-            <h3 className="Properties__title icon icon-branch">Branch</h3>
-            <p className="Properties__value">
-                <span id="ticket-branch" className="text--code"><a href={url}>{name}</a></span>
-                <CopyButton title="Copy branch link" elementId="#ticket-branch" />
-            </p>
-            <p className="Properties__value hidden"><span className="empty">No branch configured</span></p>
-        </li>
+        <div className="CodebaseComponent">
+            <ul className="Properties Properties--row">
+                <li className="Properties__item">
+                    <h3 className="Properties__title icon icon-branch">Branch</h3>
+                    <p className="Properties__value">
+                        <span id="ticket-branch" className="text--code"><a href={url}>{name}</a></span>
+                        <CopyButton title="Copy branch link" elementId="#ticket-branch" />
+                    </p>
+                    <p className="Properties__value hidden"><span className="empty">No branch configured</span></p>
+                </li>
+            </ul>
+        </div>
     );
+}
+
+/**
+ * Commits component.
+ *
+ * @todo Implement.
+ *
+ * @param {Array} commits
+ *
+ * @return {JSX.Element|null}
+ */
+function Commits({commits}) {
+
+    if (commits.length === 0) {
+        return null;
+    }
+
+    return (
+        <ul className="Properties Properties--column">
+            <li className="Properties__item">
+                <h3 className="Properties__title">Commits</h3>
+                <ul className="Properties__value Properties__value--list ReferencedTickets">
+                </ul>
+            </li>
+        </ul>
+    )
 }
 
 /**
@@ -366,20 +424,22 @@ function Branch({url, name}) {
  */
 function Watchers() {
     return (
-        <ul className="Properties Properties--column">
-            <li className="Properties__item">
-                <h3 className="Properties__title">Notifications</h3>
-                <p className="Properties__value">
-                    <button className="btn btn--medium icon icon-unsubscribe">Unsubscribe</button>
-                </p>
-                <p className="help">You're receiving notifications because you're subscribed to this ticket.</p>
-            </li>
-            <li className="Properties__item">
-                <p className="Properties__value">
-                    <button className="btn btn--medium icon icon-subscribe">Subscribe</button>
-                </p>
-                <p className="help">You're not receiving notifications from this ticket.</p>
-            </li>
-        </ul>
+        <div className="CodebaseComponent">
+            <ul className="Properties Properties--column">
+                <li className="Properties__item">
+                    <h3 className="Properties__title">Notifications</h3>
+                    <p className="Properties__value">
+                        <button className="btn btn--medium icon icon-unsubscribe">Unsubscribe</button>
+                    </p>
+                    <p className="help">You're receiving notifications because you're subscribed to this ticket.</p>
+                </li>
+                <li className="Properties__item">
+                    <p className="Properties__value">
+                        <button className="btn btn--medium icon icon-subscribe">Subscribe</button>
+                    </p>
+                    <p className="help">You're not receiving notifications from this ticket.</p>
+                </li>
+            </ul>
+        </div>
     )
 }

@@ -190,16 +190,12 @@ a.AddBlockersLink {
     margin: 8px 0 0;
 }
 
-.Post__meta {
-    margin-left: 0;
-}
-
 .ThreadChanges {
     margin-top: 0;
 }
 
 .ThreadChanges__event {
-    padding-left: 76px;
+    padding-left: 72px;
 }
 
 .ThreadChanges__event::before {
