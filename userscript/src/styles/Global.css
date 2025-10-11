@@ -1,3 +1,5 @@
+/* Modifications ------------------------------------------------------------ */
+
 .site-header { background-color: #150547; }
 
 .site-header__organisation {
@@ -14,6 +16,7 @@
     text-indent: -999em;
 }
 
+/* Make sidebar sticky */
 #content .right {
     position: sticky;
     top: 0;
@@ -22,13 +25,21 @@
 .styled-content__heading { margin-top: 35px; }
 .styled-content__heading:first-child { margin-top: 0; }
 
-/* Attachments -------------------------------------------------------------- */
-
+/* Change preview of attachments */
 .PostAttachments__img {
     display: block;
     height: auto;
     object-fit: none;
     width: auto;
+}
+
+.Post__meta {
+    margin: 9px 0 0;
+}
+
+/* Don't display avatar in post form */
+.PostForm__avatar {
+    display: none;
 }
 
 /* Buttons ------------------------------------------------------------------ */
@@ -193,10 +204,6 @@ a.text--link {
 
 /* Avatars ------------------------------------------------------------------ */
 
-.Post__meta {
-    margin: 9px 0 0;
-}
-
 .Avatar--post-type-full {
     position: absolute;
     left: -44px;
@@ -261,9 +268,7 @@ img.gravatar {
     font-size: 28px;
 }
 
-.PostForm__avatar {
-    display: none;
-}
+
 
 /* Ticket links ------------------------------------------------------------- */
 

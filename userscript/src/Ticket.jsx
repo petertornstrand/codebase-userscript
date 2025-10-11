@@ -130,14 +130,14 @@ function Reporter({user, dateTime}) {
 
     return (
         <div className="CodebaseComponent">
-            <ul className="Properties Properties--row">
-                <li className="Properties__item">
+            <div className="Properties Properties--row">
+                <div className="Properties__item">
                     <h3 className="Properties__title">Reported by</h3>
                     <p className="Properties__value">
                         <span className="text--bold"><a href="#" className="text--link">{user.fullName}</a></span> on {parsedDate.toLocaleString('sv-SE', dateTimeFormat)}
                     </p>
-                </li>
-            </ul>
+                </div>
+            </div>
         </div>
     );
 }
@@ -156,8 +156,8 @@ function Participants({users}) {
 
     return (
         <div className="CodebaseComponent">
-            <ul className="Properties Properties--column">
-                <li className="Properties__item">
+            <div className="Properties Properties--column">
+                <div className="Properties__item">
                     <h3 className="Properties__title">Participants</h3>
                     <div className="Participant__list">
                     { users.map((user) => {
@@ -166,8 +166,8 @@ function Participants({users}) {
                         );
                     })}
                     </div>
-                </li>
-            </ul>
+                </div>
+            </div>
         </div>
     );
 }
@@ -192,24 +192,24 @@ function Milestone({ user, ticket }) {
 
     return (
         <div className="CodebaseComponent">
-            <ul className="Properties Properties--row">
-                <li className="Properties__item">
+            <div className="Properties Properties--row">
+                <div className="Properties__item">
                     <h3 className="Properties__title icon icon-milestone">Milestone</h3>
                     <p className="Properties__value">
                         <span className="primary"><a href={`/projects/${urlContext.project_id}/milestones/` + ticket.milestone.guid}>{ticket.milestone.name}</a></span>
                     </p>
-                </li>
-                <li className="Properties__item">
+                </div>
+                <div className="Properties__item">
                     <h3 className="Properties__title icon icon-calendar">Due</h3>
                     <p className="Properties__value"><span className={passed ? 'date--passed' : 'date--not-passed'}>{endDate.toLocaleDateString('sv-SE', dateFormat)}</span></p>
-                </li>
-                <li className="Properties__item">
+                </div>
+                <div className="Properties__item">
                     <h3 className="Properties__title icon icon-user">PM</h3>
                     <p className="Properties__value">
                         <a href={userUrl} className="text--link">{user.fullName}</a>
                     </p>
-                </li>
-            </ul>
+                </div>
+            </div>
         </div>
     );
 }
@@ -229,8 +229,8 @@ function ReferencedTickets({tickets}) {
 
     return (
         <div className="CodebaseComponent">
-            <ul className="Properties Properties--column">
-                <li className="Properties__item">
+            <div className="Properties Properties--column">
+                <div className="Properties__item">
                     <h3 className="Properties__title">Referenced tickets</h3>
                     <ul className="Properties__value Properties__value--list ReferencedTickets">
                         { tickets.map((ticket) => {
@@ -239,8 +239,8 @@ function ReferencedTickets({tickets}) {
                             );
                         })}
                     </ul>
-                </li>
-            </ul>
+                </div>
+            </div>
         </div>
     )
 }
@@ -267,12 +267,12 @@ function Blockers() {
 
     return (
         <div className="Blockers">
-            <ul className="Properties Properties--column">
-                <li className="Properties__item">
+            <div className="Properties Properties--column">
+                <div className="Properties__item">
                     <h3 className="Properties__title">Blockers</h3>
                     <p className="Properties__value"><span className="empty">None</span></p>
-                </li>
-            </ul>
+                </div>
+            </div>
         </div>
     );
 }
@@ -310,7 +310,7 @@ function Tags({ tags }) {
     }
 
     return (
-        <li className="Properties__item">
+        <div className="Properties__item">
             <h3 className="Properties__title icon icon-tags">Tags</h3>
             <p className="Properties__value Properties__value--tags">
                 { items.map((tag) => {
@@ -319,7 +319,7 @@ function Tags({ tags }) {
                     );
                 })}
             </p>
-        </li>
+        </div>
     );
 }
 
@@ -336,15 +336,15 @@ function Branch({url, name}) {
 
     return (
         <div className="CodebaseComponent">
-            <ul className="Properties Properties--row">
-                <li className="Properties__item">
+            <div className="Properties Properties--row">
+                <div className="Properties__item">
                     <h3 className="Properties__title icon icon-branch">Branch</h3>
                     <p className="Properties__value">
                         <span id="ticket-branch" className="text--code"><a href={url}>{name}</a></span>
                         <CopyButton title="Copy branch link" elementId="#ticket-branch" />
                     </p>
-                </li>
-            </ul>
+                </div>
+            </div>
         </div>
     );
 }
@@ -365,13 +365,13 @@ function Commits({commits}) {
     }
 
     return (
-        <ul className="Properties Properties--column">
-            <li className="Properties__item">
+        <div className="Properties Properties--column">
+            <div className="Properties__item">
                 <h3 className="Properties__title">Commits</h3>
                 <ul className="Properties__value Properties__value--list ReferencedTickets">
                 </ul>
-            </li>
-        </ul>
+            </div>
+        </div>
     )
 }
 
@@ -385,21 +385,21 @@ function Commits({commits}) {
 function Watchers() {
     return (
         <div className="CodebaseComponent">
-            <ul className="Properties Properties--column">
-                <li className="Properties__item">
+            <div className="Properties Properties--column">
+                <div className="Properties__item">
                     <h3 className="Properties__title">Notifications</h3>
                     <p className="Properties__value">
                         <button className="btn btn--medium icon icon-unsubscribe">Unsubscribe</button>
                     </p>
                     <p className="help">You're receiving notifications because you're subscribed to this ticket.</p>
-                </li>
-                <li className="Properties__item">
+                </div>
+                <div className="Properties__item">
                     <p className="Properties__value">
                         <button className="btn btn--medium icon icon-subscribe">Subscribe</button>
                     </p>
                     <p className="help">You're not receiving notifications from this ticket.</p>
-                </li>
-            </ul>
+                </div>
+            </div>
         </div>
     )
 }

@@ -202,11 +202,6 @@ a.AddBlockersLink {
     border-radius: 8px;
 }
 
-.ThreadChanges__avatar {
-    width: auto;
-    top: calc(50% + 4px);
-}
-
 .Push__meta {
     padding-bottom: 0;
 }
