@@ -62,13 +62,18 @@ export default class CodebaseAPI {
      *
      * @param {string} projectId
      * @param {string} ticketId
+     * @param {Symbol} [format=TICKET_FORMAT.FULL]
      * @return {Promise<any>}
      */
-    async getTicket(projectId, ticketId) {
+    async getTicket(projectId, ticketId, format = TICKET_FORMAT.FULL) {
         const url = this.#config.cbapi_base_url + `/${projectId}/ticket/${ticketId}`;
+        let headers = {};
+        if (format !== TICKET_FORMAT.FULL) {
+            headers = { 'Prefer': 'format=' + format.description };
+        }
         try {
             const response = await fetch(url, {
-                headers: this.#getHeaders()
+                headers: this.#getHeaders(headers)
             });
             if (!response.ok) {
                 throw new Error(`Response status: ${response.status}`);
@@ -87,7 +92,7 @@ export default class CodebaseAPI {
      * @param {Symbol} [format=TICKET_FORMAT.FULL]
      * @return {Promise<any>}
      */
-    async getMultipleTickets(projectId, ticketIds, format=TICKET_FORMAT.FULL) {
+    async getMultipleTickets(projectId, ticketIds, format = TICKET_FORMAT.FULL) {
         const query = ticketIds.map(id => `id:${id}`).join('+');
         const url = this.#config.cbapi_base_url + `/${projectId}/tickets?query=${query}`;
         let headers = {};

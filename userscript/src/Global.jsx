@@ -63,27 +63,23 @@ export function TicketLink({ props }) {
 /**
  * Replace links to tickets with TicketLink elements.
  *
- * @todo Can we pass the data from the ticket context instead of using useQuery?
- *
- * @param {Array} ticketIds
+ * @param {Array} tickets
  * @param {string} projectPermalink
  *
  * @return {void}
  */
-export function DecoratedTicketLinks({ ticketIds, projectPermalink }) {
+export function DecoratedTicketLinks({ tickets, projectPermalink }) {
     const links = Array.from(document.querySelectorAll('#content a[rel="codebase-internal"]:not(.TicketLink)'));
 
     useEffect(() => {
         links.forEach((link) => {
             const linkId = parseInt(link.href.split('/').pop());
-            const match = ticketIds.find((v) => parseInt(v) === linkId);
-            if (!match) { return; }
+            const ticket = tickets.find((v) => v.id === linkId);
             const parent = link.parentElement;
             const container = document.createElement('div');
             container.classList.add('ReactComponentWrapper');
+            container.innerHTML = ticket.htmlLink;
             parent.replaceChild(container, link);
-            const root = createRoot(container);
-            root.render(<TicketLink />);
             link.remove();
         });
     }, [links]);
@@ -97,9 +93,6 @@ export function DecoratedTicketLinks({ ticketIds, projectPermalink }) {
  * @return {void}
  */
 export function DecoratedAvatars({ assignments }) {
-    // TODO: Explicit DOM mutations should be done after rendering, not during rendering.
-    //   useEffect(() => ref.replaceChildren(node), [node])
-
     const avatars = document.querySelectorAll('img.Post__avatar, img.ThreadChanges__avatar');
 
     useEffect(() => {
@@ -115,11 +108,12 @@ export function DecoratedAvatars({ assignments }) {
 
             if (matches.length) {
                 parent.replaceChild(container, avatar);
+                avatar.remove();
                 const root = createRoot(container);
                 root.render(<Avatar user={matches[0]} size={size} tooltip={false} postType={postType} />);
             }
         });
-    }, []);
+    }, [avatars]);
 }
 
 /**

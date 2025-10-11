@@ -48,7 +48,7 @@ function ActualTicket() {
             <Subject ticket={data.ticket} projektPermalink={urlContext.project_id} />
             <Sidebar data={data} projektPermalink={urlContext.project_id} />
             <DecoratedAvatars assignments={data.assignments} />
-            <DecoratedTicketLinks ticketIds={data.referencedTickets} projectPermalink={urlContext.project_id} />
+            <DecoratedTicketLinks tickets={data.referencedTickets} />
         </div>
     );
 }
@@ -125,7 +125,7 @@ function Sidebar({ data, projektPermalink }) {
                         <Participants users={data.participants} />
                         <Milestone user={manager} ticket={data.ticket} />
                         <div className="CodebaseComponent">
-                            <ReferencedTickets ticketIds={data.referencedTickets} projectPermalink={projektPermalink} />
+                            <ReferencedTickets tickets={data.referencedTickets} />
                             <Blockers />
                         </div>
                         <Tags tags={data.ticket.tags} />
@@ -238,30 +238,15 @@ function Milestone({ user, ticket }) {
 /**
  * Referenced tickets component.
  *
- * @todo Implement.
- *
- * @param {Array} ticketIds
- * @param {string} projectPermalink
+ * @param {Array} tickets
  *
  * @return {JSX.Element|null}
  */
-function ReferencedTickets({ticketIds, projectPermalink}) {
+function ReferencedTickets({tickets}) {
 
-    return null;
-
-    if (ticketIds.length === 0) {
+    if (tickets.length === 0) {
         return null;
     }
-
-    const { isLoading, error, data } = useQuery(['MinimalTickets', ticketIds], async () => {
-        return await api.getMultipleTickets(projectPermalink, ticketIds, TICKET_FORMAT.MIN);
-    }, { refetchOnMount: false, refetchOnWindowFocus: false});
-
-    if (isLoading) return (
-        <div className="CodebaseComponent CodebaseComponent--loading">
-            <Loading />
-        </div>
-    );
 
     return (
         <div className="CodebaseComponent">
@@ -269,7 +254,7 @@ function ReferencedTickets({ticketIds, projectPermalink}) {
                 <li className="Properties__item">
                     <h3 className="Properties__title">Referenced tickets</h3>
                     <ul className="Properties__value Properties__value--list ReferencedTickets">
-                        { data.map((ticket) => {
+                        { tickets.map((ticket) => {
                             return (
                                 <li key={ticket.id} dangerouslySetInnerHTML={{__html: ticket.htmlLink}} />
                             );
