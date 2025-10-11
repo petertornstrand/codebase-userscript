@@ -45,7 +45,6 @@ export default function Ticket() {
  * @return {JSX.Element}
  */
 function Subject({ticket, projektPermalink }) {
-
     useEffect(() => {
         const target = document.querySelector('.Thread__header');
         const parent = target.parentElement;
@@ -54,13 +53,9 @@ function Subject({ticket, projektPermalink }) {
         parent.replaceChild(container, target);
         target.remove();
         const root = createRoot(container);
-        root.render(renderSubject(ticket.id, projektPermalink, ticket.subject));
-    }, []);
-
-    function renderSubject(ticketId, projektPermalink, title) {
-        return (
+        root.render(
             <div className="TicketSubject">
-                <h2 id="ticket-subject"><span className="TicketId">#{ticketId}</span> {title}</h2>
+                <h2 id="ticket-subject"><span className="TicketId">#{ticket.id}</span> {ticket.subject}</h2>
                 <CopyButton title="Copy ticket link" elementId="#ticket-subject"/>
                 <div className="TicketId__actions">
                     <a className="btn" href={'/projects/' + projektPermalink + '/tickets/new'}>New ticket</a>
@@ -68,7 +63,7 @@ function Subject({ticket, projektPermalink }) {
                 </div>
             </div>
         );
-    }
+    }, []);
 }
 
 /**

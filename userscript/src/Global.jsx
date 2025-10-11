@@ -41,7 +41,6 @@ export const dateFormat = {
 /**
  * Ticket link element.
  *
- *
  * @param {Object} props
  * @param {string} props.id
  * @param {string} props.text
