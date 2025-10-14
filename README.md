@@ -5,6 +5,49 @@ A userscript that decorates the [Codebase](https://www.codebasehq.com/) project 
 This project is based on the [React userscript template](https://github.com/siefkenj/react-userscripts/)
 by [Jason Siefken](https://github.com/siefkenj).
 
+## Features
+
+The userscript enhances various parts of the Codebase UI. At this stage the scope
+of the changes are mainly concerning the ticket view.
+
+### New ticket header
+
+- Adds the ticket ID before the title
+- Adds a copy ticket reference button next to the title for easy copy & past into
+  time tracking entries
+- Makes the header sticky
+- Updates the styling of the status and priority fields
+
+### New avatars
+
+Users that have not uploaded an avatar gets a custom avatar with containing
+the user initials and a color derived from the users company name.
+
+### New sidebar
+
+Replaces the right sidebar with a modern looking and information dense version
+based on the Github issue sidebar.
+
+- New styling of the **Milestone** property that does not use more space
+  than needed.
+- Adds a **Participants** list where all users who have participated in the
+  ticket is listed with an avatar. Hoovering the avatar displays additional
+  user information.
+- Moves the hidden "Blockers" feature into plain sight and makes it accessible.
+- Adds a new **Referenced tickets** list that lists all the tickets that
+  are referenced in the current scope.
+- Moves the **Tags** feature into the sidebar and adds the option to use themes
+  tags using tag name prefixes (`branch:`, `alert:` available right now).
+- Adds the property **Branch** that displayes the ticket associated branch
+  name. This is based on the existance of a tag named `branch:1023-branch-name`.
+- Improves the **Watcher** functionality by adding a easy to use **Notifications**
+  component to the sidebar where a user can easily subscribe/unsubscribe from
+  ticket notifications.
+
+### Decorated ticket links
+
+Ticket links are decorated with additional information
+
 ## Install
 
 Vist [latest release](https://github.com/petertornstrand/codebase-harvest-userscript/releases/latest)
