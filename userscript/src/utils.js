@@ -162,3 +162,21 @@ export function getCodebaseConfig() {
     }
 
 }
+
+/**
+ * Find the avatar image Codebase shows for a user in the ticket thread.
+ *
+ * The images are matched by the full name displayed next to them, in comments
+ * and in ticket changes.
+ *
+ * @param {string} fullName
+ *
+ * @return {HTMLImageElement|null}
+ */
+export function findCodebaseAvatar(fullName) {
+    const images = document.querySelectorAll('#content img.Post__avatar, #content img.ThreadChanges__avatar');
+    return Array.from(images).find((img) => {
+        const name = img.parentElement.querySelector('.text--bold > a.text--link');
+        return name?.textContent.trim() === fullName;
+    }) ?? null;
+}

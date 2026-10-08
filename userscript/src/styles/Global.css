@@ -204,21 +204,6 @@ a.text--link {
 
 /* Avatars ------------------------------------------------------------------ */
 
-.Avatar--post-type-full {
-    position: absolute;
-    left: -44px;
-}
-
-.Avatar--post-type-change {
-    display: block;
-    left: 48px;
-    height: auto;
-    margin-top: -10px;
-    position: absolute;
-    top: 50%;
-    width: 16px;
-}
-
 img.gravatar {
     padding: 0;
 }

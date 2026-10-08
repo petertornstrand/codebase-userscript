@@ -16,11 +16,14 @@
         "build:watch": "vite build --watch",
         "build": "vite build --mode=development",
         "test": "vitest run",
-        "test:watch": "vitest"
+        "test:watch": "vitest",
+        "dev": "vite --config vite.preview.config.ts",
+        "icons": "node scripts/generate-icons.mjs"
     },
     "devDependencies": {
+        "@primer/octicons": "^19.40.0",
+        "jsdom": "^25.0.1",
         "npm-run-all": "^4.1.5",
-        "vitest": "^2.1.9",
-        "jsdom": "^25.0.1"
+        "vitest": "^2.1.9"
     }
 }

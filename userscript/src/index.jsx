@@ -2,6 +2,8 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import './styles/Global.css';
+import './styles/Modern.css';
+import './styles/Icons.css';
 import Notice from './Notice';
 import initProjects from './pages/projects';
 import initTickets from './pages/tickets';

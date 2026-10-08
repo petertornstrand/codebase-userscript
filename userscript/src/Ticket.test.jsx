@@ -11,8 +11,7 @@ vi.mock('./Global', () => ({
     api: { getContext: vi.fn(async () => ticketContext) },
     dateFormat: {},
     dateTimeFormat: {},
-    Avatar: () => null,
-    DecoratedAvatars: () => null,
+    Avatar: ({ user, source }) => <span className="MockAvatar" data-name={user.fullName} data-has-source={source ? 'yes' : 'no'} />,
     DecoratedTicketLinks: () => null,
 }));
 
@@ -81,5 +80,96 @@ describe('Ticket', () => {
         await mount();
         expect(document.querySelector('#ticket-subject')).not.toBeNull();
         expect(document.querySelector('.TicketSidebarComponent').textContent).not.toContain('Milestone');
+    });
+
+    it('leaves the avatars in the thread alone', async () => {
+        document.getElementById('post-1').insertAdjacentHTML(
+            'afterbegin',
+            '<div class="Post__header"><img class="Post__avatar" src="x.png"><span class="text--bold"><a class="text--link">Ada Lovelace</a></span></div>'
+        );
+        await mount();
+        expect(document.querySelector('img.Post__avatar')).not.toBeNull();
+    });
+
+    describe('actions menu', () => {
+        const menu = () => document.querySelector('.ActionsMenu__menu');
+        const button = () => document.querySelector('.ActionsMenu__button');
+
+        it('moves the original action links into a closed menu', async () => {
+            await mount();
+            expect(menu().querySelectorAll('a')).toHaveLength(2);
+            expect(menu().hidden).toBe(true);
+            expect(document.querySelector('.sidebar__module.userscript-hidden')).not.toBeNull();
+        });
+
+        it('opens on click and closes on Escape and outside click', async () => {
+            await mount();
+            await act(async () => button().click());
+            expect(menu().hidden).toBe(false);
+            expect(button().getAttribute('aria-expanded')).toBe('true');
+
+            await act(async () => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })));
+            expect(menu().hidden).toBe(true);
+
+            await act(async () => button().click());
+            await act(async () => document.body.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })));
+            expect(menu().hidden).toBe(true);
+        });
+    });
+
+    describe('access property', () => {
+        const access = () => document.querySelector('.TicketProperties__column--access');
+
+        it('lists public tickets as a property and hides the notice', async () => {
+            await mount();
+            expect(access().textContent).toBe('AccessPublic');
+            expect(access().querySelector('.TicketProperties__value').title).toContain('viewed by anyone');
+            expect(document.querySelector('.box--positive').closest('.sidebar__module').classList.contains('userscript-hidden')).toBe(true);
+        });
+
+        it('lists any other ticket as private', async () => {
+            document.querySelector('.box--positive').className = 'box box--negative';
+            document.querySelector('.sidebar__content').textContent = 'This ticket is private. Only users in from Happiness can view and contribute to this ticket. ';
+            await mount();
+            expect(access().textContent).toBe('AccessPrivate');
+            expect(access().querySelector('.TicketProperties__value').title).toContain('Only users in from Happiness');
+            expect(access().querySelector('.TicketProperties__tag')).not.toBeNull();
+        });
+
+        it('handles the real private notice markup', async () => {
+            document.querySelector('.box--positive').className = 'box box--negative';
+            document.querySelector('.sidebar__content').outerHTML = `<div class="sidebar__content text--negative">
+This ticket is private.
+Only users in from <span class="text--bold">Happiness</span> can view and contribute
+to this ticket.
+</div>`;
+            await mount();
+            expect(access().textContent).toBe('AccessPrivate');
+            expect(access().querySelector('.TicketProperties__value').title)
+                .toBe('This ticket is private. Only users in from Happiness can view and contribute to this ticket.');
+            expect(document.querySelector('.box--negative').closest('.sidebar__module').classList.contains('userscript-hidden')).toBe(true);
+        });
+
+        it('lists the ticket as private based on the text even in a positive box', async () => {
+            document.querySelector('.sidebar__content').textContent = 'This ticket is private. Only users in from Happiness can view and contribute to this ticket.';
+            await mount();
+            expect(access().textContent).toBe('AccessPrivate');
+        });
+
+        it('does nothing when the notice is missing', async () => {
+            document.querySelector('.box--positive').closest('.sidebar__module').remove();
+            await mount();
+            expect(access()).toBeNull();
+        });
+    });
+
+    it('gives participants the avatar Codebase shows for them in the thread', async () => {
+        document.getElementById('post-1').insertAdjacentHTML(
+            'afterbegin',
+            '<div class="Post__header"><img class="Post__avatar" src="ada.png"><span class="text--bold"><a class="text--link">Ada Lovelace</a></span></div>'
+        );
+        await mount();
+        const avatars = Object.fromEntries([...document.querySelectorAll('.MockAvatar')].map((a) => [a.dataset.name, a.dataset.hasSource]));
+        expect(avatars).toEqual({ 'Ada Lovelace': 'yes', 'Grace Hopper': 'no' });
     });
 });

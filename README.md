@@ -33,11 +33,6 @@ Ticket pages are rebuilt using data from the Codebase API (see
 - Makes the header sticky.
 - Updates the styling of the status and priority fields.
 
-#### New avatars
-
-Users that have not uploaded an avatar get a custom avatar containing the
-user's initials and a color derived from the user's company name.
-
 #### New sidebar
 
 Replaces the right sidebar with a modern looking and information dense version
@@ -45,7 +40,8 @@ based on the GitHub issue sidebar.
 
 - **Reporter** and the date the ticket was reported.
 - **Participants**: all users who have taken part in the ticket, shown as
-  avatars. Hovering an avatar displays additional user information.
+  avatars (the user's profile image, or their initials on a color derived from
+  the company name). Hovering an avatar displays additional user information.
 - **Milestone**: a compact version that does not use more space than needed,
   with due date and project manager.
 - **Referenced tickets**: lists all tickets referenced in the ticket.
@@ -159,6 +155,14 @@ via your userscript manager. Add the [configuration](#configuration) to the
 development script as well. Disable the released version while developing,
 otherwise both will run.
 
+### Live preview
+
+To work on UI changes with hot reload, without installing the userscript or
+using the real Codebase, run `ddev npm run dev` from the `userscript` directory
+and open <https://codebase.ddev.site:8125/>. It serves pages you have saved from
+Codebase with the userscript injected, and a mock API. See
+[`userscript/preview/README.md`](userscript/preview/README.md).
+
 ### Project structure
 
 | Path                              | Description                                           |
@@ -171,6 +175,7 @@ otherwise both will run.
 | `userscript/src/pages/`           | Plain DOM improvements for project, user and ticket pages. |
 | `userscript/src/styles/`          | CSS, inlined into the built script.                   |
 | `userscript/src/test/`            | Test fixtures.                                        |
+| `userscript/preview/`             | Live preview (dev server plugin, mock API, sample page). |
 
 ### Testing
 

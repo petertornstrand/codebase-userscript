@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { createRoot } from 'react-dom/client';
+import React, { useEffect, useRef } from 'react';
 import { useQuery } from 'react-query';
 import { Tooltip } from 'react-tooltip';
 import Loading from "./styles/Loading.svg?react";
@@ -85,65 +84,31 @@ export function DecoratedTicketLinks({ tickets, projectPermalink }) {
 }
 
 /**
- * Replace avatars.
- *
- * @param {string} projectPermalink
- *
- * @return {void}
- */
-export function DecoratedAvatars({ assignments }) {
-    const avatars = document.querySelectorAll('img.Post__avatar, img.ThreadChanges__avatar');
-
-    useEffect(() => {
-        avatars.forEach((avatar) => {
-            const name = avatar.parentElement.querySelector('.text--bold > a.text--link').innerText;
-            const matches = assignments.filter((v) => v.fullName === name);
-
-            const parent = avatar.parentElement;
-            const container = document.createElement('div');
-            container.classList.add('ReactComponentWrapper');
-            const size = parent.classList.contains('Post__header') ? 'medium' : 'small';
-            const postType = avatar.classList.contains('Post__avatar') ? 'full' : 'change';
-
-            if (matches.length) {
-                parent.replaceChild(container, avatar);
-                avatar.remove();
-                const root = createRoot(container);
-                root.render(<Avatar user={matches[0]} size={size} tooltip={false} postType={postType} />);
-            }
-        });
-    }, [avatars]);
-}
-
-/**
  * Avatar element.
+ *
+ * Shows a copy of `source` (the avatar image Codebase renders for the user) if
+ * given, otherwise the user's profile image, otherwise their initials.
  *
  * @param {object} user
  * @param {string} [size]
- * @param {boolean} [tooltip]
- * @param {string} [postType]
+ * @param {Element|null} [source]
  *
  * @return {JSX.Element}
  */
-export function Avatar({ user, size = 'medium', tooltip = true, postType = 'full'}) {
+export function Avatar({ user, size = 'medium', source = null }) {
     let avatar;
-    if (user.profileImage) {
+    if (source) {
+        avatar = <AvatarClone source={source} size={size} id={user.id} />;
+    }
+    else if (user.profileImage) {
         avatar = AvatarImage({ src: user.profileImage.large, alt: user.name, size: size, id: user.id });
     }
     else {
         avatar = AvatarInitials({ initials: user.initials, color: user.color, size: size, id: user.id });
     }
 
-    if (!tooltip) {
-        return (
-            <div className={'Avatar Avatar--' + size + ' Avatar--post-type-' + postType}>
-                {avatar}
-            </div>
-        );
-    }
-
     return (
-        <div className={'Avatar Avatar--' + size + ' Avatar--' + postType}>
+        <div className={'Avatar Avatar--' + size}>
             <a id={'Avatar--' + user.id}
                data-tooltip-place="bottom"
                data-tooltip-variant="light">
@@ -227,6 +192,30 @@ function AvatarInitials({ initials, id, color = 'darkblue', size = 'medium' }) {
     return (
         <div className={'avatar avatar--' + color + ' avatar--' + size} data-initials={initials} data-id={id}></div>
     );
+}
+
+/**
+ * Avatar copied from an image element Codebase has rendered.
+ *
+ * @param {Element} source
+ * @param {int} id
+ * @param {string} [size]
+ *
+ * @return {JSX.Element}
+ */
+function AvatarClone({ source, id, size = 'medium' }) {
+    const ref = useRef(null);
+
+    useEffect(() => {
+        const image = source.cloneNode(true);
+        image.className = 'gravatar gravatar--' + size;
+        image.removeAttribute('width');
+        image.removeAttribute('height');
+        image.dataset.id = id;
+        ref.current.replaceChildren(image);
+    }, [source]);
+
+    return <span className="AvatarClone" ref={ref} />;
 }
 
 /**

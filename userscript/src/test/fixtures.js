@@ -41,14 +41,26 @@ export const userActivity = `
 export const ticketPage = `
 <div id="sub-header"></div>
 <div id="content">
-  <div class="Thread__header"></div>
+  <div class="Thread__header">
+    <div class="js-ticket-properties"><ul class="TicketProperties">
+      <li class="TicketProperties__column"><h3 class="TicketProperties__title">Type</h3><p class="TicketProperties__value">Bug</p></li>
+    </ul></div>
+  </div>
   <div class="Thread__timeline">
     <div class="Post Post--full" id="post-1"><ul><li>plain</li></ul></div>
     <div class="Post Post--full" id="post-2"><ul><li class="todo">do it</li></ul></div>
     <div class="Post Post--full" id="post-3">last</div>
   </div>
   <div class="relationships"><a class="btn btn--neutral" rel="new-blocking" href="#">Add blocker</a></div>
-  <div class="right"></div>
+  <div class="right">
+    <div class="sidebar__module sidebar__module--medium"><div class="box box--positive"><div class="island">
+      <div class="sidebar__content text--positive">This ticket can be viewed by anyone who has access to this project.</div>
+    </div></div></div>
+    <div class="sidebar__module"><div class="box"><ul class="layout-list">
+      <li class="block-item"><a class="block-item__inner block-item__link" href="#criteria">Add acceptance criteria</a></li>
+      <li class="block-item"><a class="block-item__inner block-item__link" data-method="delete" href="#delete">Delete this ticket</a></li>
+    </ul></div></div>
+  </div>
 </div>`;
 
 export const ticketContext = {
@@ -61,6 +73,6 @@ export const ticketContext = {
         tags: ['branch:42-fix-the-thing', 'alert:urgent', 'misc'],
     },
     assignments: [{ id: 1, fullName: 'Ada Lovelace' }],
-    participants: [],
+    participants: [{ id: 1, fullName: 'Ada Lovelace' }, { id: 2, fullName: 'Grace Hopper' }],
     referencedTickets: [],
 };

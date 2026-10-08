@@ -1,11 +1,11 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 import { createRoot } from 'react-dom/client';
-import { log } from './utils';
+import { log, findCodebaseAvatar } from './utils';
 import CopyButton from './CopyButton';
 import Notice from './Notice';
 import Loading from "./styles/Loading.svg?react";
-import { DecoratedTicketLinks, DecoratedAvatars, Avatar, api, dateFormat, dateTimeFormat } from './Global';
+import { DecoratedTicketLinks, Avatar, api, dateFormat, dateTimeFormat } from './Global';
 import { URLContext } from './URLContext';
 import './styles/Ticket.css';
 
@@ -35,25 +35,33 @@ export default function Ticket() {
 
     return (
         <div className="ReactComponentWrapper">
-            <Subject ticket={data.ticket} projektPermalink={urlContext.project_id} />
+            <Subject ticket={data.ticket} />
             <Sidebar data={data} projektPermalink={urlContext.project_id} />
-            <DecoratedAvatars assignments={data.assignments} />
             <DecoratedTicketLinks tickets={data.referencedTickets} />
         </div>
     );
 }
 
 /**
+ * The original ticket properties (type, status, priority...), detached from
+ * the thread header by `Subject` so that `Sidebar` can display them.
+ *
+ * @type {Element|null}
+ */
+let detachedProperties = null;
+
+/**
  * Subject element.
  *
  * @param {object} ticket
- * @param {string} projektPermalink
  *
  * @return {JSX.Element}
  */
-function Subject({ticket, projektPermalink }) {
+function Subject({ ticket }) {
     useEffect(() => {
         const target = document.querySelector('.Thread__header');
+        // Keep the original (editable) ticket properties, they are shown in the sidebar.
+        detachedProperties = target.querySelector('.js-ticket-properties') ?? detachedProperties;
         const parent = target.parentElement;
         const container = document.createElement('div');
         container.classList.add('TicketSubjectComponent');
@@ -62,13 +70,11 @@ function Subject({ticket, projektPermalink }) {
         const root = createRoot(container);
         root.render(
             <div className="TicketSubject">
-                <h2 id="ticket-subject"><span className="TicketId">#{ticket.id}</span> {ticket.subject}</h2>
-                <CopyButton title="Copy ticket reference" elementId="#ticket-subject"/>
-                <CopyButton title="Copy ticket link" icon="icon-copy-link" text={`[#${ticket.id} ${ticket.subject}](${window.location.href})`}/>
+                <h2 id="ticket-subject" title={`#${ticket.id} ${ticket.subject}`}><span className="TicketId">#{ticket.id}</span> {ticket.subject}</h2>
                 <div className="TicketId__actions">
+                    <CopyButton title="Copy ticket reference" elementId="#ticket-subject"/>
+                    <CopyButton title="Copy ticket link" icon="icon-copy-link" text={`[#${ticket.id} ${ticket.subject}](${window.location.href})`}/>
                     <JumpToLastComment />
-                    <a className="btn" href={'/projects/' + projektPermalink + '/tickets/new'}>New ticket</a>
-                    <a className="btn" href={'/projects/' + projektPermalink + '/tickets'}>Back to list</a>
                 </div>
             </div>
         );
@@ -125,6 +131,7 @@ function Sidebar({ data, projektPermalink }) {
             <div className="sidebar__module sidebar__module--medium">
                 <div className="box box--sidebar">
                     <div className="island">
+                        <OriginalProperties />
                         {reporter && <Reporter user={reporter} dateTime={data.ticket.created} />}
                         <Participants users={data.participants} />
                         <Milestone user={manager} ticket={data.ticket} />
@@ -135,11 +142,129 @@ function Sidebar({ data, projektPermalink }) {
                         <Tags tags={data.ticket.tags} />
                         <Branch url="#" name={branch} />
                         <Watchers />
+                        <ActionsMenu />
                     </div>
                 </div>
             </div>
         );
     }
+}
+
+/**
+ * Add an "Access" row (Public or Private) to the ticket properties.
+ *
+ * Codebase shows who can view the ticket as a notice box in the sidebar. For a
+ * public ticket it is a `box--positive` saying "This ticket can be viewed by
+ * anyone who has access to this project.", for a private ticket it says "This
+ * ticket is private. Only users from <company> can view and contribute to this
+ * ticket.". The original message is kept as a tooltip and the notice is hidden.
+ *
+ * @param {Element|null} list - The `ul.TicketProperties` element.
+ */
+function addAccessProperty(list) {
+    const content = Array.from(document.querySelectorAll('#content .right .sidebar__content'))
+        .find((element) => /^\s*This ticket/i.test(element.textContent));
+    if (!list || !content || list.querySelector('.TicketProperties__column--access')) {
+        return;
+    }
+
+    const isPublic = !!content.closest('.box--positive') && !/\bis private\b/i.test(content.textContent);
+    const column = document.createElement('li');
+    column.className = 'TicketProperties__column TicketProperties__column--access';
+    const title = document.createElement('h3');
+    title.className = 'TicketProperties__title';
+    title.textContent = 'Access';
+    const value = document.createElement('p');
+    value.className = 'TicketProperties__value';
+    value.title = content.textContent.replace(/\s+/g, ' ').trim();
+    if (isPublic) {
+        value.textContent = 'Public';
+    } else {
+        const label = document.createElement('span');
+        label.className = 'TicketProperties__tag col-orange';
+        label.textContent = 'Private';
+        value.appendChild(label);
+    }
+    column.append(title, value);
+    list.appendChild(column);
+    content.closest('.sidebar__module')?.classList.add('userscript-hidden');
+}
+
+/**
+ * Original ticket properties component.
+ *
+ * Moves Codebase's own, editable, ticket properties into the sidebar.
+ *
+ * @return {JSX.Element}
+ */
+function OriginalProperties() {
+    const ref = useRef(null);
+
+    useEffect(() => {
+        // Whichever of this and `Subject` runs first takes the element.
+        detachedProperties = document.querySelector('.Thread__header .js-ticket-properties') ?? detachedProperties;
+        if (ref.current && detachedProperties) {
+            ref.current.appendChild(detachedProperties);
+            addAccessProperty(detachedProperties.querySelector('.TicketProperties'));
+        }
+    }, []);
+
+    return <div className="CodebaseComponent SidebarProperties" ref={ref} />;
+}
+
+/**
+ * Ticket actions drop button.
+ *
+ * Moves Codebase's own action links (add acceptance criteria, move, make
+ * private, split, delete) into a menu. The original elements are kept so that
+ * Codebase's behaviour for them still applies.
+ *
+ * @return {JSX.Element}
+ */
+function ActionsMenu() {
+    const [open, setOpen] = useState(false);
+    const rootRef = useRef(null);
+    const menuRef = useRef(null);
+
+    useEffect(() => {
+        const list = document.querySelector('#content .right .block-item')?.closest('ul');
+        if (!list || !menuRef.current || menuRef.current.contains(list)) {
+            return;
+        }
+        const original = list.closest('.sidebar__module');
+        menuRef.current.appendChild(list);
+        original?.classList.add('userscript-hidden');
+    }, []);
+
+    useEffect(() => {
+        if (!open) {
+            return;
+        }
+        const close = () => setOpen(false);
+        const onPointerDown = (event) => {
+            if (!rootRef.current?.contains(event.target)) {
+                close();
+            }
+        };
+        const onKeyDown = (event) => event.key === 'Escape' && close();
+        document.addEventListener('mousedown', onPointerDown);
+        document.addEventListener('keydown', onKeyDown);
+        return () => {
+            document.removeEventListener('mousedown', onPointerDown);
+            document.removeEventListener('keydown', onKeyDown);
+        };
+    }, [open]);
+
+    return (
+        <div className="ActionsMenu" ref={rootRef}>
+            <button className="btn ActionsMenu__button" aria-haspopup="menu" aria-expanded={open}
+                    onClick={() => setOpen(!open)}>
+                Ticket actions
+            </button>
+            <div className="ActionsMenu__menu" role="menu" hidden={!open} ref={menuRef}
+                 onClick={(event) => event.target.closest('a') && setTimeout(() => setOpen(false), 0)} />
+        </div>
+    );
 }
 
 /**
@@ -187,7 +312,7 @@ function Participants({users}) {
                     <div className="Participant__list">
                     { users.map((user) => {
                         return (
-                            <Avatar user={user} size="medium" key={user.id} />
+                            <Avatar user={user} size="medium" key={user.id} source={findCodebaseAvatar(user.fullName)} />
                         );
                     })}
                     </div>
@@ -281,15 +406,20 @@ function ReferencedTickets({tickets}) {
 function Blockers() {
 
     useEffect(() => {
+        // The "add blocker" link is rendered by Codebase. Move it into the
+        // component if it is present on the page.
         const parent = document.querySelector('.relationships');
-        const link = parent.querySelector('a');
+        const link = parent?.querySelector('a');
         const target = document.querySelector('.Blockers');
+        if (!link || !target || target.contains(link)) {
+            return;
+        }
         parent.removeChild(link);
         link.classList.remove('btn', 'btn--neutral');
         link.classList.add('AddBlockersLink', 'icon-only', 'icon-add');
         link.innerText = '';
         target.appendChild(link);
-    })
+    });
 
     return (
         <div className="Blockers">
@@ -315,17 +445,18 @@ function Tags({ tags }) {
     if (tags) {
         tags.forEach(function (tag, index) {
             let classes = ['icon'];
+            let text = tag;
             if (tag.match(/^branch:/g)) {
                 return;
             } else if (tag.match(/^alert:/g)) {
-                tag.replace(/^alert:/g, '');
+                text = tag.replace(/^alert:/g, '');
                 classes.push('col-red', 'icon-status_id');
             } else {
                 classes.push('col-grey');
             }
             items.push({
                 index: index,
-                text: tag,
+                text: text,
                 class: classes.join(' '),
             });
         });

@@ -1,0 +1,719 @@
+/* Modern look -------------------------------------------------------------- */
+
+/*
+ * A GitHub inspired layer on top of Codebase's styles. Selectors are prefixed
+ * with `body` so they win over the other stylesheets regardless of order.
+ */
+
+:root {
+    --cb-fg: #1f2328;
+    --cb-muted: #59636e;
+    --cb-subtle: #818b98;
+    --cb-border: #d1d9e0;
+    --cb-border-muted: #e5e9ee;
+    --cb-canvas-subtle: #f6f8fa;
+    --cb-accent: #0969da;
+    --cb-success: #1f883d;
+    --cb-danger: #d1242f;
+    --cb-radius: 6px;
+    --cb-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+    --cb-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+body {
+    background: #fff;
+    color: var(--cb-fg);
+    font-family: var(--cb-font);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+body #content a {
+    color: var(--cb-accent);
+}
+
+body #content a.text--link,
+body #content .text--bold a {
+    color: inherit;
+}
+
+body #content a.btn {
+    color: var(--cb-fg);
+}
+
+body #content a:hover {
+    text-decoration: underline;
+}
+
+/* Site header and navigation ----------------------------------------------- */
+
+/*
+ * One compact row with the logo, project name and icon buttons, and the main
+ * menu as a tab bar underneath. `display: contents` lifts the children of the
+ * right hand side into the grid so the menu can span the full width.
+ */
+body .site-header {
+    padding: 0;
+    height: auto;
+    background: #150547;
+}
+
+body .site-header > .container {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+        "left center buttons"
+        "menu menu menu";
+    align-items: center;
+    column-gap: 16px;
+    float: none;
+    height: auto;
+}
+
+body .site-header__left {
+    grid-area: left;
+    display: flex;
+    align-items: center;
+    float: none;
+    margin: 0;
+    min-width: 0;
+    height: 56px;
+}
+
+body .site-header__center {
+    grid-area: center;
+    align-items: center;
+}
+
+body .site-header__right {
+    display: contents;
+}
+
+body .site-header__organisation {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+body .site-header__organisation a {
+    height: 24px;
+    min-width: 96px;
+    background-size: auto 24px;
+}
+
+body .site-header__organisation::after {
+    content: "/";
+    margin: 0 10px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 20px;
+    font-weight: 300;
+}
+
+body .site-header__title {
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+}
+
+body .site-header__title a {
+    color: #fff;
+}
+
+body .site-header__buttons {
+    grid-area: buttons;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    float: none;
+    margin: 0;
+}
+
+body .site-header__buttons-li {
+    float: none;
+    margin: 0;
+}
+
+body .site-header__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 6px;
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--cb-radius);
+    background: transparent;
+}
+
+body .site-header__button:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+body .site-header__button-img {
+    width: 16px;
+    height: 16px;
+}
+
+body .site-header__button-count {
+    position: static;
+    color: #fff;
+    font-size: 12px;
+    line-height: 1;
+}
+
+body .main-menu {
+    grid-area: menu;
+    display: flex;
+    gap: 4px;
+    float: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+body .main-menu__item {
+    float: none;
+    margin: 0;
+}
+
+body .main-menu__link {
+    display: block;
+    padding: 12px 12px 10px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    background: none;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+}
+
+body .main-menu__link--dropdown::after {
+    content: "";
+    display: inline-block;
+    margin-left: 6px;
+    border: 4px solid transparent;
+    border-top-color: currentColor;
+    border-bottom: 0;
+    vertical-align: middle;
+    opacity: 0.7;
+}
+
+body .main-menu__link:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    text-decoration: none;
+}
+
+body .main-menu__link.is-active,
+body .main-menu__link.is-active:hover {
+    background: none;
+    border-bottom-color: #f78166;
+    color: #fff;
+    font-weight: 600;
+}
+
+/* Header and breadcrumbs --------------------------------------------------- */
+
+body #sub-header {
+    background: #fff;
+    border-bottom: 1px solid var(--cb-border-muted);
+    box-shadow: none;
+}
+
+/* Breadcrumbs on the left, page buttons on the right, on one row. */
+body #sub-header > .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 0;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+body #sub-header .breadcrumb {
+    margin: 0;
+}
+
+/* Page headings (not used on tickets) go on their own row below. */
+body #sub-header > .container {
+    flex-wrap: wrap;
+}
+
+body #sub-header > .container > h2 {
+    order: 3;
+    flex: 0 0 100%;
+    margin: 0;
+}
+
+body #sub-header .buttons {
+    float: none;
+    order: 2;
+    margin: 0;
+}
+
+body #sub-header .breadcrumb,
+body #sub-header .breadcrumb a {
+    color: var(--cb-muted);
+    font-size: 12px;
+}
+
+/* Ticket subject ----------------------------------------------------------- */
+
+body .TicketSubject {
+    align-items: center;
+    gap: 8px;
+    padding: 20px 0 16px;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 32px;
+    border-bottom: 1px solid var(--cb-border-muted);
+    margin-bottom: 24px;
+}
+
+/* One line only. Very long subjects are cut off, the full text is the tooltip. */
+body .TicketSubject h2 {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    margin: 0;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body .TicketId {
+    color: var(--cb-subtle);
+    font-weight: 300;
+}
+
+body .TicketId__actions {
+    flex: none;
+    align-items: center;
+}
+
+body .TicketId__actions .btn {
+    height: auto;
+    min-height: 0;
+    flex: none;
+}
+
+/* Copy buttons next to the other ticket actions, styled as icon buttons. */
+body .TicketId__actions .CopyButton {
+    display: flex;
+}
+
+body .TicketId__actions .CopyButton__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    background: var(--cb-canvas-subtle);
+    color: var(--cb-fg);
+    cursor: pointer;
+}
+
+body .TicketId__actions .CopyButton__button:hover {
+    background: #eff2f5;
+}
+
+/* Buttons ------------------------------------------------------------------ */
+
+body .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    background: var(--cb-canvas-subtle);
+    box-shadow: none;
+    color: var(--cb-fg);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    text-decoration: none;
+    text-shadow: none;
+    text-transform: none;
+    white-space: nowrap;
+}
+
+body a.btn {
+    color: var(--cb-fg);
+}
+
+body .btn:hover {
+    background: #eff2f5;
+    border-color: var(--cb-border);
+    text-decoration: none;
+}
+
+body .btn.btn--small,
+body .btn.btn--medium {
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 20px;
+    text-transform: none;
+}
+
+body .btn.btn--positive {
+    background: var(--cb-success);
+    border-color: rgba(31, 35, 40, 0.15);
+    color: #fff;
+}
+
+body .btn.btn--positive:hover {
+    background: #1a7f37;
+}
+
+/* Comments ----------------------------------------------------------------- */
+
+body .Post--full {
+    margin: 16px 0;
+}
+
+/* No overflow: hidden here, the avatar hangs outside of the box. */
+body .Post--full .box--medium {
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    box-shadow: none;
+}
+
+body .Post__header {
+    border-radius: var(--cb-radius) var(--cb-radius) 0 0;
+    background: var(--cb-canvas-subtle);
+    border-bottom: 1px solid var(--cb-border);
+    color: var(--cb-muted);
+    padding: 0 16px;
+    min-height: 40px;
+}
+
+body .Post__meta {
+    margin: 0;
+    padding: 9px 0;
+    font-size: 14px;
+}
+
+body .Post__meta .text--bold,
+body #content .Post__meta .text--bold a {
+    color: var(--cb-fg);
+}
+
+body #content .Post__meta a {
+    color: var(--cb-muted);
+}
+
+/* Padding lives on Post__content only, styled-content inside it has none. */
+body .Post--full .Post__content {
+    padding: 16px;
+}
+
+body .Post--full .styled-content {
+    padding: 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+body .PostAttachments__caption a {
+    color: var(--cb-accent);
+}
+
+/* Avatars: Codebase's own images, hanging outside of the comment box. */
+body .Post--full > .box--medium {
+    position: relative;
+}
+
+body .Post__avatar {
+    position: absolute;
+    top: 0;
+    left: -44px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: 50%;
+}
+
+body .ThreadChanges__avatar {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+/* Timeline events (changes to the ticket) ---------------------------------- */
+
+body .Post--minimal {
+    margin: 0;
+}
+
+body .ThreadChanges__event {
+    color: var(--cb-muted);
+    font-size: 13px;
+    padding-left: 72px;
+}
+
+body .ThreadChanges__event .text--bold {
+    color: var(--cb-fg);
+}
+
+body .ThreadChanges__event strong {
+    font-weight: 600;
+    color: var(--cb-fg);
+}
+
+/* Labels ------------------------------------------------------------------- */
+
+body .TicketProperties__tag {
+    display: inline-block;
+    padding: 0 8px;
+    border: 1px solid;
+    border-radius: 2em;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 18px;
+    text-transform: none;
+}
+
+/* Sidebar ------------------------------------------------------------------ */
+
+body #content .right .box,
+body #content .right .box--sidebar {
+    border: 0;
+    box-shadow: none;
+    background: transparent;
+}
+
+body #content .right .island {
+    padding: 0;
+}
+
+body .CodebaseComponent {
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--cb-border-muted);
+}
+
+body .CodebaseComponent .Properties .Properties__title {
+    color: var(--cb-muted);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    margin: 0 0 8px;
+}
+
+body .CodebaseComponent .Properties .Properties__value {
+    color: var(--cb-fg);
+    font-size: 14px;
+}
+
+body .CodebaseComponent .Properties--row {
+    flex-wrap: wrap;
+    gap: 8px 24px;
+}
+
+body .CodebaseComponent .Properties--row .Properties__item {
+    flex: 0 1 auto;
+}
+
+/* Sidebar links and notes */
+body #content .right .block-item__link,
+body #content .right .block-item__inner {
+    color: var(--cb-muted);
+    font-size: 13px;
+}
+
+body #content .right .block-item__link:hover {
+    color: var(--cb-accent);
+}
+
+body #content .right .box--positive {
+    border: 1px solid #aceebb;
+    border-radius: var(--cb-radius);
+    background: #dafbe1;
+}
+
+body #content .right .box--positive .sidebar__content {
+    color: #1a7f37;
+}
+
+/* Codebase's own ticket properties, moved into the sidebar */
+body .SidebarProperties .TicketProperties {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+
+body .SidebarProperties .TicketProperties__column {
+    float: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: auto;
+    padding: 4px 0;
+    border: 0;
+}
+
+body .SidebarProperties .TicketProperties__title {
+    margin: 0;
+    color: var(--cb-muted);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: none;
+}
+
+body .SidebarProperties .TicketProperties__value {
+    margin: 0;
+    font-size: 14px;
+    text-align: right;
+}
+
+/* Forms -------------------------------------------------------------------- */
+
+body input[type="text"],
+body input[type="search"],
+body input[type="number"],
+body textarea,
+body select {
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    background-color: #fff;
+    box-shadow: none;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+body input[type="text"]:focus,
+body textarea:focus,
+body select:focus {
+    border-color: var(--cb-accent);
+    box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.3);
+    outline: none;
+}
+
+body .PostForm .box,
+body .PostForm__box {
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    overflow: hidden;
+}
+
+/* Footer ------------------------------------------------------------------- */
+
+body .site-footer,
+body footer {
+    border-top: 1px solid var(--cb-border-muted);
+    color: var(--cb-muted);
+}
+
+/* Ticket actions drop button ------------------------------------------------ */
+
+body .ActionsMenu {
+    position: relative;
+}
+
+body .ActionsMenu__button:after {
+    content: "";
+    border: 4px solid transparent;
+    border-top-color: currentColor;
+    border-bottom: 0;
+}
+
+body .ActionsMenu__menu {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 4px);
+    z-index: 10;
+    min-width: 240px;
+    padding: 4px 0;
+    border: 1px solid var(--cb-border);
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(140, 149, 159, 0.2);
+}
+
+body .ActionsMenu__menu[hidden] {
+    display: none;
+}
+
+body .ActionsMenu__menu .layout-list,
+body .ActionsMenu__menu .block-item {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    list-style: none;
+}
+
+body #content .ActionsMenu__menu .block-item__inner {
+    display: block;
+    padding: 6px 16px;
+    border: 0;
+    color: var(--cb-fg);
+    font-size: 14px;
+    line-height: 20px;
+}
+
+body #content .ActionsMenu__menu .block-item__inner.text--subtle {
+    color: var(--cb-fg);
+}
+
+body #content .ActionsMenu__menu .block-item__inner:hover {
+    background: var(--cb-canvas-subtle);
+    text-decoration: none;
+}
+
+body #content .ActionsMenu__menu .block-item__inner.text--negative,
+body #content .ActionsMenu__menu .block-item__inner.text--danger,
+body #content .ActionsMenu__menu a[data-method="delete"] {
+    color: var(--cb-danger);
+}
+
+/* Avatars (copies of Codebase's own images) -------------------------------- */
+
+body .Avatar .gravatar {
+    display: block;
+    border-radius: 50%;
+}
+
+/* Tooltips ----------------------------------------------------------------- */
+
+/* react-tooltip is 90% opaque by default, so the content below shows through. */
+body .Tooltip.react-tooltip {
+    --rt-opacity: 1;
+    z-index: 100;
+    padding: 8px 12px;
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(140, 149, 159, 0.2);
+    color: var(--cb-fg);
+    font-size: 13px;
+    line-height: 20px;
+}
+
+/* The tooltip sits inside the sidebar properties, don't inherit their spacing. */
+body .Tooltip .Properties {
+    margin: 0;
+}
+
+body .Tooltip .Properties__value {
+    margin: 0;
+}
