@@ -7,6 +7,15 @@ export default defineConfig(({ mode }) => {
     return {
         plugins: [bundlePlugin, svgr()],
         base: './',
+        resolve: {
+            // Use Preact in place of React, including for react-query and
+            // react-tooltip.
+            alias: {
+                'react-dom/client': 'preact/compat/client',
+                'react-dom': 'preact/compat',
+                'react': 'preact/compat',
+            },
+        },
         root: '../',
         build: {
             cssCodeSplit: false,

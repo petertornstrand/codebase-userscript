@@ -5,6 +5,6 @@
 // @grant       GM_getValue
 // @grant       GM_getValues
 // @grant       GM_notification
-// @match       https://code.happiness.se/projects/*/tickets/*
-// @match       https://happiness.codebasehq.com/projects/*/tickets/*
+// @match       https://code.happiness.se/*
+// @match       https://happiness.codebasehq.com/*
 // ==/UserScript==

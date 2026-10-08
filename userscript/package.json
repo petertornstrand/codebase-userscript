@@ -1,11 +1,10 @@
 {
-    "name": "react-userscripts",
+    "name": "codebase-userscript",
     "version": "1.0.0",
     "private": true,
     "type": "module",
     "dependencies": {
-        "react": "^18.3.1",
-        "react-dom": "^18.3.1",
+        "preact": "^10.26.9",
         "react-query": "^3.39",
         "react-tooltip": "^5.29.1",
         "vite": "^5.2.14",
@@ -15,9 +14,13 @@
         "start": "npm-run-all --parallel build:watch preview",
         "preview": "vite preview",
         "build:watch": "vite build --watch",
-        "build": "vite build --mode=development"
+        "build": "vite build --mode=development",
+        "test": "vitest run",
+        "test:watch": "vitest"
     },
     "devDependencies": {
-        "npm-run-all": "^4.1.5"
+        "npm-run-all": "^4.1.5",
+        "vitest": "^2.1.9",
+        "jsdom": "^25.0.1"
     }
 }

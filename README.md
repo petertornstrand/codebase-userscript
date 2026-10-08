@@ -48,6 +48,22 @@ based on the Github issue sidebar.
 
 Ticket links are decorated with additional information
 
+### Ticket page extras
+
+- **Copy ticket link**: Copies the ticket as a Markdown link, `[#123 Subject](url)`.
+- **Last comment**: A header button that scrolls the latest comment into view.
+- **Comments with tasks**: Comments containing task lists are highlighted.
+
+### Project pages
+
+- **Project search**: The header search is scoped to the current project.
+- **Open tickets by default**: The ticket list menu link filters on `status:open`.
+
+### User pages
+
+Adds a list of the tickets worked on today, grouped by project, to the top of
+the user activity feed. Handy for copying into a time tracker.
+
 ## Install
 
 Vist [latest release](https://github.com/petertornstrand/codebase-harvest-userscript/releases/latest)
@@ -102,3 +118,17 @@ ddev npm run build:watch
 
 Visit the URL https://codebase.ddev.site/codebase-dev.user.js and install the
 userscript via your userscript manager.
+
+## Testing
+
+Tests use [Vitest](https://vitest.dev/) with jsdom. Run them from `userscript/`:
+
+```
+ddev npm test          # single run
+ddev npm run test:watch  # re-run on change while developing
+```
+
+The tests run against Preact, like the build. The Codebase API is mocked, and
+the Codebase page markup is represented by small fixtures in
+`userscript/src/test/fixtures.js`. Update the fixtures if Codebase changes its
+markup.

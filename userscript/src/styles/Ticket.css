@@ -276,3 +276,14 @@ h2.Thread__subject.heading--delta {
 #sub-header {
     min-height: auto;
 }
+.CodebaseComponent--error {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 10;
+    padding: 8px 12px;
+    border: 1px solid #f4e6c8;
+    border-radius: 4px;
+    background-color: #ffffcc;
+    font-size: 13px;
+}

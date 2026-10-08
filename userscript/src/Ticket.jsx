@@ -3,6 +3,7 @@ import { useQuery } from 'react-query';
 import { createRoot } from 'react-dom/client';
 import { log } from './utils';
 import CopyButton from './CopyButton';
+import Notice from './Notice';
 import Loading from "./styles/Loading.svg?react";
 import { DecoratedTicketLinks, DecoratedAvatars, Avatar, api, dateFormat, dateTimeFormat } from './Global';
 import { URLContext } from './URLContext';
@@ -25,6 +26,12 @@ export default function Ticket() {
             <Loading />
         </div>
     );
+
+    // Leave the original Codebase page untouched if the data is unavailable.
+    if (error || !data?.ticket) {
+        log('Unable to load ticket context', error);
+        return <Notice message="could not load ticket data. Showing the original page." />;
+    }
 
     return (
         <div className="ReactComponentWrapper">
@@ -56,14 +63,32 @@ function Subject({ticket, projektPermalink }) {
         root.render(
             <div className="TicketSubject">
                 <h2 id="ticket-subject"><span className="TicketId">#{ticket.id}</span> {ticket.subject}</h2>
-                <CopyButton title="Copy ticket link" elementId="#ticket-subject"/>
+                <CopyButton title="Copy ticket reference" elementId="#ticket-subject"/>
+                <CopyButton title="Copy ticket link" icon="icon-copy-link" text={`[#${ticket.id} ${ticket.subject}](${window.location.href})`}/>
                 <div className="TicketId__actions">
+                    <JumpToLastComment />
                     <a className="btn" href={'/projects/' + projektPermalink + '/tickets/new'}>New ticket</a>
                     <a className="btn" href={'/projects/' + projektPermalink + '/tickets'}>Back to list</a>
                 </div>
             </div>
         );
     }, []);
+}
+
+/**
+ * Button that scrolls the last comment into view.
+ *
+ * @return {JSX.Element}
+ */
+function JumpToLastComment() {
+    const handleClick = () => {
+        const comments = document.querySelectorAll('.Post.Post--full');
+        comments[comments.length - 1]?.scrollIntoView();
+    };
+
+    return (
+        <button className="btn" onClick={handleClick}>Last comment</button>
+    );
 }
 
 /**
@@ -75,10 +100,10 @@ function Subject({ticket, projektPermalink }) {
  * @return {JSX.Element}
  */
 function Sidebar({ data, projektPermalink }) {
-    const reporterId = data.ticket.reporter.id;
+    const reporterId = data.ticket.reporter?.id;
     const reporter = data.assignments.find((assignment) => assignment.id === reporterId);
 
-    const managerId = data.ticket.milestone.responsibleUserId;
+    const managerId = data.ticket.milestone?.responsibleUserId;
     const manager = data.assignments.find((assignment) => assignment.id === managerId);
 
     let branch = null;
@@ -100,7 +125,7 @@ function Sidebar({ data, projektPermalink }) {
             <div className="sidebar__module sidebar__module--medium">
                 <div className="box box--sidebar">
                     <div className="island">
-                        <Reporter user={reporter} dateTime={data.ticket.created} />
+                        {reporter && <Reporter user={reporter} dateTime={data.ticket.created} />}
                         <Participants users={data.participants} />
                         <Milestone user={manager} ticket={data.ticket} />
                         <div className="CodebaseComponent">
@@ -181,11 +206,12 @@ function Participants({users}) {
  * @return {JSX.Element|null}
  */
 function Milestone({ user, ticket }) {
-    if (!ticket.hasOwnProperty('milestone')) {
+    const urlContext = useContext(URLContext);
+
+    if (!ticket.milestone) {
         return null;
     }
 
-    const urlContext = useContext(URLContext);
     const endDate = new Date(Date.parse(ticket.milestone.endDate));
     const passed = (() => Date.parse(ticket.milestone.endDate) < Date.now());
     const userUrl = '#'; // TODO: Fix this.
@@ -206,7 +232,7 @@ function Milestone({ user, ticket }) {
                 <div className="Properties__item">
                     <h3 className="Properties__title icon icon-user">PM</h3>
                     <p className="Properties__value">
-                        <a href={userUrl} className="text--link">{user.fullName}</a>
+                        <a href={userUrl} className="text--link">{user?.fullName ?? 'Unknown'}</a>
                     </p>
                 </div>
             </div>
