@@ -1,0 +1,36 @@
+{
+  "ticket": {
+    "id": 3434,
+    "subject": "Redesign the ticket sidebar",
+    "created": "2025-09-02T09:15:00Z",
+    "reporter": { "id": 1 },
+    "milestone": {
+      "name": "Sprint 42",
+      "guid": "a1b2c3d4",
+      "endDate": "2030-12-31",
+      "responsibleUserId": 2
+    },
+    "tags": ["branch:3434-redesign-sidebar", "alert:needs-review", "frontend"]
+  },
+  "assignments": [
+    {
+      "id": 1, "username": "ada", "fullName": "Ada Lovelace", "initials": "AL", "color": "darkblue",
+      "url": "#", "role": "Developer", "company": "Analytical Engines", "location": "London",
+      "email": "ada@example.com"
+    },
+    {
+      "id": 2, "username": "grace", "fullName": "Grace Hopper", "initials": "GH", "color": "green",
+      "url": "#", "role": "Project manager", "company": "Compilers Inc"
+    },
+    {
+      "id": 3, "username": "linus", "fullName": "Linus Torvalds", "initials": "LT", "color": "orange",
+      "url": "#", "company": "Kernel Co"
+    }
+  ],
+  "participants": [
+    { "id": 1, "username": "ada", "fullName": "Ada Lovelace", "initials": "AL", "color": "darkblue", "url": "#" },
+    { "id": 2, "username": "grace", "fullName": "Grace Hopper", "initials": "GH", "color": "green", "url": "#" },
+    { "id": 3, "username": "linus", "fullName": "Linus Torvalds", "initials": "LT", "color": "orange", "url": "#" }
+  ],
+  "referencedTickets": []
+}
