@@ -202,11 +202,11 @@ a.AddBlockersLink {
     border-radius: 8px;
 }
 
-.Push__meta {
+body:has(.Thread) .Push__meta {
     padding-bottom: 0;
 }
 
-.Push__commit {
+body:has(.Thread) .Push__commit {
     margin-top: 0;
 }
 
@@ -214,13 +214,15 @@ a.AddBlockersLink {
     color: inherit;
 }
 
-#content .right {
+body:has(.Thread) #content .right {
     position: sticky;
     top: 0;
 }
 
-#content .right > .sidebar__module--medium:nth-child(2),
-#content .right > .sidebar__module--medium:nth-child(3) {
+/* Codebase's own sidebar modules on the ticket page (milestone, access), replaced by ours.
+   Only there, other pages like the dashboard use the same modules for their own content. */
+body:has(.Thread) #content .right > .sidebar__module--medium:nth-child(2),
+body:has(.Thread) #content .right > .sidebar__module--medium:nth-child(3) {
     display: none;
 }
 
@@ -257,7 +259,7 @@ a.AddBlockersLink {
     border-color: #e5ebee;
 }
 
-.u-text-center {
+body:has(.Thread) .u-text-center {
     text-align: left;
 }
 
@@ -267,12 +269,12 @@ a.AddBlockersLink {
     margin-left: auto;
 }
 
-#sub-header h2.u-ellipsis,
+body:has(.Thread) #sub-header h2.u-ellipsis,
 h2.Thread__subject.heading--delta {
     display: none;
 }
 
-#sub-header {
+body:has(.Thread) #sub-header {
     min-height: auto;
 }
 .CodebaseComponent--error {

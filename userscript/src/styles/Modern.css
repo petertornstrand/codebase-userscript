@@ -253,6 +253,7 @@ body #sub-header > .container {
 body #sub-header > .container > h2 {
     order: 3;
     flex: 0 0 100%;
+    max-width: none;
     margin: 0;
 }
 
@@ -2438,4 +2439,703 @@ body .dropdown-block--selector .project-selector__filter label {
 
 body .dropdown-block--selector .project-selector__list {
     height: 290px;
+}
+
+/* Markdown in comments ---------------------------------------------------------- */
+
+body .Post--full .styled-content code {
+    padding: 0.2em 0.4em;
+    border: 0;
+    border-radius: var(--cb-radius);
+    background: rgba(175, 184, 193, 0.2);
+    color: var(--cb-fg);
+    font-family: var(--cb-mono);
+    font-size: 85%;
+}
+
+body .Post--full .styled-content pre {
+    margin: 0 0 16px;
+    padding: 16px;
+    overflow: auto;
+    border: 0;
+    border-radius: var(--cb-radius);
+    background: var(--cb-canvas-subtle);
+    box-shadow: none;
+    color: var(--cb-fg);
+    font-family: var(--cb-mono);
+    font-size: 85%;
+    line-height: 1.45;
+}
+
+body .Post--full .styled-content pre code {
+    padding: 0;
+    background: none;
+    font-size: 100%;
+}
+
+/* Branch and commit links */
+body .Post--full .styled-content a.text--code {
+    padding: 0.2em 0.4em;
+    border-radius: var(--cb-radius);
+    background: rgba(9, 105, 218, 0.08);
+    font-family: var(--cb-mono);
+    font-size: 85%;
+}
+
+body .Post--full .styled-content a.text--code:hover {
+    text-decoration: none;
+    background: rgba(9, 105, 218, 0.15);
+}
+
+/* A note: a callout */
+body .Post--full .styled-content p.note {
+    padding: 12px 16px;
+    border: 1px solid #b6e3ff;
+    border-left: 4px solid var(--cb-accent);
+    border-radius: var(--cb-radius);
+    background: #ddf4ff;
+    color: var(--cb-fg);
+}
+
+body .Post--full .styled-content hr {
+    height: 0;
+    margin: 24px 0;
+    padding: 0;
+    border: 0;
+    border-top: 1px solid var(--cb-border);
+    background: none;
+    box-shadow: none;
+}
+
+body .Post--full .styled-content h1,
+body .Post--full .styled-content h2,
+body .Post--full .styled-content h3,
+body .Post--full .styled-content h4,
+body .Post--full .styled-content h5,
+body .Post--full .styled-content h6,
+body .Post--full .styled-content .styled-content__heading {
+    margin: 24px 0 12px;
+    color: var(--cb-fg);
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+body .Post--full .styled-content h1 { font-size: 20px; }
+body .Post--full .styled-content h2 { font-size: 18px; }
+body .Post--full .styled-content h3 { font-size: 16px; }
+body .Post--full .styled-content h4,
+body .Post--full .styled-content h5,
+body .Post--full .styled-content h6 { font-size: 14px; }
+
+body .Post--full .styled-content > :first-child {
+    margin-top: 0;
+}
+
+body .Post--full .styled-content blockquote {
+    margin: 0 0 16px;
+    padding: 0 16px;
+    border-left: 4px solid var(--cb-border);
+    color: var(--cb-muted);
+}
+
+/* Tables: Codebase wraps them in .table-wrapper and uses td for the header cells. */
+body .Post--full .styled-content .table-wrapper {
+    margin: 0 0 16px;
+    overflow: auto;
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+}
+
+body .Post--full .styled-content table.styled-table {
+    width: 100%;
+    min-width: 100%;
+    margin: 0;
+    border: 0;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+body .Post--full .styled-content table.styled-table thead tr {
+    border-bottom: 1px solid var(--cb-border);
+    background: var(--cb-canvas-subtle);
+    color: var(--cb-muted);
+}
+
+body .Post--full .styled-content table.styled-table thead td,
+body .Post--full .styled-content table.styled-table th {
+    padding: 8px 12px;
+    font-weight: 600;
+}
+
+body .Post--full .styled-content table.styled-table tbody tr {
+    border-bottom: 1px solid var(--cb-border-muted);
+}
+
+body .Post--full .styled-content table.styled-table tbody tr:last-child {
+    border-bottom: 0;
+}
+
+body .Post--full .styled-content table.styled-table tbody td {
+    padding: 8px 12px;
+}
+
+body .Post--full .styled-content table.styled-table td + td,
+body .Post--full .styled-content table.styled-table th + th {
+    border-left: 1px solid var(--cb-border-muted);
+}
+
+/* Repository list ---------------------------------------------------------------
+   Repositories as cards in two columns: name and summary, the type as a pill
+   and the number of commits and the size in a footer with icons. */
+
+body #content .grid__row > ul.layout-list:has(.repo-li) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+body #content .grid__row > ul.layout-list:has(.repo-li):before,
+body #content .grid__row > ul.layout-list:has(.repo-li):after {
+    display: none;
+}
+
+body #content .grid__row > ul.layout-list > .grid__column {
+    float: none;
+    width: auto;
+    margin: 0;
+    padding: 0;
+}
+
+body #content .repo-li {
+    height: 100%;
+    margin: 0;
+}
+
+body #content .repo-li .repo-li__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-sizing: border-box;
+    height: 100%;
+    min-height: 112px;
+    padding: 16px;
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    background: #fff;
+    color: var(--cb-fg);
+}
+
+body #content .repo-li .repo-li__inner:hover {
+    border-color: var(--cb-subtle);
+    background: var(--cb-canvas-subtle);
+    text-decoration: none;
+}
+
+body #content .repo-li--git .repo-li__inner {
+    border-left-width: 1px;
+}
+
+body #content .repo-li .repo-li__title {
+    padding-right: 56px;
+    color: var(--cb-accent);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+}
+
+body #content .repo-li:hover .repo-li__title {
+    text-decoration: underline;
+}
+
+body #content .repo-li .repo-li__summary {
+    margin: 0;
+    color: var(--cb-muted);
+    font-size: 13px;
+    line-height: 20px;
+}
+
+body #content .repo-li .repo-li__summary:empty {
+    display: none;
+}
+
+body #content .repo-li .repo-li__type {
+    top: 16px;
+    right: 16px;
+    padding: 0 8px;
+    border: 1px solid var(--cb-border);
+    border-radius: 2em;
+    background: none;
+    color: var(--cb-muted);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 18px;
+    text-transform: none;
+}
+
+body #content .repo-li .repo-li__footer {
+    position: static;
+    width: auto;
+    margin-top: auto;
+    padding: 12px 0 0;
+    border-top: 0;
+}
+
+body #content .repo-li .repo-li__footer ul {
+    display: flex;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+body #content .repo-li .repo-li__stat {
+    float: none;
+    margin: 0;
+    color: var(--cb-muted);
+    font-size: 12px;
+    font-weight: 400;
+}
+
+body #content .repo-li .repo-li__stat.u-float-right {
+    margin-left: auto;
+}
+
+/* Sidebar */
+body.repositories #content .right .sidebar__heading,
+body #content .right .sidebar__heading.heading--zeta {
+    margin: 0 0 8px;
+    color: var(--cb-muted);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 20px;
+}
+
+body #content .right .sidebar__content {
+    color: var(--cb-muted);
+    font-size: 13px;
+    line-height: 20px;
+}
+
+body #content .right .sidebar__content p {
+    margin: 0 0 8px;
+}
+
+body #content .right .square-list {
+    margin: 0 0 8px;
+    padding-left: 16px;
+    list-style: disc;
+}
+
+body #content .right .square-list li {
+    margin: 0;
+    padding: 0;
+    background: none;
+}
+
+body #content .grid__row:has(.repo-li) {
+    margin: 0;
+}
+
+/* The clearfix pseudo elements would become flex items. */
+body #content .repo-li__footer ul:before,
+body #content .repo-li__footer ul:after {
+    display: none;
+}
+
+/* Several companies: the title is a module of its own, each company has a
+   smaller heading and its own row of avatars. */
+body #content .ProjectMembers {
+    margin-bottom: 16px;
+}
+
+body #content .ProjectMembers:has(+ :not(.ProjectMembers)) {
+    margin-bottom: 24px;
+}
+
+body #content .ProjectMembers--title {
+    margin-bottom: 8px;
+}
+
+body #content .ProjectMembers .sidebar__heading.text--small {
+    margin: 0 0 8px;
+    color: var(--cb-subtle);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+}
+
+body #content .ProjectMembers--title .sidebar__heading {
+    margin: 0;
+}
+
+/* Dashboard: "Your Projects" in the sidebar ------------------------------------- */
+
+/* The organisation logo is already in the site header. */
+body #content .right .account-logo {
+    display: none;
+}
+
+/* A long list scrolls inside the sidebar instead of pushing everything down. */
+body #content .right .project-list {
+    max-height: 320px;
+    /* The hover highlight reaches 8px outside the text, so the text lines up with the heading. */
+    margin: 0 -8px 24px;
+    padding: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    list-style: none;
+}
+
+body #content .right .project-list__item,
+body #content .right .project-list__item + .project-list__item {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+body #content .right .project-list__inner {
+    display: block;
+    padding: 6px 8px;
+    border-radius: var(--cb-radius);
+    color: var(--cb-fg);
+    font-size: 14px;
+    line-height: 20px;
+}
+
+body #content .right .project-list__inner:hover {
+    background: var(--cb-canvas-subtle);
+    text-decoration: none;
+}
+
+/* No project icons in this list. */
+body #content .right .project-list__img {
+    display: none;
+}
+
+/* Dashboard: recent activity summary --------------------------------------------- */
+
+body #content .DashboardSummary {
+    margin-bottom: 24px;
+}
+
+body #content .DashboardSummary .sidebar__heading {
+    margin: 0 0 8px;
+    color: var(--cb-muted);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 20px;
+}
+
+body #content .DashboardSummary__tiles {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+body #content .DashboardSummary__tile {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 12px;
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    background: var(--cb-canvas-subtle);
+}
+
+body #content .DashboardSummary__tile strong {
+    color: var(--cb-fg);
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 28px;
+}
+
+body #content .DashboardSummary__tile span {
+    color: var(--cb-muted);
+    font-size: 12px;
+    line-height: 16px;
+}
+
+body #content .DashboardSummary__subheading {
+    margin: 16px 0 8px;
+    color: var(--cb-muted);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 20px;
+}
+
+body #content .DashboardSummary__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* A row shows how busy the project is, compared to the busiest one, as a soft bar behind it. */
+body #content .DashboardSummary__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 0 0 2px;
+    padding: 4px 8px;
+    border-radius: var(--cb-radius);
+    background: linear-gradient(90deg, rgba(9, 105, 218, 0.1) var(--share), transparent var(--share));
+    font-size: 13px;
+    line-height: 20px;
+}
+
+body #content .DashboardSummary__row a {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--cb-fg);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body #content .DashboardSummary__row a:hover {
+    color: var(--cb-accent);
+}
+
+body #content .DashboardSummary__row span {
+    flex: none;
+    color: var(--cb-muted);
+    font-size: 12px;
+}
+
+body #content .DashboardSummary__people {
+    display: flex;
+    gap: 8px;
+}
+
+body #content .DashboardSummary__person {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    overflow: hidden;
+    border-radius: 50%;
+    background: var(--cb-border-muted);
+    color: var(--cb-muted);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+body #content .DashboardSummary__person img {
+    display: block;
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+}
+
+body #content .DashboardSummary__note {
+    margin: 12px 0 0;
+    color: var(--cb-subtle);
+    font-size: 12px;
+}
+
+/* Projects ("Browse Projects") ------------------------------------------------------
+   Underlined tabs, one section per company and the projects as small cards. */
+
+body #content .large-tabs {
+    display: flex;
+    gap: 4px;
+    margin: 0 0 16px;
+    overflow: visible;
+    border-bottom: 1px solid var(--cb-border-muted);
+    list-style: none;
+}
+
+body #content .large-tabs:before,
+body #content .large-tabs:after {
+    display: none;
+}
+
+body #content .large-tabs__tab,
+body #content .large-tabs__tab:first-of-type,
+body #content .large-tabs__tab:last-of-type {
+    margin: 0;
+    border-radius: 0;
+}
+
+body #content .large-tabs__link,
+body #content .large-tabs__tab:last-of-type .large-tabs__link {
+    float: none;
+    margin-bottom: -1px;
+    padding: 10px 12px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: none;
+    color: var(--cb-muted);
+    font-size: 14px;
+    font-weight: 400;
+}
+
+body #content .large-tabs__link:hover {
+    background: none;
+    color: var(--cb-fg);
+    text-decoration: none;
+}
+
+body #content .large-tabs__link.is-active,
+body #content .large-tabs__link.is-active:hover {
+    border-bottom-color: #f78166;
+    background: none;
+    color: var(--cb-fg);
+    font-weight: 600;
+}
+
+body #content .ProjectGroup,
+body #content .ProjectGroup + .ProjectGroup {
+    margin: 0 0 24px;
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+}
+
+body #content .ProjectGroup__heading {
+    margin: 0 0 8px;
+    color: var(--cb-muted);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 20px;
+}
+
+body #content .ProjectGroup .grid__row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 0;
+}
+
+body #content .ProjectGroup .grid__row:before,
+body #content .ProjectGroup .grid__row:after {
+    display: none;
+}
+
+body #content .ProjectGroup .grid__column {
+    float: none;
+    width: auto;
+    margin: 0;
+    padding: 0;
+}
+
+body #content .Project {
+    box-sizing: border-box;
+    height: 100%;
+    margin: 0;
+    padding: 12px 12px 12px 40px;
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    background-color: #fff;
+    background-position: 14px 15px;
+    background-repeat: no-repeat;
+    background-size: 16px 16px;
+}
+
+body #content .Project:hover {
+    border-color: var(--cb-subtle);
+    background-color: var(--cb-canvas-subtle);
+}
+
+body #content .Project__name {
+    margin: 0 0 4px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+}
+
+body #content .Project__link {
+    color: var(--cb-accent);
+}
+
+body #content .Project__link:hover {
+    text-decoration: underline;
+}
+
+/* Status as a pill */
+body #content .Project p {
+    display: inline-block;
+    margin: 0;
+    padding: 0 8px;
+    border: 1px solid var(--cb-border);
+    border-radius: 2em;
+    color: var(--cb-muted);
+    font-size: 12px;
+    line-height: 18px;
+}
+
+body #content .Project p.text--positive {
+    border-color: #aceebb;
+    background: #dafbe1;
+    color: #1a7f37;
+}
+
+/* Initials instead of a placeholder avatar ------------------------------------------ */
+
+/* !important: the rules for the avatar images in the different places style the element they replace. */
+body .InitialsAvatar {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    box-sizing: border-box;
+    width: var(--size, 24px) !important;
+    height: var(--size, 24px) !important;
+    border-radius: 50% !important;
+    background: hsl(var(--hue) 45% 88%);
+    color: hsl(var(--hue) 45% 28%);
+    font-family: var(--cb-font);
+    font-size: calc(var(--size, 24px) * 0.4) !important;
+    font-weight: 600;
+    line-height: 1 !important;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    user-select: none;
+    vertical-align: middle;
+}
+
+/* A branch or tag that was created or deleted, in the details of a push. */
+body #content #feed li.event .expansion p.ref-change {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 4px;
+    padding: 0;
+    color: var(--cb-muted);
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 20px;
+}
+
+body #content #feed li.event .expansion p.ref-change b {
+    margin: 0;
+    padding: 0 6px;
+    border-radius: var(--cb-radius);
+    background: rgba(9, 105, 218, 0.08);
+    color: var(--cb-accent);
+    font-family: var(--cb-mono);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+body #content #feed li.event .expansion p.ref-change.created {
+    color: var(--cb-success);
+    font-size: 13px;
+}
+
+body #content #feed li.event .expansion p.ref-change.created b {
+    background: #dafbe1;
+    color: #1a7f37;
+}
+
+body #content #feed li.event .expansion p.ref-change.deleted {
+    color: var(--cb-danger);
+}
+
+body #content #feed li.event .expansion p.ref-change.deleted b {
+    background: #ffebe9;
+    color: var(--cb-danger);
 }

@@ -123,3 +123,37 @@ describe('project overview ticket bar', () => {
         expect(document.querySelector('.TicketBar')).toBeNull();
     });
 });
+
+describe('project overview members with several companies', () => {
+    const company = (name, users) => `
+<div class="sidebar__module"><h4 class="sidebar__heading text--small">${name}</h4><div class="box"><ul class="layout-list">
+  ${users.map((u) => `<li class="block-item block-item--has-img"><a class="block-item__inner block-item__link" href="#">${u}<img class="block-item__img"></a></li>`).join('')}
+</ul></div></div>`;
+
+    beforeEach(() => {
+        document.body.innerHTML = projectHeader + `<div id="content"><div class="right">
+  <div class="sidebar__module"><h4 class="sidebar__heading">Who's on this project?</h4></div>
+  ${company('Acme', ['Ada Lovelace'])}
+  ${company('Globex', ['Grace Hopper', 'Alan Turing'])}
+</div></div>`;
+        initProjects();
+    });
+
+    it('styles every company as members, with a tooltip on each avatar', () => {
+        const modules = document.querySelectorAll('.ProjectMembers');
+        expect(modules.length).toBe(3);
+        const titles = [...document.querySelectorAll('.ProjectMembers .block-item__link')].map((a) => a.title);
+        expect(titles).toEqual(['Ada Lovelace', 'Grace Hopper', 'Alan Turing']);
+    });
+
+    it('marks the title module that comes alone before the companies', () => {
+        const title = document.querySelector('.ProjectMembers--title');
+        expect(title.textContent).toContain("Who's on this project?");
+        expect(document.querySelectorAll('.ProjectMembers--title').length).toBe(1);
+    });
+
+    it('is idempotent', () => {
+        initProjects();
+        expect(document.querySelectorAll('.ProjectMembers').length).toBe(3);
+    });
+});

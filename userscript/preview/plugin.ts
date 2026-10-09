@@ -55,6 +55,8 @@ function transformPage(html: string, keepScripts: boolean): string {
     // (and SingleFile markers inside it). Drop it, the preview injects the live version.
     html = html.replace(/<style\b[^>]*>(?:(?!<\/style>)[\s\S])*?generate-icons\.mjs[\s\S]*?<\/style>/gi, '');
     html = html.replace(/<br hidden data-single-file-hidden-content>/gi, '');
+    // ...and its loading flag, if the page was saved while the ticket was still loading.
+    html = html.replace(/\bcb-ticket-loading\b/g, '');
     // Saved pages can carry a Content Security Policy that blocks our scripts.
     html = html.replace(/<meta\b[^>]*http-equiv=["']?content-security-policy["']?[^>]*>/gi, '');
     // Relative asset URLs (saved "complete" pages) are served from /__pages/.
@@ -145,8 +147,11 @@ export function previewPlugin(): Plugin {
                     return void res.end(await server.transformIndexHtml(req.url, indexPage(pages)));
                 }
 
-                // Saved pages in preview/pages win over samples.
-                const page = pages.find((p) => p.urlPath === wanted);
+                // Saved pages in preview/pages win over samples. When several pages share a URL,
+                // `?page=<file name>` picks one of them.
+                const byName = url.searchParams.get('page');
+                const page = (byName && pages.find((p) => p.file === byName && p.urlPath === wanted))
+                    || pages.find((p) => p.urlPath === wanted);
                 if (page) {
                     const html = fs.readFileSync(path.join(page.dir, page.file), 'utf-8');
                     const out = transformPage(html, url.searchParams.has('js'));

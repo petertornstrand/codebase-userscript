@@ -4,8 +4,14 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import './styles/Global.css';
 import './styles/Modern.css';
 import './styles/Icons.css';
+// Loaded here, not with the lazily imported ticket module: the built script has a single stylesheet
+// that applies on every page, and the preview should behave the same.
+import './styles/Ticket.css';
+import './styles/CopyButton.css';
 import Notice from './Notice';
 import initProjects from './pages/projects';
+import initAvatars from './avatars';
+import initDashboard from './pages/dashboard';
 import initMilestones from './pages/milestones';
 import initTickets from './pages/tickets';
 import initUsers from './pages/users';
@@ -53,6 +59,10 @@ async function main() {
     const path = window.location.pathname.replace(/^\/+|\/+$/g, '');
     await awaitElement('body');
 
+    initAvatars();
+    if (path === '') {
+        initDashboard();
+    }
     if (/^users\//.test(path)) {
         initUsers();
     }

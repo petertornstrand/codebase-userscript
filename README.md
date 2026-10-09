@@ -25,6 +25,13 @@ font and bitmaps, rounded comment cards and boxes, buttons, tabs, pagination
 and tables. It is applied with CSS on top of Codebase's own markup, so the
 original links and scripts keep working.
 
+### Avatars
+
+Codebase's grey placeholder avatar, which people without a picture get, is
+replaced everywhere (feed, comments, members, participants) by their initials
+on a colour that follows their name. A placeholder is recognised by how the
+image looks: bright, grey and flat. Real pictures are left alone.
+
 ### Ticket page
 
 Ticket pages are rebuilt using data from the Codebase API (see
@@ -121,6 +128,20 @@ chart.
 
 A search field with a button, modern pagination and a table with fixed
 columns, status pills and a tidy footer with the Kanban and CSV links.
+
+### Dashboard
+
+- **Recent activity** at the top of the right sidebar, derived from the activity
+  feed that is on the page: the number of events, tickets and commits, the
+  busiest projects and the most active people.
+- **Your Projects** is a plain list that scrolls when it is long.
+- The activity feed gets the same clean layout as the project overview, including
+  created and deleted branches in the details of a push.
+
+### Browse Projects
+
+The "Your Projects" page has underlined tabs (Active, On Hold, Archived), one
+section per company and the projects as small cards with a status pill.
 
 ### Project browser
 

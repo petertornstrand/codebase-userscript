@@ -98,10 +98,10 @@ export function DecoratedTicketLinks({ tickets, projectPermalink }) {
 export function Avatar({ user, size = 'medium', source = null }) {
     let avatar;
     if (source) {
-        avatar = <AvatarClone source={source} size={size} id={user.id} />;
+        avatar = <AvatarClone source={source} size={size} id={user.id} name={user.fullName} />;
     }
     else if (user.profileImage) {
-        avatar = AvatarImage({ src: user.profileImage.large, alt: user.name, size: size, id: user.id });
+        avatar = AvatarImage({ src: user.profileImage.large, alt: user.fullName ?? user.name, size: size, id: user.id });
     }
     else {
         avatar = AvatarInitials({ initials: user.initials, color: user.color, size: size, id: user.id });
@@ -203,15 +203,25 @@ function AvatarInitials({ initials, id, color = 'darkblue', size = 'medium' }) {
  *
  * @return {JSX.Element}
  */
-function AvatarClone({ source, id, size = 'medium' }) {
+function AvatarClone({ source, id, name, size = 'medium' }) {
     const ref = useRef(null);
 
     useEffect(() => {
         const image = source.cloneNode(true);
-        image.className = 'gravatar gravatar--' + size;
-        image.removeAttribute('width');
-        image.removeAttribute('height');
-        image.dataset.id = id;
+        const sizes = { small: 16, medium: 32, large: 56 };
+        if (source.classList.contains('InitialsAvatar')) {
+            // Initials instead of a placeholder, see avatars.js.
+            image.className = 'InitialsAvatar';
+            image.style.setProperty('--size', `${sizes[size] ?? 32}px`);
+        } else {
+            image.className = 'gravatar gravatar--' + size;
+            image.removeAttribute('width');
+            image.removeAttribute('height');
+            image.dataset.id = id;
+            // So that a placeholder can be replaced by the initials of this user, see avatars.js.
+            if (name) image.dataset.name = name;
+            delete image.dataset.avatarChecked;
+        }
         ref.current.replaceChildren(image);
     }, [source]);
 

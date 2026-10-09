@@ -171,12 +171,13 @@ export function getCodebaseConfig() {
  *
  * @param {string} fullName
  *
- * @return {HTMLImageElement|null}
+ * @return {HTMLElement|null} The image, or the initials avatar that replaced it.
  */
 export function findCodebaseAvatar(fullName) {
-    const images = document.querySelectorAll('#content img.Post__avatar, #content img.ThreadChanges__avatar');
-    return Array.from(images).find((img) => {
-        const name = img.parentElement.querySelector('.text--bold > a.text--link');
+    // An avatar that was a placeholder is an initials avatar by now (see avatars.js), copy that too.
+    const avatars = document.querySelectorAll('#content .Post__avatar, #content .ThreadChanges__avatar');
+    return Array.from(avatars).find((avatar) => {
+        const name = avatar.parentElement.querySelector('.text--bold > a.text--link');
         return name?.textContent.trim() === fullName;
     }) ?? null;
 }

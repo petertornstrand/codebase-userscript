@@ -20,6 +20,15 @@ describe('findCodebaseAvatar', () => {
     it('returns null for unknown users', () => {
         expect(findCodebaseAvatar('Nobody')).toBeNull();
     });
+
+    it('finds the initials avatar that replaced a placeholder', () => {
+        const image = document.getElementById('a');
+        const initials = document.createElement('span');
+        initials.className = 'Post__avatar InitialsAvatar';
+        initials.id = 'initials';
+        image.replaceWith(initials);
+        expect(findCodebaseAvatar('Ada Lovelace').id).toBe('initials');
+    });
 });
 
 describe('onlyMentionedTickets', () => {

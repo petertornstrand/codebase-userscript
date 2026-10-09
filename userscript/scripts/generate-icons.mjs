@@ -149,6 +149,9 @@ css += `body .preference-link__inner:before {
     background-color: currentColor;
 ${maskRule}${mask('rss')}}\n\n`;
 css += `body .preference-link--group .preference-link__inner:before {\n${mask('list-unordered')}}\n\n`;
+css += `body .preference-link--display .preference-link__inner:before {\n${mask('fold')}}\n\n`;
+css += `body .preference-link--global .preference-link__inner:before {\n${mask('repo')}}\n\n`;
+
 
 css += `/* Ticket list quick search --------------------------------------------- */\n\n`;
 css += `body #content .quick-search input.query {\n    background-image: ${svgColor('search', '#59636e')};\n}\n\n`;
@@ -167,6 +170,32 @@ ${maskRule}}\n\n`;
 css += `body.milestones #content #milestones li.ms h4 a:before {\n    width: 16px;\n    height: 16px;\n    vertical-align: -3px;\n${mask('milestone')}}\n\n`;
 css += `body.milestones #content #milestones li.ms p.details .start:before,\nbody.milestones #content #milestones li.ms p.details .due:before {\n${mask('calendar')}}\n\n`;
 css += `body.milestones #content #milestones li.ms p.details .responsible:before {\n${mask('person')}}\n\n`;
+
+css += `/* Repository list ------------------------------------------------------- */\n\n`;
+css += `body #content .repo-li__stat:before {
+    content: "";
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 6px;
+    vertical-align: -2px;
+    background-color: currentColor;
+${maskRule}}\n\n`;
+css += `body #content .repo-li__stat:first-child:before {\n${mask('git-commit')}}\n\n`;
+css += `body #content .repo-li__stat.u-float-right:before {\n${mask('database')}}\n\n`;
+
+css += `/* Branch and tag changes in the activity feed ----------------------------- */\n\n`;
+css += `body #content #feed li.event .expansion p.ref-change {
+    background-image: none;
+}\n\n`;
+css += `body #content #feed li.event .expansion p.ref-change:before {
+    content: "";
+    flex: none;
+    width: 14px;
+    height: 14px;
+    background-color: currentColor;
+${maskRule}${mask('git-branch')}}\n\n`;
+css += `body #content #feed li.event .expansion p.ref-change.deleted:before {\n${mask('trash')}}\n\n`;
 
 writeFileSync('src/styles/Icons.css', css.trimEnd() + '\n');
 console.log('Wrote src/styles/Icons.css');

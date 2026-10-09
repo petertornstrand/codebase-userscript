@@ -50,22 +50,40 @@ function addOpenFilterToTickets() {
 /**
  * Show the project members as a row of avatars, like the ticket participants.
  * The names move to the avatar tooltips.
+ *
+ * With several companies Codebase lists each company in a module of its own,
+ * with the company name as heading, and puts "Who's on this project?" in a
+ * module of its own before them. All of them are styled as members.
  */
 function projectMembers() {
-    const list = document.querySelector('#content .right .block-item--has-img')?.closest('ul');
-    const module = list?.closest('.sidebar__module');
-    if (!module || module.dataset.members) {
+    const lists = [...document.querySelectorAll('#content .right .block-item--has-img')]
+        .map((item) => item.closest('ul'))
+        .filter((list, index, all) => list && all.indexOf(list) === index);
+    if (!lists.length) {
         return;
     }
-    module.dataset.members = 'true';
-    module.classList.add('ProjectMembers');
-    list.querySelectorAll('.block-item__link').forEach((link) => {
-        const name = link.firstChild?.textContent.trim();
-        if (name) {
-            link.title = name;
-            link.setAttribute('aria-label', name);
+
+    lists.forEach((list) => {
+        const module = list.closest('.sidebar__module');
+        if (!module || module.dataset.members) {
+            return;
         }
+        module.dataset.members = 'true';
+        module.classList.add('ProjectMembers');
+        list.querySelectorAll('.block-item__link').forEach((link) => {
+            const name = link.firstChild?.textContent.trim();
+            if (name) {
+                link.title = name;
+                link.setAttribute('aria-label', name);
+            }
+        });
     });
+
+    // The heading that comes alone in a module before the companies.
+    const heading = lists[0].closest('.sidebar__module')?.previousElementSibling;
+    if (heading?.querySelector('.sidebar__heading') && !heading.querySelector('ul')) {
+        heading.classList.add('ProjectMembers', 'ProjectMembers--title');
+    }
 }
 
 /**
