@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 import { createRoot } from 'react-dom/client';
-import { log, findCodebaseAvatar, findNotificationChannels } from './utils';
+import { log, findCodebaseAvatar, findNotificationChannels, onlyMentionedTickets } from './utils';
 import CopyButton from './CopyButton';
 import Notice from './Notice';
 import { DecoratedTicketLinks, Avatar, api, dateFormat, dateTimeFormat } from './Global';
@@ -20,6 +20,12 @@ export default function Ticket() {
         return await api.getContext(urlContext.project_id, id);
     }, { refetchOnMount: false, refetchOnWindowFocus: false});
 
+    // Only the original page is in the DOM until the first render with data, so this sees the thread as Codebase rendered it.
+    const referencedTickets = useMemo(
+        () => onlyMentionedTickets(data?.referencedTickets, id),
+        [data, id]
+    );
+
     // The skeleton (see Modern.css) stands in for the page until we have data or an error.
     useEffect(() => {
         if (!isLoading) document.documentElement.classList.remove('cb-ticket-loading');
@@ -36,8 +42,8 @@ export default function Ticket() {
     return (
         <div className="ReactComponentWrapper">
             <Subject ticket={data.ticket} />
-            <Sidebar data={data} projektPermalink={urlContext.project_id} />
-            <DecoratedTicketLinks tickets={data.referencedTickets} />
+            <Sidebar data={{ ...data, referencedTickets }} projektPermalink={urlContext.project_id} />
+            <DecoratedTicketLinks tickets={referencedTickets} />
         </div>
     );
 }

@@ -215,4 +215,22 @@ to this ticket.
             expect(block()).toBeUndefined();
         });
     });
+
+    describe('referenced tickets', () => {
+        const link = (id) => ({ id, htmlLink: `<a href="#${id}" class="TicketLink" data-id="${id}">#${id}</a>` });
+        const listed = () => [...document.querySelectorAll('.ReferencedTickets li')].map((li) => li.textContent.trim());
+
+        it('lists only tickets that the thread refers to', async () => {
+            document.getElementById('post-3').innerHTML = 'last, see #2';
+            api.getContext.mockResolvedValueOnce({ ...ticketContext, referencedTickets: [link(2), link(3), link(42)] });
+            await mount();
+            expect(listed()).toEqual(['#2']);
+        });
+
+        it('shows no list when the API returns unrelated tickets', async () => {
+            api.getContext.mockResolvedValueOnce({ ...ticketContext, referencedTickets: [link(5), link(6)] });
+            await mount();
+            expect(document.querySelector('.ReferencedTickets')).toBeNull();
+        });
+    });
 });

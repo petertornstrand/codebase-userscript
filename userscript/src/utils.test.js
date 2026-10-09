@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { findCodebaseAvatar } from './utils';
+import { findCodebaseAvatar, onlyMentionedTickets } from './utils';
 
 beforeEach(() => {
     document.body.innerHTML = `<div id="content">
@@ -19,5 +19,45 @@ describe('findCodebaseAvatar', () => {
 
     it('returns null for unknown users', () => {
         expect(findCodebaseAvatar('Nobody')).toBeNull();
+    });
+});
+
+describe('onlyMentionedTickets', () => {
+    const tickets = [1, 2, 3, 42, 99].map((id) => ({ id }));
+
+    const thread = (html) => {
+        document.body.innerHTML = `<div class="Thread__timeline">${html}</div>`;
+    };
+
+    it('keeps tickets that are linked or mentioned in the thread', () => {
+        thread('<p>See <a href="https://x.test/projects/acme/tickets/2">ticket</a> and #3.</p>');
+        expect(onlyMentionedTickets(tickets, 42).map((t) => t.id)).toEqual([2, 3]);
+    });
+
+    it('drops tickets nothing refers to, like a fallback list of the latest tickets', () => {
+        thread('<p>Numbers like 1 828 and 2 542 are not references.</p>');
+        expect(onlyMentionedTickets(tickets, 42)).toEqual([]);
+    });
+
+    it('never returns the ticket itself', () => {
+        thread('<p>This is #42.</p>');
+        expect(onlyMentionedTickets(tickets, 42)).toEqual([]);
+    });
+
+    it('ignores a # at the start of a line, it is a Markdown heading', () => {
+        thread('<h1>#2 Heading</h1><p>#3 first</p>');
+        expect(onlyMentionedTickets(tickets, 42)).toEqual([]);
+    });
+
+    it('does not match a longer number', () => {
+        thread('<p>Ticket #299 and #10000.</p>');
+        expect(onlyMentionedTickets(tickets, 42)).toEqual([]);
+    });
+
+    it('returns nothing without a thread or tickets', () => {
+        document.body.innerHTML = '';
+        expect(onlyMentionedTickets(tickets, 42)).toEqual([]);
+        thread('#1');
+        expect(onlyMentionedTickets(undefined, 42)).toEqual([]);
     });
 });

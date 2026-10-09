@@ -199,3 +199,34 @@ export function findNotificationChannels() {
         rel: element.getAttribute('rel'),
     }));
 }
+
+/**
+ * Keep only the tickets that are actually referenced in the ticket thread.
+ *
+ * The API can return tickets that nothing in the thread refers to, for example
+ * the project's latest tickets when the ticket has no references at all. A
+ * reference shows up on the page as a link to the ticket (Codebase turns `#123`
+ * and ticket URLs into links) or as `#123` after a space in the text. The ticket itself is
+ * never a reference.
+ *
+ * @export
+ * @param {Array<{id: number}>} tickets
+ * @param {number} ticketId - The ticket that is displayed.
+ * @return {Array<{id: number}>}
+ */
+export function onlyMentionedTickets(tickets, ticketId) {
+    const thread = document.querySelector('.Thread__timeline');
+    if (!thread || !tickets?.length) {
+        return [];
+    }
+    const mentioned = new Set();
+    thread.querySelectorAll('a[href*="/tickets/"]').forEach((link) => {
+        const match = link.getAttribute('href').match(/\/tickets\/(\d+)/);
+        if (match) mentioned.add(Number(match[1]));
+    });
+    // Same rule as the gateway: a `#123` after a space or tab. A `#` at the start of a line is a Markdown heading.
+    for (const match of thread.textContent.matchAll(/(?<=[^\S\r\n])#(\d{1,4})\b/g)) {
+        mentioned.add(Number(match[1]));
+    }
+    return tickets.filter((ticket) => ticket.id !== ticketId && mentioned.has(Number(ticket.id)));
+}
