@@ -153,5 +153,20 @@ css += `body .preference-link--group .preference-link__inner:before {\n${mask('l
 css += `/* Ticket list quick search --------------------------------------------- */\n\n`;
 css += `body #content .quick-search input.query {\n    background-image: ${svgColor('search', '#59636e')};\n}\n\n`;
 
+css += `/* Milestone list -------------------------------------------------------- */\n\n`;
+css += `body.milestones #content #milestones li.ms h4 a:before,
+body.milestones #content #milestones li.ms p.details span:before {
+    content: "";
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 6px;
+    vertical-align: -2px;
+    background-color: currentColor;
+${maskRule}}\n\n`;
+css += `body.milestones #content #milestones li.ms h4 a:before {\n    width: 16px;\n    height: 16px;\n    vertical-align: -3px;\n${mask('milestone')}}\n\n`;
+css += `body.milestones #content #milestones li.ms p.details .start:before,\nbody.milestones #content #milestones li.ms p.details .due:before {\n${mask('calendar')}}\n\n`;
+css += `body.milestones #content #milestones li.ms p.details .responsible:before {\n${mask('person')}}\n\n`;
+
 writeFileSync('src/styles/Icons.css', css.trimEnd() + '\n');
 console.log('Wrote src/styles/Icons.css');

@@ -35,3 +35,29 @@ describe('milestone progress bar', () => {
         expect(document.querySelector('.TicketBar')).toBeNull();
     });
 });
+
+describe('milestone list', () => {
+    const milestone = (open, closed) => `
+<li class="ms"><div class="tickets"><ul>
+  <li class="open"><a><b>${open}</b> open</a></li>
+  <li class="closed"><a><b>${closed}</b> closed</a></li>
+  <li class="pie"></li>
+</ul></div></li>`;
+
+    beforeEach(() => {
+        document.body.innerHTML = `<ul id="milestones">${milestone(33, 3)}${milestone(0, 0)}</ul>`;
+    });
+
+    it('adds a progress bar to every milestone', () => {
+        initMilestones();
+        const bars = [...document.querySelectorAll('.MilestoneProgress')];
+        expect(bars.map((b) => b.querySelector('.TicketBar__caption').textContent)).toEqual(['8% complete', '0% complete']);
+        expect(bars[0].querySelector('.TicketBar__closed').style.width).toBe('8%');
+    });
+
+    it('is idempotent', () => {
+        initMilestones();
+        initMilestones();
+        expect(document.querySelectorAll('.MilestoneProgress').length).toBe(2);
+    });
+});

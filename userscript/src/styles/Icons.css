@@ -421,3 +421,34 @@ body .preference-link--group .preference-link__inner:before {
 body #content .quick-search input.query {
     background-image: url("data:image/svg+xml,%3Csvg%20fill%3D%22%2359636e%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M10.68%2011.74a6%206%200%200%201-7.922-8.982%206%206%200%200%201%208.982%207.922l3.04%203.04a.749.749%200%200%201-.326%201.275.749.749%200%200%201-.734-.215ZM11.5%207a4.499%204.499%200%201%200-8.997%200A4.499%204.499%200%200%200%2011.5%207Z%22%2F%3E%3C%2Fsvg%3E");
 }
+
+/* Milestone list -------------------------------------------------------- */
+
+body.milestones #content #milestones li.ms h4 a:before,
+body.milestones #content #milestones li.ms p.details span:before {
+    content: "";
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 6px;
+    vertical-align: -2px;
+    background-color: currentColor;
+    -webkit-mask: var(--icon) center / contain no-repeat;
+    mask: var(--icon) center / contain no-repeat;
+}
+
+body.milestones #content #milestones li.ms h4 a:before {
+    width: 16px;
+    height: 16px;
+    vertical-align: -3px;
+    --icon: url("data:image/svg+xml,%3Csvg%20fill%3D%22black%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M7.75%200a.75.75%200%200%201%20.75.75V3h3.634c.414%200%20.814.147%201.13.414l2.07%201.75a1.75%201.75%200%200%201%200%202.672l-2.07%201.75a1.75%201.75%200%200%201-1.13.414H8.5v5.25a.75.75%200%200%201-1.5%200V10H2.75A1.75%201.75%200%200%201%201%208.25v-3.5C1%203.784%201.784%203%202.75%203H7V.75A.75.75%200%200%201%207.75%200Zm4.384%208.5a.25.25%200%200%200%20.161-.06l2.07-1.75a.248.248%200%200%200%200-.38l-2.07-1.75a.25.25%200%200%200-.161-.06H2.75a.25.25%200%200%200-.25.25v3.5c0%20.138.112.25.25.25h9.384Z%22%2F%3E%3C%2Fsvg%3E");
+}
+
+body.milestones #content #milestones li.ms p.details .start:before,
+body.milestones #content #milestones li.ms p.details .due:before {
+    --icon: url("data:image/svg+xml,%3Csvg%20fill%3D%22black%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M4.75%200a.75.75%200%200%201%20.75.75V2h5V.75a.75.75%200%200%201%201.5%200V2h1.25c.966%200%201.75.784%201.75%201.75v10.5A1.75%201.75%200%200%201%2013.25%2016H2.75A1.75%201.75%200%200%201%201%2014.25V3.75C1%202.784%201.784%202%202.75%202H4V.75A.75.75%200%200%201%204.75%200ZM2.5%207.5v6.75c0%20.138.112.25.25.25h10.5a.25.25%200%200%200%20.25-.25V7.5Zm10.75-4H2.75a.25.25%200%200%200-.25.25V6h11V3.75a.25.25%200%200%200-.25-.25Z%22%2F%3E%3C%2Fsvg%3E");
+}
+
+body.milestones #content #milestones li.ms p.details .responsible:before {
+    --icon: url("data:image/svg+xml,%3Csvg%20fill%3D%22black%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M10.561%208.073a6.005%206.005%200%200%201%203.432%205.142.75.75%200%201%201-1.498.07%204.5%204.5%200%200%200-8.99%200%20.75.75%200%200%201-1.498-.07%206.004%206.004%200%200%201%203.431-5.142%203.999%203.999%200%201%201%205.123%200ZM10.5%205a2.5%202.5%200%201%200-5%200%202.5%202.5%200%200%200%205%200Z%22%2F%3E%3C%2Fsvg%3E");
+}

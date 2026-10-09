@@ -111,10 +111,22 @@ Underlined tabs, cards for the description, properties and ticket stats, a
 progress bar instead of the pie chart, and one table per user with the
 tickets coloured by status.
 
+#### Milestones
+
+One card per milestone with the description, dates and who is responsible,
+tiles for new, open and closed tickets and a progress bar instead of the pie
+chart.
+
 #### Ticket list
 
 A search field with a button, modern pagination and a table with fixed
 columns, status pills and a tidy footer with the Kanban and CSV links.
+
+### Project browser
+
+The "Projects" popover in the site header is restyled: your projects with the
+number of tickets assigned to you, and all projects with a filter, status
+pills and the hover highlight.
 
 ### User pages
 

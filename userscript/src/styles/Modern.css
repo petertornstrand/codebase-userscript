@@ -2011,3 +2011,431 @@ body #content .meta-ticket-header .pagination span {
     padding: 0 8px;
     font-size: 13px;
 }
+
+/* Milestone list ---------------------------------------------------------------
+   One card per milestone: title, description and details on the left, ticket
+   counts on the right and a progress bar at the bottom. */
+
+body.milestones #content #milestones {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+body.milestones #content #milestones li.ms {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 24px;
+    align-items: start;
+    margin: 0;
+    padding: 16px;
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    background: #fff;
+    overflow: visible;
+}
+
+body.milestones #content #milestones li.ms.o,
+body.milestones #content #milestones li.ms.e {
+    background: #fff;
+}
+
+body.milestones #content #milestones li.ms h4,
+body.milestones #content #milestones li.ms p {
+    grid-column: 1;
+    margin: 0;
+    padding: 0;
+    background: none;
+    color: var(--cb-fg);
+    line-height: 20px;
+}
+
+body.milestones #content #milestones li.ms h4 {
+    margin-bottom: 4px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+body.milestones #content #milestones li.ms h4 a {
+    color: var(--cb-fg);
+}
+
+body.milestones #content #milestones li.ms h4 a:hover {
+    color: var(--cb-accent);
+    text-decoration: none;
+}
+
+body.milestones #content #milestones li.ms p.desc {
+    margin-bottom: 8px;
+    color: var(--cb-muted);
+    font-size: 14px;
+    white-space: pre-line;
+}
+
+body.milestones #content #milestones li.ms p.desc:empty {
+    display: none;
+}
+
+body.milestones #content #milestones li.ms p.details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    color: var(--cb-muted);
+    font-size: 13px;
+}
+
+body.milestones #content #milestones li.ms p.details span {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+body.milestones #content #milestones li.ms p.details b {
+    color: var(--cb-fg);
+    font-weight: 600;
+}
+
+body.milestones #content #milestones li.ms p.details a {
+    color: var(--cb-fg);
+}
+
+body.milestones #content #milestones li.ms p.details a:hover {
+    color: var(--cb-accent);
+}
+
+/* Ticket counts on the right: new, open and closed as small tiles, no pie chart. */
+body.milestones #content #milestones li.ms .tickets {
+    float: none;
+    grid-column: 2;
+    grid-row: 1 / span 4;
+    margin: 0;
+    text-align: left;
+}
+
+body.milestones #content #milestones li.ms .tickets ul {
+    display: flex;
+    gap: 8px;
+    margin: 0;
+    overflow: visible;
+}
+
+body.milestones #content #milestones li.ms .tickets ul li {
+    float: none;
+    margin: 0;
+}
+
+body.milestones #content #milestones li.ms .tickets ul li.pie {
+    display: none;
+}
+
+body.milestones #content #milestones li.ms .tickets ul li a,
+body.milestones #content #milestones li.ms.e .tickets ul li.closed a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 56px;
+    padding: 6px 10px;
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    background: var(--cb-canvas-subtle);
+    color: var(--cb-muted);
+    font-size: 11px;
+    line-height: 14px;
+    text-transform: none;
+}
+
+body.milestones #content #milestones li.ms .tickets ul li a:hover,
+body.milestones #content #milestones li.ms.e .tickets ul li.closed a:hover {
+    background: #eff2f5;
+    color: var(--cb-fg);
+}
+
+body.milestones #content #milestones li.ms .tickets ul li a b {
+    color: var(--cb-fg);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 24px;
+}
+
+body.milestones #content #milestones li.ms .tickets ul li.open a,
+body.milestones #content #milestones li.ms .tickets ul li.open a:hover {
+    background: var(--cb-canvas-subtle);
+    color: var(--cb-muted);
+}
+
+body.milestones #content #milestones li.ms .tickets ul li.open a b {
+    color: var(--cb-success);
+}
+
+body.milestones #content #milestones li.ms .tickets ul li.closed a b {
+    color: #8250df;
+}
+
+body.milestones #content #milestones li.ms .tickets ul li.add a,
+body.milestones #content #milestones li.ms .tickets ul li.add a:hover {
+    justify-content: center;
+    border-color: var(--cb-border);
+    background: var(--cb-canvas-subtle);
+    color: var(--cb-muted);
+}
+
+body.milestones #content #milestones li.ms .tickets ul li.add a b {
+    color: var(--cb-fg);
+}
+
+body.milestones #content #milestones li.ms .MilestoneProgress {
+    grid-column: 1 / -1;
+    margin-top: 12px;
+}
+
+body.milestones #content #milestones li.ms .MilestoneProgress .TicketBar {
+    margin-top: 0;
+}
+
+/* Sidebar */
+body.milestones #content .right .sidebar__heading {
+    margin: 0 0 8px;
+    color: var(--cb-muted);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 20px;
+}
+
+body.milestones #content .right .sidebar__content {
+    margin: 0 0 8px;
+    color: var(--cb-muted);
+    font-size: 13px;
+}
+
+body.milestones #content .page-intro {
+    margin-bottom: 16px;
+    padding: 12px 16px 12px 40px;
+    border: 1px solid var(--cb-border-muted);
+    border-radius: var(--cb-radius);
+    background-color: var(--cb-canvas-subtle);
+    color: var(--cb-muted);
+    font-size: 13px;
+}
+
+/* "Show all milestones" is a view toggle, not a primary action. */
+body.milestones #content .right .btn.btn--positive {
+    border-color: var(--cb-border);
+    background: var(--cb-canvas-subtle);
+    color: var(--cb-fg);
+}
+
+body.milestones #content .right .btn.btn--positive:hover {
+    background: #eff2f5;
+    color: var(--cb-fg);
+}
+
+/* Project browser (the "Projects" popover in the site header) ------------------
+   Two lists in a popover: your projects with the number of tickets assigned to
+   you, and all projects with a filter. */
+
+body .dropdown-block--selector {
+    right: -8px;
+    width: 720px;
+    max-width: calc(100vw - 32px);
+    transform: none;
+    border: 1px solid var(--cb-border);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(140, 149, 159, 0.2);
+    color: var(--cb-fg);
+    font-size: 14px;
+}
+
+body .dropdown-block--selector:before,
+body .dropdown-block--selector:after {
+    display: none;
+}
+
+body .dropdown-block--selector .dropdown-block__inner {
+    display: flex;
+    gap: 16px;
+    padding: 12px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+body .dropdown-block--selector .dropdown-block__inner:before,
+body .dropdown-block--selector .dropdown-block__inner:after {
+    display: none;
+}
+
+body .dropdown-block--selector .dropdown-block__region {
+    float: none;
+    min-width: 0;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+}
+
+body .dropdown-block--selector .dropdown-block__region--small {
+    flex: 0 0 38%;
+    width: auto;
+    max-height: 340px;
+}
+
+body .dropdown-block--selector .dropdown-block__region--large {
+    flex: 1;
+    width: auto;
+}
+
+body .dropdown-block--selector .dropdown-block__heading {
+    margin: 0 0 8px;
+    padding: 0 8px;
+    border: 0;
+    background: none;
+    color: var(--cb-muted);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 20px;
+}
+
+body .dropdown-block--selector .layout-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+body .dropdown-block--selector .dropdown-block__item {
+    display: flex;
+    align-items: center;
+    border: 0;
+}
+
+body .dropdown-block--selector .dropdown-block__item + .dropdown-block__item {
+    border: 0;
+}
+
+body #header .dropdown-block--selector .dropdown-block__link,
+body .dropdown-block--selector .dropdown-block__link {
+    display: block;
+    flex: 1;
+    min-width: 0;
+    float: none;
+    width: auto;
+    padding: 6px 8px 6px 34px;
+    border-radius: var(--cb-radius);
+    color: var(--cb-fg);
+    line-height: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body .dropdown-block--selector .dropdown-block__link.has-status {
+    padding-right: 76px;
+}
+
+body .dropdown-block--selector .dropdown-block__link:hover,
+body .dropdown-block--selector .is-hovered .dropdown-block__link {
+    background: var(--cb-canvas-subtle);
+    text-decoration: none;
+}
+
+body .dropdown-block--selector .dropdown-block__item-img {
+    left: 8px;
+}
+
+/* Ticket count assigned to you, as a small badge. */
+body .dropdown-block--selector .project-selector__ticket-count {
+    flex: none;
+    float: none;
+    min-width: 24px;
+    margin-left: 4px;
+    padding: 0 8px;
+    border: 1px solid var(--cb-border-muted);
+    border-radius: 2em;
+    background: var(--cb-canvas-subtle);
+    color: var(--cb-muted);
+    font-size: 12px;
+    line-height: 18px;
+    text-align: center;
+}
+
+body .dropdown-block--selector .project-selector__ticket-count:hover {
+    border-color: var(--cb-border);
+    color: var(--cb-fg);
+    text-decoration: none;
+}
+
+body .dropdown-block--selector .project-selector__description {
+    margin-left: 4px;
+    font-size: 12px;
+}
+
+/* Status as a pill. */
+body .dropdown-block--selector .project-selector__status {
+    right: 8px;
+    min-width: 0;
+    padding: 0 8px;
+    border: 1px solid var(--cb-border);
+    border-radius: 2em;
+    background: none;
+    color: var(--cb-muted);
+    font-size: 12px;
+    line-height: 18px;
+}
+
+body .dropdown-block--selector .project-selector__item--active .project-selector__status {
+    border-color: #aceebb;
+    background: #dafbe1;
+    color: #1a7f37;
+}
+
+/* Filter */
+body .dropdown-block--selector .project-selector__filter {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    padding: 0;
+    border: 0;
+    background: none;
+}
+
+body .dropdown-block--selector .project-selector__filter:before,
+body .dropdown-block--selector .project-selector__filter:after {
+    display: none;
+}
+
+body .dropdown-block--selector .project-selector__filter-left {
+    flex: 1;
+    float: none;
+    width: auto;
+    padding: 0;
+}
+
+body .dropdown-block--selector .project-selector__filter-right {
+    flex: none;
+    float: none;
+    width: auto;
+    padding: 0;
+}
+
+body .dropdown-block--selector .project-selector__filter input.input-field {
+    width: 100%;
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    font-size: 14px;
+}
+
+body .dropdown-block--selector .project-selector__filter label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--cb-muted);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+body .dropdown-block--selector .project-selector__list {
+    height: 290px;
+}

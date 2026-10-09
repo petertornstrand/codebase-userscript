@@ -51,6 +51,10 @@ function transformPage(html: string, keepScripts: boolean): string {
     if (!keepScripts) {
         html = html.replace(/<script\b[\s\S]*?<\/script\s*>/gi, '');
     }
+    // A page saved while the userscript was running contains the userscript's own CSS
+    // (and SingleFile markers inside it). Drop it, the preview injects the live version.
+    html = html.replace(/<style\b[^>]*>(?:(?!<\/style>)[\s\S])*?generate-icons\.mjs[\s\S]*?<\/style>/gi, '');
+    html = html.replace(/<br hidden data-single-file-hidden-content>/gi, '');
     // Saved pages can carry a Content Security Policy that blocks our scripts.
     html = html.replace(/<meta\b[^>]*http-equiv=["']?content-security-policy["']?[^>]*>/gi, '');
     // Relative asset URLs (saved "complete" pages) are served from /__pages/.
@@ -134,7 +138,9 @@ export function previewPlugin(): Plugin {
 
                 const pages = listPages();
                 const wanted = url.pathname.replace(/\/+$/, '') || '/';
-                if (wanted === '/' || wanted === '/__preview') {
+                // A saved dashboard (at `/`) takes over the root, the index is then at /__preview.
+                const rootSaved = pages.some((p) => p.urlPath === '/');
+                if (wanted === '/__preview' || (wanted === '/' && !rootSaved)) {
                     res.setHeader('Content-Type', 'text/html');
                     return void res.end(await server.transformIndexHtml(req.url, indexPage(pages)));
                 }

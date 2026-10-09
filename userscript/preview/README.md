@@ -9,7 +9,12 @@ ddev npm run dev
 ```
 
 Open <https://codebase.ddev.site:8125/>. It lists the available pages. Edit
-anything in `src/` and the page reloads.
+anything in `src/` and the page reloads. If you have saved the dashboard
+(`/`), it takes over the root and the list moves to
+<https://codebase.ddev.site:8125/__preview>.
+
+Pages saved while the userscript was running contain the userscript's own CSS.
+The preview removes it and injects the live version instead.
 
 ## What it does
 

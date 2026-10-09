@@ -21,6 +21,43 @@ function progressBar() {
 
     const total = open + closed;
     const percent = total ? Math.round((closed / total) * 100) : 0;
+    stats.append(...progressParts(percent, `${percent}% complete (${closed} of ${total} tickets closed)`));
+}
+
+/**
+ * Replace the pie chart of every milestone in the milestone list with a
+ * progress bar and the share of closed tickets.
+ */
+function milestoneList() {
+    document.querySelectorAll('#milestones li.ms').forEach((milestone) => {
+        if (milestone.dataset.bar) {
+            return;
+        }
+        const count = (kind) => parseInt(milestone.querySelector(`.tickets li.${kind} b`)?.textContent.replace(/\D/g, ''), 10);
+        const open = count('open');
+        const closed = count('closed');
+        if (Number.isNaN(open) || Number.isNaN(closed)) {
+            return;
+        }
+        milestone.dataset.bar = 'true';
+
+        const total = open + closed;
+        const percent = total ? Math.round((closed / total) * 100) : 0;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'MilestoneProgress';
+        wrapper.append(...progressParts(percent, `${percent}% complete`));
+        milestone.append(wrapper);
+    });
+}
+
+/**
+ * Build a progress bar and its caption.
+ *
+ * @param {number} percent
+ * @param {string} caption
+ * @return {HTMLElement[]}
+ */
+function progressParts(percent, caption) {
     const bar = document.createElement('div');
     bar.className = 'TicketBar TicketBar--progress';
     bar.setAttribute('role', 'progressbar');
@@ -31,10 +68,10 @@ function progressBar() {
     done.className = 'TicketBar__closed';
     done.style.width = `${percent}%`;
     bar.append(done);
-    const caption = document.createElement('p');
-    caption.className = 'TicketBar__caption';
-    caption.textContent = `${percent}% complete (${closed} of ${total} tickets closed)`;
-    stats.append(bar, caption);
+    const text = document.createElement('p');
+    text.className = 'TicketBar__caption';
+    text.textContent = caption;
+    return [bar, text];
 }
 
 /**
@@ -43,4 +80,5 @@ function progressBar() {
 export default function initMilestones() {
     log('Initializing milestone page');
     progressBar();
+    milestoneList();
 }

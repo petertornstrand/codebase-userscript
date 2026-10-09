@@ -59,7 +59,7 @@ async function main() {
     if (/^projects\/[^/]+\//.test(path)) {
         initProjects();
     }
-    if (/^projects\/[^/]+\/milestones\/[^/]+/.test(path)) {
+    if (/^projects\/[^/]+\/milestones(\/|$)/.test(path)) {
         initMilestones();
     }
     if (/^projects\/[^/]+\/tickets\/\d+/.test(path)) {
