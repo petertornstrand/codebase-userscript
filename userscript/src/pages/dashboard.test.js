@@ -76,4 +76,19 @@ describe('dashboard activity summary', () => {
         initDashboard();
         expect(document.querySelector('.DashboardSummary__person .InitialsAvatar').textContent).toBe('AL');
     });
+
+    it('reads the project view, where the project is the heading of the group', () => {
+        document.body.innerHTML = `
+<div id="content"><div class="left"><div class="feed-groups">
+  <div class="group"><h2><a href="/projects/acme">Acme</a></h2><div class="feed"><ul class="events">
+    <li class="event ticket_update u-clearfix"><p class="event"><span class="author"><a>Ada L</a></span> <b class="id">#1</b></p></li>
+    <li class="event push u-clearfix"><p class="event"><span class="author"><a>Ada L</a></span> <a>2 commit(s)</a></p></li>
+  </ul></div></div>
+</div></div><div class="right"></div></div>`;
+        initDashboard();
+        expect(tiles()).toEqual(['2events', '1tickets', '2commits']);
+        // Every group shows the same number of events, so the projects can't be compared.
+        expect(document.querySelector('.DashboardSummary__row')).toBeNull();
+        expect(document.querySelector('.DashboardSummary__person')).not.toBeNull();
+    });
 });

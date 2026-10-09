@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 import { createRoot } from 'react-dom/client';
 import { log, findCodebaseAvatar, findNotificationChannels, onlyMentionedTickets } from './utils';
+import { addMentionUsers } from './mentions';
 import CopyButton from './CopyButton';
 import Notice from './Notice';
 import { DecoratedTicketLinks, Avatar, api, dateFormat, dateTimeFormat } from './Global';
@@ -25,6 +26,11 @@ export default function Ticket() {
         () => onlyMentionedTickets(data?.referencedTickets, id),
         [data, id]
     );
+
+    // The project's users give the mentions in the comments their real names.
+    useEffect(() => {
+        if (data) addMentionUsers([...(data.assignments ?? []), ...(data.participants ?? [])]);
+    }, [data]);
 
     // The skeleton (see Modern.css) stands in for the page until we have data or an error.
     useEffect(() => {

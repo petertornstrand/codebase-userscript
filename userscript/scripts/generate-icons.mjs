@@ -185,17 +185,17 @@ css += `body #content .repo-li__stat:first-child:before {\n${mask('git-commit')}
 css += `body #content .repo-li__stat.u-float-right:before {\n${mask('database')}}\n\n`;
 
 css += `/* Branch and tag changes in the activity feed ----------------------------- */\n\n`;
-css += `body #content #feed li.event .expansion p.ref-change {
+css += `body #content :is(#feed, .feed) li.event .expansion p.ref-change {
     background-image: none;
 }\n\n`;
-css += `body #content #feed li.event .expansion p.ref-change:before {
+css += `body #content :is(#feed, .feed) li.event .expansion p.ref-change:before {
     content: "";
     flex: none;
     width: 14px;
     height: 14px;
     background-color: currentColor;
 ${maskRule}${mask('git-branch')}}\n\n`;
-css += `body #content #feed li.event .expansion p.ref-change.deleted:before {\n${mask('trash')}}\n\n`;
+css += `body #content :is(#feed, .feed) li.event .expansion p.ref-change.deleted:before {\n${mask('trash')}}\n\n`;
 
 writeFileSync('src/styles/Icons.css', css.trimEnd() + '\n');
 console.log('Wrote src/styles/Icons.css');

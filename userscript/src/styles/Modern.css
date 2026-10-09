@@ -873,11 +873,11 @@ body #content .ThreadTabs__link.is-active {
    Codebase's markup is kept: day headings, then one row per event with the
    avatar on the left, a sentence, the time on the right and the details below. */
 
-body #content #feed {
+body #content :is(#feed, .feed) {
     margin-top: 8px;
 }
 
-body #content #feed h2 {
+body #content :is(#feed, .feed) h2 {
     margin: 24px 0 4px;
     padding: 0 0 8px;
     border-bottom: 1px solid var(--cb-border-muted);
@@ -887,7 +887,7 @@ body #content #feed h2 {
     line-height: 20px;
 }
 
-body #content #feed h2 .day {
+body #content :is(#feed, .feed) h2 .day {
     display: inline;
     margin: 0;
     padding: 0;
@@ -898,13 +898,13 @@ body #content #feed h2 .day {
     font: inherit;
 }
 
-body #content #feed ul.events {
+body #content :is(#feed, .feed) ul.events {
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
-body #content #feed li.event {
+body #content :is(#feed, .feed) li.event {
     display: grid;
     grid-template-columns: 24px minmax(0, 1fr);
     column-gap: 12px;
@@ -915,16 +915,16 @@ body #content #feed li.event {
     background: none;
 }
 
-body #content #feed li.event:last-child {
+body #content :is(#feed, .feed) li.event:last-child {
     border-bottom: 0;
 }
 
 /* The coloured type tab is replaced by the sentence itself. */
-body #content #feed li.event > .tab {
+body #content :is(#feed, .feed) li.event > .tab {
     display: none;
 }
 
-body #content #feed li.event > .gravatar {
+body #content :is(#feed, .feed) li.event > .gravatar {
     float: none;
     grid-column: 1;
     grid-row: 1 / span 2;
@@ -934,7 +934,7 @@ body #content #feed li.event > .gravatar {
     padding: 0;
 }
 
-body #content #feed li.event > .gravatar img {
+body #content :is(#feed, .feed) li.event > .gravatar img {
     display: block;
     width: 24px;
     height: 24px;
@@ -942,7 +942,7 @@ body #content #feed li.event > .gravatar img {
     object-fit: cover;
 }
 
-body #content #feed p.event {
+body #content :is(#feed, .feed) p.event {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
@@ -954,12 +954,12 @@ body #content #feed p.event {
     line-height: 24px;
 }
 
-body #content #feed p.event .author a {
+body #content :is(#feed, .feed) p.event .author a {
     color: var(--cb-fg);
     font-weight: 600;
 }
 
-body #content #feed p.event .verb {
+body #content :is(#feed, .feed) p.event .verb {
     padding: 0 8px;
     border: 1px solid var(--cb-border);
     border-radius: 2em;
@@ -971,34 +971,34 @@ body #content #feed p.event .verb {
     text-transform: none;
 }
 
-body #content #feed li.ticket_creation p.event .verb {
+body #content :is(#feed, .feed) li.ticket_creation p.event .verb {
     border-color: #4ac26b;
     color: var(--cb-success);
 }
 
-body #content #feed p.event .id {
+body #content :is(#feed, .feed) p.event .id {
     padding: 0;
     background: none;
     color: var(--cb-muted);
     font-weight: 400;
 }
 
-body #content #feed p.event > a {
+body #content :is(#feed, .feed) p.event > a {
     color: var(--cb-fg);
     font-weight: 600;
 }
 
-body #content #feed p.event > a:hover {
+body #content :is(#feed, .feed) p.event > a:hover {
     color: var(--cb-accent);
 }
 
-body #content #feed p.event .timestamp {
+body #content :is(#feed, .feed) p.event .timestamp {
     margin-left: auto;
     color: var(--cb-subtle);
     font-size: 12px;
 }
 
-body #content #feed .expansion {
+body #content :is(#feed, .feed) .expansion {
     grid-column: 2;
     margin: 4px 0 0;
     padding: 0;
@@ -1008,7 +1008,7 @@ body #content #feed .expansion {
     line-height: 20px;
 }
 
-body #content #feed .expansion p.text {
+body #content :is(#feed, .feed) .expansion p.text {
     margin: 0;
     overflow: hidden;
     display: -webkit-box;
@@ -1017,31 +1017,31 @@ body #content #feed .expansion p.text {
     white-space: normal;
 }
 
-body #content #feed .expansion ul {
+body #content :is(#feed, .feed) .expansion ul {
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
-body #content #feed .expansion li {
+body #content :is(#feed, .feed) .expansion li {
     margin: 0;
     padding: 0;
     background: none;
 }
 
-body #content #feed .expansion li b {
+body #content :is(#feed, .feed) .expansion li b {
     color: var(--cb-fg);
     font-weight: 600;
 }
 
-body #content #feed li.event .expansion ul li,
-body #content #feed li.event .expansion ul.iconed li,
-body #content #feed li.event .expansion ul.changes li {
+body #content :is(#feed, .feed) li.event .expansion ul li,
+body #content :is(#feed, .feed) li.event .expansion ul.iconed li,
+body #content :is(#feed, .feed) li.event .expansion ul.changes li {
     padding-left: 0;
     background: none;
 }
 
-body #content #feed li.event p.show-more {
+body #content :is(#feed, .feed) li.event p.show-more {
     grid-column: 2;
     margin: 4px 0 0;
 }
@@ -3098,7 +3098,7 @@ body .InitialsAvatar {
 }
 
 /* A branch or tag that was created or deleted, in the details of a push. */
-body #content #feed li.event .expansion p.ref-change {
+body #content :is(#feed, .feed) li.event .expansion p.ref-change {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -3110,7 +3110,7 @@ body #content #feed li.event .expansion p.ref-change {
     line-height: 20px;
 }
 
-body #content #feed li.event .expansion p.ref-change b {
+body #content :is(#feed, .feed) li.event .expansion p.ref-change b {
     margin: 0;
     padding: 0 6px;
     border-radius: var(--cb-radius);
@@ -3121,21 +3121,104 @@ body #content #feed li.event .expansion p.ref-change b {
     font-weight: 500;
 }
 
-body #content #feed li.event .expansion p.ref-change.created {
+body #content :is(#feed, .feed) li.event .expansion p.ref-change.created {
     color: var(--cb-success);
     font-size: 13px;
 }
 
-body #content #feed li.event .expansion p.ref-change.created b {
+body #content :is(#feed, .feed) li.event .expansion p.ref-change.created b {
     background: #dafbe1;
     color: #1a7f37;
 }
 
-body #content #feed li.event .expansion p.ref-change.deleted {
+body #content :is(#feed, .feed) li.event .expansion p.ref-change.deleted {
     color: var(--cb-danger);
 }
 
-body #content #feed li.event .expansion p.ref-change.deleted b {
+body #content :is(#feed, .feed) li.event .expansion p.ref-change.deleted b {
     background: #ffebe9;
     color: var(--cb-danger);
+}
+
+/* @mentions ----------------------------------------------------------------------- */
+
+body .Mention,
+body .styled-content a.Mention {
+    padding: 0 4px;
+    border-radius: var(--cb-radius);
+    background: rgba(9, 105, 218, 0.08);
+    color: var(--cb-accent);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+body .styled-content a.Mention:hover {
+    background: rgba(9, 105, 218, 0.15);
+    text-decoration: none;
+}
+
+/* Project view of the dashboard ------------------------------------------------------
+   The feed is grouped by project: a heading with the project icon, its name and a
+   link to all its events, then the events. */
+
+body #content .feed-groups .group {
+    margin: 0 0 32px;
+}
+
+body #content .feed-groups .group h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 4px;
+    padding: 0 0 8px 24px;
+    border: 0;
+    border-bottom: 1px solid var(--cb-border-muted);
+    background-color: transparent;
+    background-position: 0 4px;
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+}
+
+body #content .feed-groups .group h2 > a {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--cb-fg);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body #content .feed-groups .group h2 > a:hover {
+    color: var(--cb-accent);
+    text-decoration: none;
+}
+
+body #content .feed-groups .group .sub-link {
+    float: none;
+    flex: none;
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+body #content .feed-groups .group .sub-link a {
+    color: var(--cb-muted);
+}
+
+body #content .feed-groups .group .sub-link a:hover {
+    color: var(--cb-accent);
+    text-decoration: none;
+}
+
+/* Several event lists in a row: no extra space between them. */
+body #content .feed-groups .group .feed ul.events {
+    margin: 0;
+}
+
+/* An event that was deleted. */
+body #content :is(#feed, .feed) li.event.deleted p.event {
+    opacity: 0.6;
+    text-decoration: line-through;
 }

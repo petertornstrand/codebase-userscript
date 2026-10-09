@@ -86,6 +86,14 @@ based on the GitHub issue sidebar.
 - **Ticket actions**: the ticket links (add acceptance criteria, move, make
   private, delete...) are collected in a drop-button.
 
+#### Mentions
+
+@mentions in comments and in the activity feed show a name, `@Vito K.`, instead
+of the handle, `@vito-kasim-31`. The handle is the tooltip. The name comes from
+the project's users, from a matching name on the page, or from the handle itself
+when it has several parts. A handle that can't be turned into a name is left as
+it is.
+
 #### Decorated ticket links
 
 Links to tickets in comments are decorated with additional information.
@@ -137,6 +145,8 @@ columns, status pills and a tidy footer with the Kanban and CSV links.
 - **Your Projects** is a plain list that scrolls when it is long.
 - The activity feed gets the same clean layout as the project overview, including
   created and deleted branches in the details of a push.
+- The **project view** (events grouped by project) has a heading per project with
+  its icon and a link to all its events.
 
 ### Browse Projects
 

@@ -6,9 +6,11 @@ import { log } from '../utils';
  * @return {{type: string, project: ?{name: string, url: string}, ticket: ?string, commits: number, author: ?string, avatar: ?HTMLImageElement}[]}
  */
 export function readFeed() {
-    return [...document.querySelectorAll('#feed li.event')].map((item) => {
+    // The account view has one feed (#feed), the project view a feed in every project group.
+    return [...document.querySelectorAll('#feed li.event, .feed-groups .group .feed li.event')].map((item) => {
         const line = item.querySelector('p.event');
-        const projectLink = line?.querySelector('.project a');
+        // Events in the project view don't name the project, the group heading does.
+        const projectLink = line?.querySelector('.project a') ?? item.closest('.group')?.querySelector(':scope > h2 > a');
         return {
             type: [...item.classList].find((name) => name !== 'event' && !/^(u-clearfix|area-|o$|e$|last-visible)/.test(name)) ?? 'other',
             project: projectLink ? { name: projectLink.textContent.trim(), url: projectLink.href } : null,
@@ -52,17 +54,18 @@ const element = (tag, className, text) => {
  */
 function activitySummary() {
     const sidebar = document.querySelector('#content .right');
-    if (!sidebar || sidebar.querySelector('.DashboardSummary')) {
-        return;
-    }
     const events = readFeed();
-    if (!events.length) {
+    if (!sidebar || !events.length) {
         return;
     }
+    // Rebuilt every time, so that it never shows an old state.
+    sidebar.querySelectorAll('.DashboardSummary').forEach((old) => old.remove());
 
     const tickets = new Set(events.filter((e) => e.ticket).map((e) => `${e.project?.name}${e.ticket}`)).size;
     const commits = events.reduce((sum, e) => sum + e.commits, 0);
-    const projects = tally(events, (e) => e.project?.name).slice(0, 5);
+    // In the project view every project shows the same number of events, so they can't be compared.
+    const grouped = Boolean(document.querySelector('.feed-groups .group'));
+    const projects = grouped ? [] : tally(events, (e) => e.project?.name).slice(0, 5);
     const people = tally(events, (e) => e.author).slice(0, 5);
 
     const module = element('div', 'sidebar__module DashboardSummary');

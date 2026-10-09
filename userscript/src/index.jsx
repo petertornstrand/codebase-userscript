@@ -11,6 +11,7 @@ import './styles/CopyButton.css';
 import Notice from './Notice';
 import initProjects from './pages/projects';
 import initAvatars from './avatars';
+import initMentions from './mentions';
 import initDashboard from './pages/dashboard';
 import initMilestones from './pages/milestones';
 import initTickets from './pages/tickets';
@@ -60,6 +61,7 @@ async function main() {
     await awaitElement('body');
 
     initAvatars();
+    initMentions();
     if (path === '') {
         initDashboard();
     }
