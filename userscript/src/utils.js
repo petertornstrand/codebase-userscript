@@ -180,3 +180,22 @@ export function findCodebaseAvatar(fullName) {
         return name?.textContent.trim() === fullName;
     }) ?? null;
 }
+
+
+/**
+ * Find the notification channels in Codebase's own Notifications popout.
+ * A channel the user is subscribed to has the class `is-watch`, clicking the
+ * link toggles it and Codebase saves the change.
+ *
+ * @export
+ * @return {{element: HTMLElement, name: string, watching: boolean}[]}
+ */
+export function findNotificationChannels() {
+    const names = { by_email: 'email', by_web: 'the notification centre' };
+    return [...document.querySelectorAll('.js-notifications-window .js-notification-select')].map((element) => ({
+        element,
+        name: names[element.getAttribute('rel')] ?? element.querySelector('.repo-window__list-title')?.textContent.trim() ?? 'unknown',
+        watching: element.classList.contains('is-watch'),
+        rel: element.getAttribute('rel'),
+    }));
+}

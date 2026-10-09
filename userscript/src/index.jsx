@@ -19,6 +19,8 @@ log('React script has successfully started');
  * that the other pages do not need.
  */
 async function renderTicket() {
+    // Styles the original page as a skeleton until the ticket data has loaded.
+    document.documentElement.classList.add('cb-ticket-loading');
     let target = await awaitElement('body');
     let container = document.createElement('div');
     target.appendChild(container);
@@ -30,6 +32,7 @@ async function renderTicket() {
     } catch (e) {
         // Typically missing userscript configuration.
         log(e);
+        document.documentElement.classList.remove('cb-ticket-loading');
         root.render(<Notice message={`${e.message} Showing the original page.`} />);
         return;
     }

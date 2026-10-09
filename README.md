@@ -50,8 +50,10 @@ based on the GitHub issue sidebar.
   highlighted.
 - **Branch**: displays the branch associated with the ticket, based on a tag
   named like `branch:1023-branch-name`.
-- **Notifications**: a subscribe/unsubscribe section. _Work in progress, the
-  buttons are not functional yet._
+- **Notifications**: shows only the relevant action, Subscribe or Unsubscribe.
+  The state and the action use Codebase's own Notifications popout, so
+  Codebase saves the change as usual. Subscribe turns on email notifications,
+  Unsubscribe turns off every channel that is on.
 
 #### Decorated ticket links
 

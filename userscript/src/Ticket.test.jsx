@@ -3,7 +3,7 @@ import { render } from 'preact';
 import { act } from 'preact/test-utils';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ticketPage, ticketContext } from './test/fixtures';
+import { ticketPage, ticketContext, notificationsMarkup, simulateCodebaseToggle } from './test/fixtures';
 
 // Global.jsx reads userscript-manager config at import time and talks to the
 // API gateway, so replace it with stubs.
@@ -29,6 +29,12 @@ beforeEach(() => {
         set(v) { this.textContent = v; },
     });
 });
+
+async function mountWith(channels) {
+    document.body.innerHTML = ticketPage + notificationsMarkup(channels) + '<div id="app"></div>';
+    simulateCodebaseToggle();
+    await mount();
+}
 
 async function mount() {
     const client = new QueryClient();
@@ -171,5 +177,42 @@ to this ticket.
         await mount();
         const avatars = Object.fromEntries([...document.querySelectorAll('.MockAvatar')].map((a) => [a.dataset.name, a.dataset.hasSource]));
         expect(avatars).toEqual({ 'Ada Lovelace': 'yes', 'Grace Hopper': 'no' });
+    });
+
+    describe('notifications', () => {
+        const block = () => [...document.querySelectorAll('.CodebaseComponent')]
+            .find((el) => el.textContent.includes('Notifications'));
+        const buttons = () => [...block().querySelectorAll('button')].map((b) => b.textContent);
+        const on = () => [...document.querySelectorAll('.js-notification-select.is-watch')].map((a) => a.getAttribute('rel'));
+
+        it('offers only Subscribe when not subscribed', async () => {
+            await mountWith({});
+            expect(buttons()).toEqual(['Subscribe']);
+        });
+
+        it('offers only Unsubscribe when subscribed, and names the channels', async () => {
+            await mountWith({ web: true, email: true });
+            expect(buttons()).toEqual(['Unsubscribe']);
+            expect(block().textContent).toContain('via the notification centre and email');
+        });
+
+        it('subscribes by email through Codebase\'s own control', async () => {
+            await mountWith({});
+            await act(async () => { block().querySelector('button').click(); await flush(); });
+            expect(on()).toEqual(['by_email']);
+            expect(buttons()).toEqual(['Unsubscribe']);
+        });
+
+        it('unsubscribes from every active channel', async () => {
+            await mountWith({ web: true, email: true });
+            await act(async () => { block().querySelector('button').click(); await flush(); });
+            expect(on()).toEqual([]);
+            expect(buttons()).toEqual(['Subscribe']);
+        });
+
+        it('is left out when the popout is unavailable', async () => {
+            await mount();
+            expect(block()).toBeUndefined();
+        });
     });
 });

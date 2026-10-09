@@ -1,10 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 import { createRoot } from 'react-dom/client';
-import { log, findCodebaseAvatar } from './utils';
+import { log, findCodebaseAvatar, findNotificationChannels } from './utils';
 import CopyButton from './CopyButton';
 import Notice from './Notice';
-import Loading from "./styles/Loading.svg?react";
 import { DecoratedTicketLinks, Avatar, api, dateFormat, dateTimeFormat } from './Global';
 import { URLContext } from './URLContext';
 import './styles/Ticket.css';
@@ -21,11 +20,12 @@ export default function Ticket() {
         return await api.getContext(urlContext.project_id, id);
     }, { refetchOnMount: false, refetchOnWindowFocus: false});
 
-    if (isLoading) return (
-        <div className="CodebaseComponent CodebaseComponent--loading">
-            <Loading />
-        </div>
-    );
+    // The skeleton (see Modern.css) stands in for the page until we have data or an error.
+    useEffect(() => {
+        if (!isLoading) document.documentElement.classList.remove('cb-ticket-loading');
+    }, [isLoading]);
+
+    if (isLoading) return null;
 
     // Leave the original Codebase page untouched if the data is unavailable.
     if (error || !data?.ticket) {
@@ -533,28 +533,51 @@ function Commits({commits}) {
 }
 
 /**
- * Watchers component.
+ * Notifications block. Shows only the relevant action. The state comes from,
+ * and the actions are carried out by, Codebase's own Notifications popout, so
+ * Codebase saves the change like it always does.
  *
- * @todo Implement.
- *
- * @return {JSX.Element}
+ * @return {JSX.Element|null}
  */
 function Watchers() {
+    const [channels, setChannels] = useState(findNotificationChannels);
+
+    useEffect(() => {
+        // Codebase toggles the `is-watch` class when a channel is switched.
+        const observer = new MutationObserver(() => setChannels(findNotificationChannels()));
+        channels.forEach(({ element }) => observer.observe(element, { attributes: true, attributeFilter: ['class'] }));
+        return () => observer.disconnect();
+    }, []);
+
+    // Without Codebase's popout there is nothing to base the state on.
+    if (!channels.length) return null;
+
+    const active = channels.filter((channel) => channel.watching);
+    const watching = active.length > 0;
+
+    const toggle = () => {
+        if (watching) {
+            active.forEach(({ element }) => element.click());
+        } else {
+            (channels.find((channel) => channel.rel === 'by_email') ?? channels[0]).element.click();
+        }
+    };
+
     return (
         <div className="CodebaseComponent">
             <div className="Properties Properties--column">
                 <div className="Properties__item">
                     <h3 className="Properties__title">Notifications</h3>
                     <p className="Properties__value">
-                        <button className="btn btn--medium icon icon-unsubscribe">Unsubscribe</button>
+                        <button className={`btn btn--medium icon ${watching ? 'icon-unsubscribe' : 'icon-subscribe'}`} onClick={toggle}>
+                            {watching ? 'Unsubscribe' : 'Subscribe'}
+                        </button>
                     </p>
-                    <p className="help">You're receiving notifications because you're subscribed to this ticket.</p>
-                </div>
-                <div className="Properties__item">
-                    <p className="Properties__value">
-                        <button className="btn btn--medium icon icon-subscribe">Subscribe</button>
+                    <p className="help">
+                        {watching
+                            ? `You're receiving notifications via ${active.map((channel) => channel.name).join(' and ')}.`
+                            : "You're not receiving notifications from this ticket."}
                     </p>
-                    <p className="help">You're not receiving notifications from this ticket.</p>
                 </div>
             </div>
         </div>

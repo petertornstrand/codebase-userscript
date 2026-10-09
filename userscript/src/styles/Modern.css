@@ -225,6 +225,7 @@ body #sub-header {
     background: #fff;
     border-bottom: 1px solid var(--cb-border-muted);
     box-shadow: none;
+    padding: 0;
 }
 
 /* Breadcrumbs on the left, page buttons on the right, on one row. */
@@ -234,6 +235,8 @@ body #sub-header > .container {
     justify-content: space-between;
     gap: 16px;
     min-height: 0;
+    margin-top: 0;
+    margin-bottom: 0;
     padding-top: 8px;
     padding-bottom: 8px;
 }
@@ -259,6 +262,11 @@ body #sub-header .buttons {
     margin: 0;
 }
 
+body #sub-header .buttons .page-button {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
 body #sub-header .breadcrumb,
 body #sub-header .breadcrumb a {
     color: var(--cb-muted);
@@ -270,7 +278,7 @@ body #sub-header .breadcrumb a {
 body .TicketSubject {
     align-items: center;
     gap: 8px;
-    padding: 20px 0 16px;
+    padding: 0 0 16px;
     font-size: 24px;
     font-weight: 600;
     line-height: 32px;
@@ -403,6 +411,37 @@ body .Post__header {
     min-height: 40px;
 }
 
+/* "Edit this update" (and the other post actions) as icon buttons. */
+body .Post__actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 39px;
+    /* Same distance to the right edge as to the top and bottom. */
+    margin-right: -10px;
+}
+
+body #content .Post__actions .Post__action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    float: none;
+    width: 28px;
+    height: 28px;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    background: var(--cb-canvas-subtle);
+    color: var(--cb-fg);
+    cursor: pointer;
+}
+
+body #content .Post__actions .Post__action:hover {
+    background: #eff2f5;
+}
+
 body .Post__meta {
     margin: 0;
     padding: 9px 0;
@@ -421,6 +460,11 @@ body #content .Post__meta a {
 /* Padding lives on Post__content only, styled-content inside it has none. */
 body .Post--full .Post__content {
     padding: 16px;
+}
+
+/* Its white background would otherwise square off the rounded box corners. */
+body .Post--full .Post__content {
+    border-radius: 0 0 calc(var(--cb-radius) - 1px) calc(var(--cb-radius) - 1px);
 }
 
 body .Post--full .styled-content {
@@ -458,14 +502,51 @@ body .ThreadChanges__avatar {
 
 /* Timeline events (changes to the ticket) ---------------------------------- */
 
+
+/* Every event is the same height and has the same gap to the one before it,
+   whatever the type of change is and whether it follows a comment or not. */
+body .ThreadChanges {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+}
+
+/* Events that are posts of their own: 8px to the previous event or comment
+   (the 16px margin of a comment post collapses with the negative margin). */
 body .Post--minimal {
     margin: 0;
 }
 
-body .ThreadChanges__event {
+body .Post--minimal + .Post--minimal {
+    margin-top: 8px;
+}
+
+body .Post--full + .Post--minimal {
+    margin-top: -8px;
+}
+
+/* Events that follow a comment inside the same post. */
+body .box + .ThreadChanges {
+    margin-top: 8px;
+}
+
+body .ThreadChanges__event,
+body .Post--full .ThreadChanges__event:first-of-type {
+    box-sizing: border-box;
+    margin: 0;
+    min-height: 42px;
     color: var(--cb-muted);
     font-size: 13px;
-    padding-left: 72px;
+    line-height: 18px;
+    padding: 12px 0 12px 72px;
+}
+
+body .ThreadChanges__event .TicketProperties__tag,
+body .ThreadChanges__event .label {
+    line-height: 16px;
+    vertical-align: top;
 }
 
 body .ThreadChanges__event .text--bold {
@@ -610,7 +691,8 @@ body select:focus {
 }
 
 body .PostForm .box,
-body .PostForm__box {
+body .PostForm__box,
+body .js-post-form > .box {
     border: 1px solid var(--cb-border);
     border-radius: var(--cb-radius);
     overflow: hidden;
@@ -716,4 +798,72 @@ body .Tooltip .Properties {
 
 body .Tooltip .Properties__value {
     margin: 0;
+}
+
+/* Loading skeleton ----------------------------------------------------------
+   `cb-ticket-loading` is set on <html> while the ticket data is fetched. The
+   original title is shown in its final style straight away, the original
+   properties and sidebar are replaced by pulsing placeholders. */
+
+@keyframes cb-skeleton-pulse {
+    50% { opacity: 0.45; }
+}
+
+html.cb-ticket-loading body .Thread__header h2.Thread__subject {
+    display: block;
+    margin: 0;
+    padding: 0 0 16px;
+    border-bottom: 1px solid var(--cb-border-muted);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 32px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+html.cb-ticket-loading body .Thread__header .js-ticket-properties,
+html.cb-ticket-loading body #content .right > * {
+    display: none;
+}
+
+html.cb-ticket-loading body #content .right::before {
+    content: "";
+    display: block;
+    height: 440px;
+    border-radius: 6px;
+    background:
+        linear-gradient(var(--cb-border-muted) 0 0) 0 0 / 40% 12px,
+        linear-gradient(var(--cb-border-muted) 0 0) 0 28px / 90% 12px,
+        linear-gradient(var(--cb-border-muted) 0 0) 0 56px / 70% 12px,
+        linear-gradient(var(--cb-border-muted) 0 0) 0 84px / 80% 12px,
+        linear-gradient(var(--cb-border-muted) 0 0) 0 112px / 60% 12px,
+        linear-gradient(var(--cb-border-muted) 0 0) 0 160px / 40% 12px,
+        linear-gradient(var(--cb-border-muted) 0 0) 0 188px / 85% 12px,
+        linear-gradient(var(--cb-border-muted) 0 0) 0 240px / 40% 12px,
+        linear-gradient(var(--cb-border-muted) 0 0) 0 268px / 75% 12px;
+    background-repeat: no-repeat;
+    animation: cb-skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html.cb-ticket-loading body #content .right::before { animation: none; }
+}
+
+/* Ticket detail tabs (Change Details, Progress and Deadlines...) -------------
+   Neutral text, the active tab is marked with the same orange underline as
+   the main menu. */
+
+body #content .ThreadTabs__link {
+    color: var(--cb-muted);
+}
+
+body #content .ThreadTabs__link:hover {
+    color: var(--cb-fg);
+}
+
+body #content .ThreadTabs__link.is-active {
+    box-shadow: inset 0 -2px 0 #f78166;
+    color: var(--cb-fg);
+    font-weight: 600;
 }

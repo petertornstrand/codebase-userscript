@@ -63,6 +63,27 @@ export const ticketPage = `
   </div>
 </div>`;
 
+/**
+ * Codebase's own Notifications popout. Pass which channels are on. Like
+ * Codebase's script, clicking a channel toggles its `is-watch` class.
+ */
+export function notificationsMarkup({ web = false, email = false } = {}) {
+    const link = (rel, on) => `<a class="js-notification-select ${on ? 'is-watch' : 'is-silent'}" rel="${rel}" href="#"><span class="repo-window__list-title">x</span></a>`;
+    return `
+<div class="repo-window js-notifications-window"><form><ul>
+  <li>${link('by_web', web)}</li>
+  <li>${link('by_email', email)}</li>
+</ul></form></div>`;
+}
+
+export function simulateCodebaseToggle() {
+    document.querySelectorAll('.js-notification-select').forEach((a) => a.addEventListener('click', (e) => {
+        e.preventDefault();
+        a.classList.toggle('is-watch');
+        a.classList.toggle('is-silent');
+    }));
+}
+
 export const ticketContext = {
     ticket: {
         id: 42,
