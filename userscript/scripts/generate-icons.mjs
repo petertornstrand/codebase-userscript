@@ -42,6 +42,14 @@ const fontIcons = {
     'watcher': 'eye',
     'time': 'clock',
     'add': 'plus',
+    'disk': 'database',
+    'users': 'people',
+    'activity': 'pulse',
+    'overview': 'home',
+    'ticket': 'issue-opened',
+    'ticket-closed': 'issue-closed',
+    'download': 'download',
+    'kanban': 'project',
 };
 
 // Header buttons, by their `data-tooltip` attribute.
@@ -60,6 +68,9 @@ const pageButtonIcons = {
     'back': 'arrow-left',
     'time': 'clock',
     'upload': 'upload',
+    'tick': 'check',
+    'edit': 'pencil',
+    'add-multiple': 'plus-circle',
 };
 
 // Each icon is defined once, as a custom property used by the shared mask rule.
@@ -121,6 +132,26 @@ ${maskRule}}\n\n`;
 for (const [key, icon] of Object.entries(pageButtonIcons)) {
     css += `body .page-button__icon.${key}:before {\n${mask(icon)}}\n\n`;
 }
+
+css += `/* Activity feed preferences ---------------------------------------------- */\n\n`;
+css += `body .preference-link__inner {
+    background-image: none !important;
+    margin-left: 0;
+    padding-left: 0;
+}\n\n`;
+css += `body .preference-link__inner:before {
+    content: "";
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 6px;
+    vertical-align: -2px;
+    background-color: currentColor;
+${maskRule}${mask('rss')}}\n\n`;
+css += `body .preference-link--group .preference-link__inner:before {\n${mask('list-unordered')}}\n\n`;
+
+css += `/* Ticket list quick search --------------------------------------------- */\n\n`;
+css += `body #content .quick-search input.query {\n    background-image: ${svgColor('search', '#59636e')};\n}\n\n`;
 
 writeFileSync('src/styles/Icons.css', css.trimEnd() + '\n');
 console.log('Wrote src/styles/Icons.css');

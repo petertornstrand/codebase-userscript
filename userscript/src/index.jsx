@@ -6,6 +6,7 @@ import './styles/Modern.css';
 import './styles/Icons.css';
 import Notice from './Notice';
 import initProjects from './pages/projects';
+import initMilestones from './pages/milestones';
 import initTickets from './pages/tickets';
 import initUsers from './pages/users';
 import { awaitElement, log, addLocationChangeCallback } from './utils';
@@ -57,6 +58,9 @@ async function main() {
     }
     if (/^projects\/[^/]+\//.test(path)) {
         initProjects();
+    }
+    if (/^projects\/[^/]+\/milestones\/[^/]+/.test(path)) {
+        initMilestones();
     }
     if (/^projects\/[^/]+\/tickets\/\d+/.test(path)) {
         initTickets();

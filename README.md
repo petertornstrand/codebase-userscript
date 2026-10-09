@@ -17,6 +17,14 @@ The script runs on:
 
 ## Features
 
+### Modern look
+
+The whole interface gets a GitHub inspired look: a restyled site header and
+navigation, mono colour icons (GitHub Octicons) instead of Codebase's icon
+font and bitmaps, rounded comment cards and boxes, buttons, tabs, pagination
+and tables. It is applied with CSS on top of Codebase's own markup, so the
+original links and scripts keep working.
+
 ### Ticket page
 
 Ticket pages are rebuilt using data from the Codebase API (see
@@ -30,8 +38,20 @@ Ticket pages are rebuilt using data from the Codebase API (see
 - Adds a **Copy ticket link** button that copies a Markdown link,
   `[#123 Subject](url)`.
 - Adds a **Last comment** button that scrolls the latest comment into view.
+  The copy and last comment actions are icon buttons next to the title.
 - Makes the header sticky.
 - Updates the styling of the status and priority fields.
+- Shows a loading skeleton, with the title and placeholders for the sidebar,
+  while the ticket data is fetched.
+
+#### Comments and timeline
+
+- Comment cards with a header, the author's Codebase avatar and an icon button
+  for "Edit this update".
+- Ticket changes (status, assignee...) are listed as timeline events with the
+  same spacing whatever the type of change.
+- The ticket detail tabs (Change Details, Progress and Deadlines...) and the
+  "Post a response" box match the rest of the interface.
 
 #### New sidebar
 
@@ -39,9 +59,11 @@ Replaces the right sidebar with a modern looking and information dense version
 based on the GitHub issue sidebar.
 
 - **Reporter** and the date the ticket was reported.
-- **Participants**: all users who have taken part in the ticket, shown as
-  avatars (the user's profile image, or their initials on a color derived from
-  the company name). Hovering an avatar displays additional user information.
+- **Ticket properties**: type, status, priority and so on, plus **Access**
+  (Public or Private).
+- **Participants**: all users who have taken part in the ticket, shown with
+  their regular Codebase avatars. Hovering an avatar displays additional user
+  information.
 - **Milestone**: a compact version that does not use more space than needed,
   with due date and project manager.
 - **Referenced tickets**: lists all tickets referenced in the ticket.
@@ -54,6 +76,8 @@ based on the GitHub issue sidebar.
   The state and the action use Codebase's own Notifications popout, so
   Codebase saves the change as usual. Subscribe turns on email notifications,
   Unsubscribe turns off every channel that is on.
+- **Ticket actions**: the ticket links (add acceptance criteria, move, make
+  private, delete...) are collected in a drop-button.
 
 #### Decorated ticket links
 
@@ -69,6 +93,28 @@ Comments that contain task lists are highlighted.
   and limited to the current project.
 - **Open tickets by default**: the "Tickets" menu link only lists open tickets
   (`status:open`).
+
+#### Project overview
+
+- The activity feed is a clean list: avatar, a sentence with the event type,
+  the time on the right and the details below.
+- **Quick stats** are remade as a compact card at the top of the right sidebar.
+- **Who's on this project** is a row of avatars, like the ticket participants.
+- **Project settings** is a drop-button.
+- The ticket counts are tiles with a bar showing the share of open tickets,
+  instead of the pie chart, and the milestones are listed with their due date.
+- "Never group similar events" and "Subscribe with RSS" are small buttons.
+
+#### Milestone page
+
+Underlined tabs, cards for the description, properties and ticket stats, a
+progress bar instead of the pie chart, and one table per user with the
+tickets coloured by status.
+
+#### Ticket list
+
+A search field with a button, modern pagination and a table with fixed
+columns, status pills and a tidy footer with the Kanban and CSV links.
 
 ### User pages
 
@@ -165,6 +211,13 @@ and open <https://codebase.ddev.site:8125/>. It serves pages you have saved from
 Codebase with the userscript injected, and a mock API. See
 [`userscript/preview/README.md`](userscript/preview/README.md).
 
+### Icons
+
+The mono colour icons are generated from GitHub Octicons. To add or change an
+icon, edit the mapping tables in `userscript/scripts/generate-icons.mjs` and run
+`ddev npm run icons` from the `userscript` directory. Do not edit
+`src/styles/Icons.css` by hand.
+
 ### Project structure
 
 | Path                              | Description                                           |
@@ -174,8 +227,9 @@ Codebase with the userscript injected, and a mock API. See
 | `userscript/src/Ticket.jsx`       | Ticket page components (header, sidebar).             |
 | `userscript/src/Global.jsx`       | Shared components (avatars, decorated links) and the API client instance. |
 | `userscript/src/CodebaseAPI.js`   | Client for the Codebase API Gateway.                  |
-| `userscript/src/pages/`           | Plain DOM improvements for project, user and ticket pages. |
-| `userscript/src/styles/`          | CSS, inlined into the built script.                   |
+| `userscript/src/pages/`           | Plain DOM improvements for project, milestone, user and ticket pages. |
+| `userscript/src/styles/`          | CSS, inlined into the built script. `Modern.css` is the GitHub inspired layer, `Icons.css` is generated. |
+| `userscript/scripts/`             | `generate-icons.mjs` builds `Icons.css` from Octicons (`npm run icons`). |
 | `userscript/src/test/`            | Test fixtures.                                        |
 | `userscript/preview/`             | Live preview (dev server plugin, mock API, sample page). |
 

@@ -867,3 +867,1147 @@ body #content .ThreadTabs__link.is-active {
     color: var(--cb-fg);
     font-weight: 600;
 }
+
+/* Project overview: activity feed -------------------------------------------
+   Codebase's markup is kept: day headings, then one row per event with the
+   avatar on the left, a sentence, the time on the right and the details below. */
+
+body #content #feed {
+    margin-top: 8px;
+}
+
+body #content #feed h2 {
+    margin: 24px 0 4px;
+    padding: 0 0 8px;
+    border-bottom: 1px solid var(--cb-border-muted);
+    color: var(--cb-muted);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+}
+
+body #content #feed h2 .day {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+    color: inherit;
+    font: inherit;
+}
+
+body #content #feed ul.events {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+body #content #feed li.event {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr);
+    column-gap: 12px;
+    margin: 0;
+    padding: 12px 0;
+    border: 0;
+    border-bottom: 1px solid var(--cb-border-muted);
+    background: none;
+}
+
+body #content #feed li.event:last-child {
+    border-bottom: 0;
+}
+
+/* The coloured type tab is replaced by the sentence itself. */
+body #content #feed li.event > .tab {
+    display: none;
+}
+
+body #content #feed li.event > .gravatar {
+    float: none;
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    padding: 0;
+}
+
+body #content #feed li.event > .gravatar img {
+    display: block;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+body #content #feed p.event {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    grid-column: 2;
+    gap: 0 6px;
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    line-height: 24px;
+}
+
+body #content #feed p.event .author a {
+    color: var(--cb-fg);
+    font-weight: 600;
+}
+
+body #content #feed p.event .verb {
+    padding: 0 8px;
+    border: 1px solid var(--cb-border);
+    border-radius: 2em;
+    background: none;
+    color: var(--cb-muted);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 18px;
+    text-transform: none;
+}
+
+body #content #feed li.ticket_creation p.event .verb {
+    border-color: #4ac26b;
+    color: var(--cb-success);
+}
+
+body #content #feed p.event .id {
+    padding: 0;
+    background: none;
+    color: var(--cb-muted);
+    font-weight: 400;
+}
+
+body #content #feed p.event > a {
+    color: var(--cb-fg);
+    font-weight: 600;
+}
+
+body #content #feed p.event > a:hover {
+    color: var(--cb-accent);
+}
+
+body #content #feed p.event .timestamp {
+    margin-left: auto;
+    color: var(--cb-subtle);
+    font-size: 12px;
+}
+
+body #content #feed .expansion {
+    grid-column: 2;
+    margin: 4px 0 0;
+    padding: 0;
+    border: 0;
+    color: var(--cb-muted);
+    font-size: 13px;
+    line-height: 20px;
+}
+
+body #content #feed .expansion p.text {
+    margin: 0;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+}
+
+body #content #feed .expansion ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+body #content #feed .expansion li {
+    margin: 0;
+    padding: 0;
+    background: none;
+}
+
+body #content #feed .expansion li b {
+    color: var(--cb-fg);
+    font-weight: 600;
+}
+
+body #content #feed li.event .expansion ul li,
+body #content #feed li.event .expansion ul.iconed li,
+body #content #feed li.event .expansion ul.changes li {
+    padding-left: 0;
+    background: none;
+}
+
+body #content #feed li.event p.show-more {
+    grid-column: 2;
+    margin: 4px 0 0;
+}
+
+/* The feed preferences ("Never group similar events", "Subscribe with RSS") as small buttons. */
+body #content ul:has(> .preference-link) {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 0 0 8px;
+    padding: 0;
+    list-style: none;
+}
+
+body #content .preference-link {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+body #content .preference-link .preference-link__inner.text--link {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 10px;
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    background: var(--cb-canvas-subtle);
+    color: var(--cb-fg);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+}
+
+body #content .preference-link .preference-link__inner.text--link:hover {
+    background: #eff2f5;
+    text-decoration: none;
+}
+
+/* Project overview: sidebar ---------------------------------------------------
+   Members as an avatar row like the ticket participants, project settings as
+   a drop-button. */
+
+body #content .ProjectMembers .sidebar__heading {
+    margin: 0 0 8px;
+    color: var(--cb-muted);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 20px;
+}
+
+body #content .ProjectMembers .box,
+body #content .ProjectMembers .layout-list {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+}
+
+body #content .ProjectMembers .layout-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    list-style: none;
+}
+
+body #content .ProjectMembers .block-item {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+}
+
+body #content .ProjectMembers .block-item__inner {
+    display: block;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    /* The name is only there for the tooltip and screen readers. */
+    font-size: 0;
+    line-height: 0;
+}
+
+body #content .ProjectMembers .block-item__img {
+    position: static;
+    display: block;
+    float: none;
+    width: 32px;
+    height: 32px;
+    margin: 0;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+body #content .right .ActionsMenu__menu .settings-list__item {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+}
+
+body #content .right .ActionsMenu__menu .settings-list__link {
+    display: block;
+    padding: 6px 16px;
+    background: none;
+    color: var(--cb-fg);
+    font-size: 14px;
+    line-height: 20px;
+}
+
+body #content .right .ActionsMenu__menu .settings-list__link:hover {
+    background: var(--cb-canvas-subtle);
+    text-decoration: none;
+}
+
+body #content .QuickStats .sidebar__heading {
+    margin: 0 0 8px;
+    color: var(--cb-muted);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 20px;
+}
+
+body #content .QuickStats .settings-list {
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    background: #fff;
+    list-style: none;
+}
+
+body #content .QuickStats .QuickStats__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    padding: 10px 12px;
+    border: 0;
+    border-bottom: 1px solid var(--cb-border-muted);
+    background: none;
+    color: var(--cb-muted);
+    font-size: 12px;
+    line-height: 16px;
+}
+
+body #content .QuickStats .QuickStats__item:last-child {
+    border-bottom: 0;
+}
+
+body #content .QuickStats .QuickStats__icon {
+    flex: none;
+    padding: 0;
+    color: var(--cb-subtle);
+    background: none;
+}
+
+body #content .QuickStats .QuickStats__text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+body #content .QuickStats .QuickStats__text strong {
+    color: var(--cb-fg);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+}
+
+body #content .QuickStats,
+body #content .ProjectMembers {
+    margin-bottom: 24px;
+}
+
+/* Project overview: tickets and milestones -------------------------------- */
+
+body #content .dashboard-overview {
+    margin: 0 0 8px;
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+}
+
+body #content .dashboard-overview > ul {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* The clearfix pseudo elements would become grid items. */
+body #content .dashboard-overview > ul:before,
+body #content .dashboard-overview > ul:after {
+    display: none;
+}
+
+body #content .dashboard-overview__area {
+    float: none;
+    width: auto;
+    margin: 0;
+    padding: 16px;
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    background: #fff;
+}
+
+body #content .dashboard-overview__heading,
+body #content .dashboard-overview__container {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+}
+
+body #content .dashboard-overview__heading {
+    margin-bottom: 12px;
+}
+
+body #content .dashboard-overview__heading h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+}
+
+body #content .dashboard-overview__heading h3 a {
+    color: var(--cb-fg);
+}
+
+body #content .dashboard-overview__heading h3 a:hover {
+    color: var(--cb-accent);
+}
+
+/* The pie chart is replaced by a bar, see ticketBar() */
+body #content .dashboard-overview__area--tickets .grid__row {
+    margin: 0;
+}
+
+body #content .dashboard-overview__area--tickets .grid__column {
+    float: none;
+    width: auto;
+    margin: 0;
+    padding: 0;
+}
+
+body #content .dashboard-overview__area--tickets .grid__column:not(.js-stat-blocks) {
+    display: none;
+}
+
+body #content .js-stat-blocks {
+    display: flex;
+    gap: 12px;
+}
+
+body #content .StatBlock {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    height: auto;
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    background: var(--cb-canvas-subtle);
+    box-shadow: none;
+    color: var(--cb-fg);
+}
+
+body #content .StatBlock:hover {
+    background: #eff2f5;
+    text-decoration: none;
+}
+
+body #content .StatBlock__value {
+    float: none;
+    width: auto;
+    padding: 0;
+    background: none;
+    color: var(--cb-fg);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 32px;
+    text-align: left;
+}
+
+body #content .StatBlock__title {
+    float: none;
+    width: auto;
+    padding: 0;
+    background: none;
+    color: var(--cb-muted);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    text-align: left;
+    text-transform: none;
+}
+
+body #content .StatBlock__title:before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 2px;
+    border-radius: 50%;
+    background: var(--cb-success);
+}
+
+body #content .StatBlock--closed .StatBlock__title:before {
+    background: #8250df;
+}
+
+body .TicketBar {
+    display: flex;
+    height: 8px;
+    margin-top: 16px;
+    overflow: hidden;
+    border-radius: 4px;
+    background: var(--cb-border-muted);
+}
+
+body .TicketBar__open {
+    background: var(--cb-success);
+}
+
+body .TicketBar__closed {
+    background: #8250df;
+}
+
+body .TicketBar__caption {
+    margin: 6px 0 0;
+    color: var(--cb-muted);
+    font-size: 12px;
+}
+
+/* Milestones: one row per milestone, due date on the right. */
+body #content .dashboard-overview__area .layout-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+body #content .dashboard-overview__milestone {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin: 0;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--cb-border-muted);
+    font-size: 0;
+}
+
+body #content .dashboard-overview__milestone:first-child {
+    padding-top: 0;
+}
+
+body #content .dashboard-overview__milestone:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+body #content .dashboard-overview__milestone .text--micro {
+    flex: none;
+    color: var(--cb-muted);
+    font-size: 12px;
+}
+
+body #content .dashboard-overview__milestone a {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--cb-fg);
+    font-size: 14px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body #content .dashboard-overview__milestone a:hover {
+    color: var(--cb-accent);
+}
+
+/* Milestone page --------------------------------------------------------------
+   Underlined tabs, the description, properties and ticket stats as cards, a
+   progress bar instead of the pie chart and a modern ticket table. */
+
+body #content #milestone-view #tab-zone .tabs {
+    display: flex;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-bottom: 1px solid var(--cb-border-muted);
+    background: none;
+    overflow: visible;
+    list-style: none;
+}
+
+body #content #milestone-view #tab-zone .tabs li {
+    float: none;
+}
+
+body #content #milestone-view #tab-zone .tabs a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: -1px;
+    padding: 10px 12px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: none;
+    color: var(--cb-muted);
+    font-size: 14px;
+}
+
+body #content #milestone-view #tab-zone .tabs a:hover {
+    color: var(--cb-fg);
+}
+
+body #content #milestone-view #tab-zone .tabs a.active {
+    border-bottom-color: #f78166;
+    background: none;
+    color: var(--cb-fg);
+    font-weight: 600;
+}
+
+body #content #milestone-view #tab-zone .tabs .icon:before {
+    vertical-align: -3px;
+}
+
+body #content #milestone-view #tab-zone ul.areas {
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    overflow: visible;
+}
+
+body #content #milestone-view #tab-zone ul.areas li.overview {
+    padding: 16px 0 0;
+    overflow: visible;
+}
+
+body #content #milestone-view #tab-zone ul.areas li.overview .content-module {
+    margin-bottom: 16px;
+}
+
+body #content #milestone-view #tab-zone ul.areas li.overview .content-module .box {
+    padding: 16px;
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    background: #fff;
+    box-shadow: none;
+}
+
+/* Properties and ticket stats side by side. */
+body #content #milestone-view #tab-zone ul.areas li.overview .stats,
+body #content #milestone-view #tab-zone ul.areas li.overview .ticket-stats {
+    float: none;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    background: #fff;
+}
+
+body #content #milestone-view #tab-zone ul.areas li.overview .stats .inside,
+body #content #milestone-view #tab-zone ul.areas li.overview .ticket-stats .inside {
+    padding: 16px;
+}
+
+body #content #milestone-view #tab-zone ul.areas li.overview:has(.stats) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: 16px;
+    align-items: start;
+}
+
+body #content #milestone-view #tab-zone ul.areas li.overview > .content-module {
+    grid-column: 1 / -1;
+    margin: 0;
+}
+
+body #content #milestone-view #tab-zone ul.areas li.overview > .user-tickets {
+    grid-column: 1 / -1;
+}
+
+body #content #milestone-view #tab-zone ul.areas li.overview h5 {
+    margin: 0 0 12px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+}
+
+body #content #milestone-view #tab-zone ul.areas li.overview .stats dl {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    gap: 10px 16px;
+    margin: 0;
+}
+
+body #content #milestone-view #tab-zone ul.areas li.overview .stats dl dt,
+body #content #milestone-view #tab-zone ul.areas li.overview .stats dl dd {
+    float: none;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    background: none;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+body #content #milestone-view #tab-zone ul.areas li.overview .stats dl dt {
+    color: var(--cb-muted);
+}
+
+body #content #milestone-view #tab-zone ul.areas li.overview .stats dl dd a {
+    color: var(--cb-accent);
+}
+
+/* Ticket stats: four tiles and a progress bar, the pie chart is hidden. */
+body #content #milestone-view #tab-zone ul.areas li.overview .ticket-stats .pie {
+    display: none;
+}
+
+body #content #milestone-view #tab-zone ul.areas li.overview .ticket-stats dl {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    float: none;
+    margin: 0;
+}
+
+body #content #milestone-view #tab-zone ul.areas li.overview .ticket-stats dl dt,
+body #content #milestone-view #tab-zone ul.areas li.overview .ticket-stats dl dd {
+    float: none;
+    width: auto;
+    margin: 0;
+    padding: 0;
+}
+
+body #content #milestone-view #tab-zone ul.areas li.overview .ticket-stats dl dt {
+    grid-row: 2;
+    color: var(--cb-muted);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+}
+
+body #content #milestone-view #tab-zone ul.areas li.overview .ticket-stats dl dd {
+    grid-row: 1;
+    color: var(--cb-fg);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 32px;
+}
+
+body #content #milestone-view #tab-zone ul.areas li.overview .ticket-stats dl dd a {
+    color: var(--cb-fg);
+}
+
+body #content #milestone-view #tab-zone ul.areas li.overview .ticket-stats dl dd a:hover {
+    color: var(--cb-accent);
+}
+
+body #content #milestone-view #tab-zone ul.areas li.overview .ticket-stats dl dt.open { grid-column: 1; }
+body #content #milestone-view #tab-zone ul.areas li.overview .ticket-stats dl dt.closed { grid-column: 2; }
+body #content #milestone-view #tab-zone ul.areas li.overview .ticket-stats dl dt.total { grid-column: 3; }
+body #content #milestone-view #tab-zone ul.areas li.overview .ticket-stats dl dt.complete { grid-column: 4; }
+body #content #milestone-view #tab-zone ul.areas li.overview .ticket-stats dl dt.open + dd { grid-column: 1; }
+body #content #milestone-view #tab-zone ul.areas li.overview .ticket-stats dl dt.closed + dd { grid-column: 2; }
+body #content #milestone-view #tab-zone ul.areas li.overview .ticket-stats dl dt.total + dd { grid-column: 3; }
+body #content #milestone-view #tab-zone ul.areas li.overview .ticket-stats dl dt.complete + dd { grid-column: 4; }
+
+body #content #milestone-view #tab-zone ul.areas li.overview .ticket-stats dl dt.open,
+body #content #milestone-view #tab-zone ul.areas li.overview .ticket-stats dl dt.closed {
+    color: var(--cb-muted);
+}
+
+body #content #milestone-view #tab-zone ul.areas li.overview .ticket-stats .TicketBar--progress {
+    margin-top: 16px;
+}
+
+body .TicketBar--progress .TicketBar__closed {
+    display: block;
+    height: 100%;
+    background: var(--cb-success);
+}
+
+/* Tickets per user ----------------------------------------------------------- */
+
+body #content #milestone-view #tab-zone ul.areas li.overview .user-tickets {
+    clear: none;
+    padding: 8px 0 0;
+}
+
+body #content #milestone-view #tab-zone ul.areas li.overview .user-tickets h5 {
+    margin: 8px 0;
+}
+
+body #content table.data.tickets {
+    width: 100%;
+    margin: 0 0 16px;
+    border: 1px solid var(--cb-border);
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: var(--cb-radius);
+    background: #fff;
+    overflow: hidden;
+}
+
+body #content table.data.tickets thead tr td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--cb-border);
+    background: var(--cb-canvas-subtle);
+    color: var(--cb-muted);
+    font-size: 12px;
+    font-weight: 600;
+    text-align: left;
+}
+
+body #content table.data.tickets tbody tr {
+    background: none;
+}
+
+body #content table.data.tickets tbody tr:hover {
+    background: var(--cb-canvas-subtle);
+}
+
+body #content table.data.tickets tbody tr td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--cb-border-muted);
+    font-size: 14px;
+    text-align: left;
+}
+
+body #content table.data.tickets tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+body #content table.data.tickets tbody tr td.number,
+body #content table.data.tickets tbody tr td.ticket_type,
+body #content table.data.tickets tbody tr td.status,
+body #content table.data.tickets tbody tr td.priority {
+    text-align: left;
+}
+
+body #content table.data.tickets tbody tr td.number {
+    font-weight: 400;
+}
+
+body #content table.data.tickets tbody tr td.number a {
+    padding: 0;
+    color: var(--cb-muted);
+}
+
+body #content table.data.tickets tbody tr td.number a:hover {
+    background: none;
+    color: var(--cb-accent);
+}
+
+body #content table.data.tickets tbody tr td.subject a {
+    color: var(--cb-fg);
+    font-weight: 600;
+}
+
+body #content table.data.tickets tbody tr td.subject a:hover {
+    color: var(--cb-accent);
+    text-decoration: none;
+}
+
+/* Status as a pill, priority and category as plain text. */
+body #content table.data.tickets tbody tr td.status span {
+    padding: 0 8px;
+    border: 1px solid var(--cb-border);
+    border-radius: 2em;
+    background: var(--cb-canvas-subtle);
+    color: var(--cb-muted);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 18px;
+    text-transform: none;
+}
+
+body #content table.data.tickets tbody tr td.status span.col-blue {
+    border-color: #b6e3ff;
+    background: #ddf4ff;
+    color: #0969da;
+}
+
+body #content table.data.tickets tbody tr td.status span.col-orange {
+    border-color: #eac54f;
+    background: #fff8c5;
+    color: #9a6700;
+}
+
+body #content table.data.tickets tbody tr td.status span.col-green {
+    border-color: #aceebb;
+    background: #dafbe1;
+    color: #1a7f37;
+}
+
+body #content table.data.tickets tbody tr td.status span.col-red {
+    border-color: #ffcecb;
+    background: #ffebe9;
+    color: #cf222e;
+}
+
+body #content table.data.tickets tbody tr td.priority span {
+    padding: 0;
+    background: none;
+    color: var(--cb-muted);
+    font-size: 13px;
+    font-weight: 400;
+    text-transform: none;
+}
+
+body #content table.data.tickets tbody tr td.priority span.rev-col-red {
+    color: var(--cb-danger);
+}
+
+body #content table.data.tickets tbody tr td.priority span.rev-col-orange {
+    color: #9a6700;
+}
+
+body #content table.data.tickets tbody tr td.category span {
+    font-size: 13px;
+    padding: 0;
+    background: none;
+    color: var(--cb-muted);
+}
+
+/* Same column widths in every table, so they line up from user to user. */
+body #content table.data.tickets {
+    table-layout: fixed;
+}
+
+body #content table.data.tickets thead tr td.number { width: 72px !important; }
+body #content table.data.tickets thead tr td.ticket_type { width: 64px !important; }
+body #content table.data.tickets thead tr td.subject { width: auto !important; }
+body #content table.data.tickets thead tr td.status { width: 150px !important; }
+body #content table.data.tickets thead tr td.priority { width: 100px !important; }
+body #content table.data.tickets thead tr td.category { width: 130px !important; }
+body #content table.data.tickets thead tr td.estimated_time { width: 90px !important; }
+
+body #content table.data.tickets tbody tr td.status,
+body #content table.data.tickets tbody tr td.priority,
+body #content table.data.tickets tbody tr td.ticket_type {
+    width: auto;
+}
+
+body #content table.data.tickets tbody tr td.ticket_type img {
+    display: block;
+}
+
+/* Ticket list ---------------------------------------------------------------- */
+
+/* Quick search as a search field with a button. */
+body #content .quick-search {
+    padding: 0;
+    border: 0;
+    background: none;
+}
+
+body #content .quick-search form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+body #content .quick-search input.query {
+    flex: 1;
+    width: auto;
+    max-width: 560px;
+    height: 32px;
+    margin: 0;
+    padding: 0 12px 0 32px;
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    background: #fff no-repeat 10px center / 16px;
+    font-size: 14px;
+}
+
+body #content .quick-search input.submit {
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    background: var(--cb-canvas-subtle);
+    box-shadow: none;
+    color: var(--cb-fg);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+body #content .quick-search input.submit:hover {
+    background: #eff2f5;
+}
+
+body #content .quick-search a {
+    padding: 0;
+    color: var(--cb-muted);
+    font-size: 13px;
+}
+
+body #content .quick-search a:hover {
+    color: var(--cb-accent);
+}
+
+body #content .meta-ticket-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+body #content .meta-ticket-header__count,
+body #content .meta-ticket-header__pagination {
+    float: none;
+}
+
+/* Pagination ------------------------------------------------------------------ */
+
+body #content .pagination {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 4px;
+    margin: 16px 0;
+    font-size: 14px;
+}
+
+body #content .meta-ticket-header__pagination > .pagination {
+    margin: 0;
+}
+
+body #content .pagination a,
+body #content .pagination em,
+body #content .pagination span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 10px;
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius);
+    background: #fff;
+    color: var(--cb-fg);
+    font-style: normal;
+    font-weight: 400;
+}
+
+body #content .pagination a:hover {
+    background: var(--cb-canvas-subtle);
+    text-decoration: none;
+}
+
+body #content .pagination em.current {
+    border-color: var(--cb-accent);
+    background: var(--cb-accent);
+    color: #fff;
+    font-weight: 600;
+}
+
+body #content .pagination span.disabled {
+    border-color: var(--cb-border-muted);
+    color: var(--cb-subtle);
+}
+
+/* The ticket table --------------------------------------------------------------- */
+
+body #content table.data.tickets thead tr td a {
+    color: var(--cb-muted);
+}
+
+body #content table.data.tickets thead tr td a:hover {
+    color: var(--cb-accent);
+    text-decoration: none;
+}
+
+body #content table.data.tickets thead tr td.bulk,
+body #content table.data.tickets tbody tr td.bulk {
+    width: 40px !important;
+    padding-right: 0;
+    border-right: 0;
+    background: none;
+    text-align: center;
+}
+
+body #content table.data.tickets input[type="checkbox"] {
+    margin: 0;
+    accent-color: var(--cb-accent);
+}
+
+body #content table.data.tickets thead tr td.assignee { width: 130px !important; }
+body #content table.data.tickets thead tr td.updated_at { width: 160px !important; }
+
+body #content table.data.tickets tbody tr td.assignee a {
+    color: var(--cb-fg);
+}
+
+body #content table.data.tickets tbody tr td.assignee a:hover {
+    color: var(--cb-accent);
+    text-decoration: none;
+}
+
+body #content table.data.tickets tbody tr td.updated_at {
+    color: var(--cb-muted);
+    font-size: 13px;
+}
+
+body #content table.data.tickets tfoot tr td {
+    padding: 8px 12px;
+    border-top: 1px solid var(--cb-border);
+    background: var(--cb-canvas-subtle);
+    color: var(--cb-muted);
+    font-size: 13px;
+}
+
+body #content table.data.tickets tfoot .download,
+body #content table.data.tickets tfoot .kanban {
+    float: right;
+    margin-left: 16px;
+    padding: 0;
+    line-height: 20px;
+}
+
+body #content table.data.tickets tfoot .download p,
+body #content table.data.tickets tfoot .kanban p {
+    margin: 0;
+    font-weight: 400;
+}
+
+body #content table.data.tickets tfoot .download a,
+body #content table.data.tickets tfoot .kanban a {
+    color: var(--cb-muted);
+}
+
+body #content table.data.tickets tfoot .download a:hover,
+body #content table.data.tickets tfoot .kanban a:hover {
+    color: var(--cb-accent);
+}
+
+/* The clearfix pseudo elements would become flex items. */
+body #content .meta-ticket-header:before,
+body #content .meta-ticket-header:after {
+    display: none;
+}
+
+body #content .meta-ticket-header .pagination a,
+body #content .meta-ticket-header .pagination em,
+body #content .meta-ticket-header .pagination span {
+    min-width: 28px;
+    height: 28px;
+    padding: 0 8px;
+    font-size: 13px;
+}
