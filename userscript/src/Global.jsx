@@ -18,14 +18,12 @@ export const dateTimeFormat = {
     minute:'2-digit'
 };
 
-const config = getCodebaseConfig();
-
 /**
  * Codebase API.
  *
  * @type {CodebaseAPI}
  */
-export const api = new CodebaseAPI(config);
+export const api = new CodebaseAPI(getCodebaseConfig);
 
 /**
  * Date format.

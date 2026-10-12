@@ -187,6 +187,46 @@ the highlighting of comments with tasks) keep working.
 
 The script does not update itself. To update, install the new release.
 
+## Browser extension
+
+The same code also builds as a Manifest V3 browser extension, for Firefox and
+Chrome. It adds a settings page (no editing of the userscript manager's value
+storage) and shows notifications through the browser. The userscript is not
+affected.
+
+```sh
+cd userscript
+npm run build:extension [firefox|chrome]   # output in dist/extension/<target>
+```
+
+- **Firefox:** open `about:debugging#/runtime/this-firefox`, click _Load
+  Temporary Add-on_ and pick `dist/extension/firefox/manifest.json`. Release
+  Firefox only keeps unsigned extensions until restart, so for permanent
+  installs sign it as an unlisted add-on on addons.mozilla.org.
+- **Chrome:** open `chrome://extensions`, enable _Developer mode_, click
+  _Load unpacked_ and pick `dist/extension/chrome`.
+
+Click the toolbar button to open the settings and enter the
+[configuration](#configuration) values. When you save, the browser asks whether
+the extension may access the API gateway: allow it. Reload open Codebase tabs
+after saving.
+If the userscript and the extension are both installed, the extension wins and
+the userscript logs a message and stays disabled.
+
+How it is organised:
+
+- `src/extension/content.js` loads the settings from `storage.local` and hands
+  them to the page code through `setPlatform()` in `src/utils.js`. The page code
+  stays the same as in the userscript, which uses `GM_*` instead.
+- `src/extension/background.js` creates notifications and makes the requests
+  to the API gateway and to Gravatar (for the initials avatars). Firefox
+  applies the page's CORS rules to content scripts, so they can't do it
+  themselves. It only talks to the configured gateway.
+- `src/extension/manifest.base.json` is merged with
+  `manifest.<target>.json`. The only difference between the browsers today is
+  the background declaration and the Firefox add-on id.
+- `npm run icons:extension` regenerates the placeholder icons.
+
 ## Configuration
 
 The ticket page needs access to the Codebase API through the

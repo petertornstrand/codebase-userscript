@@ -1,4 +1,4 @@
-import { log } from './utils';
+import { log, loadImage } from './utils';
 
 /**
  * Replaces Codebase's placeholder avatars (the grey silhouette people without
@@ -88,7 +88,7 @@ function isPlaceholderSource(src) {
                 }
             };
             image.onerror = () => resolve(false);
-            image.src = src;
+            loadImage(src).then((url) => { image.src = url; }, () => resolve(false));
         }));
     }
     return results.get(src);

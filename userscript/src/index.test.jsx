@@ -16,7 +16,8 @@ describe('index', () => {
     });
 
     it('shows a notice and keeps the page when the ticket module fails to load', async () => {
-        await import('./index.jsx');
+        const { start } = await import('./index.jsx');
+        start();
         await vi.waitFor(() => expect(document.querySelector('[role="alert"]')).not.toBeNull());
         expect(document.querySelector('[role="alert"]').textContent)
             .toContain('Missing configuration value for key cbapi_key.');

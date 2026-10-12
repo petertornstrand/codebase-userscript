@@ -25,7 +25,7 @@ export default defineConfig(({ mode }) => {
             minify: false,
             sourcemap: false,
             lib: {
-                entry: 'userscript/src/index.jsx',
+                entry: 'userscript/src/userscript.js',
                 name: 'userscript',
                 fileName: (_format) => `codebase.user.js`,
                 formats: ['iife'],

@@ -1,4 +1,4 @@
-import { notify } from './utils';
+import { notify, request } from './utils';
 
 /**
  * @typedef {Object} CodebaseConfig
@@ -35,10 +35,19 @@ export default class CodebaseAPI {
     /**
      * Class constructor.
      *
-     * @param {CodebaseConfig}  config
+     * @param {CodebaseConfig|function(): CodebaseConfig} config - The config, or a
+     *   function that returns it. A function is called on every request, so the
+     *   config doesn't have to be available when the API object is created.
      */
     constructor(config) {
         this.#config = config;
+    }
+
+    /**
+     * @return {CodebaseConfig}
+     */
+    #getConfig() {
+        return typeof this.#config === 'function' ? this.#config() : this.#config;
     }
 
     /**
@@ -50,9 +59,9 @@ export default class CodebaseAPI {
     #getHeaders(headers = {}) {
         const defaultHeaders = {
             'Accept': 'application/json',
-            'X-API-Key': this.#config.cbapi_key,
+            'X-API-Key': this.#getConfig().cbapi_key,
             'Content-Type': 'application/json',
-            'Authorization': 'Basic ' + btoa(this.#config.cb_username + ':' + this.#config.cb_key)
+            'Authorization': 'Basic ' + btoa(this.#getConfig().cb_username + ':' + this.#getConfig().cb_key)
         };
         return Object.assign({}, defaultHeaders, headers);
     }
@@ -66,13 +75,13 @@ export default class CodebaseAPI {
      * @return {Promise<any>}
      */
     async getTicket(projectId, ticketId, format = TICKET_FORMAT.FULL) {
-        const url = this.#config.cbapi_base_url + `/${projectId}/ticket/${ticketId}`;
+        const url = this.#getConfig().cbapi_base_url + `/${projectId}/ticket/${ticketId}`;
         let headers = {};
         if (format !== TICKET_FORMAT.FULL) {
             headers = { 'Prefer': 'format=' + format.description };
         }
         try {
-            const response = await fetch(url, {
+            const response = await request(url, {
                 headers: this.#getHeaders(headers)
             });
             if (!response.ok) {
@@ -94,13 +103,13 @@ export default class CodebaseAPI {
      */
     async getMultipleTickets(projectId, ticketIds, format = TICKET_FORMAT.FULL) {
         const query = ticketIds.map(id => `id:${id}`).join('+');
-        const url = this.#config.cbapi_base_url + `/${projectId}/tickets?query=${query}`;
+        const url = this.#getConfig().cbapi_base_url + `/${projectId}/tickets?query=${query}`;
         let headers = {};
         if (format !== TICKET_FORMAT.FULL) {
            headers = { 'Prefer': 'format=' + format.description };
         }
         try {
-            const response = await fetch(url, {
+            const response = await request(url, {
                 headers: this.#getHeaders(headers)
             });
             if (!response.ok) {
@@ -122,9 +131,9 @@ export default class CodebaseAPI {
      * @return {Promise<any>}
      */
     async getContext(projectId, ticketId) {
-        const url = this.#config.cbapi_base_url + `/${projectId}/ticket/${ticketId}/context`;
+        const url = this.#getConfig().cbapi_base_url + `/${projectId}/ticket/${ticketId}/context`;
         try {
-            const response = await fetch(url, {
+            const response = await request(url, {
                 headers: this.#getHeaders()
             });
             if (!response.ok) {
@@ -144,9 +153,9 @@ export default class CodebaseAPI {
      * @return {Promise<any>}
      */
     async getUsers(projectId) {
-        const url = this.#config.cbapi_base_url + `/${projectId}/assignments`;
+        const url = this.#getConfig().cbapi_base_url + `/${projectId}/assignments`;
         try {
-            const response = await fetch(url, {
+            const response = await request(url, {
                 headers: this.#getHeaders(),
             });
             if (!response.ok) {
@@ -166,9 +175,9 @@ export default class CodebaseAPI {
      * @return {Promise<any>}
      */
     async getStatuses(projectId) {
-        const url = this.#config.cbapi_base_url + `/${projectId}/statuses`;
+        const url = this.#getConfig().cbapi_base_url + `/${projectId}/statuses`;
         try {
-            const response = await fetch(url, {
+            const response = await request(url, {
                 headers: this.#getHeaders(),
             });
             if (!response.ok) {

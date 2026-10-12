@@ -108,6 +108,9 @@ export function notify (notification)  {
     if (typeof GM_notification === 'function') {
         GM_notification(notification);
     }
+    else if (typeof extensionNotify === 'function') {
+        extensionNotify(notification);
+    }
     else {
         console.log('Notify', notification);
     }
@@ -130,6 +133,78 @@ export function getURLContext() {
 }
 
 /**
+ * The configuration keys, in the userscript manager's value storage or in
+ * the extension's storage.
+ */
+export const CONFIG_KEYS = ['cbapi_key', 'cbapi_base_url', 'cb_username', 'cb_key'];
+
+// Set by the browser extension, which can only read its storage asynchronously
+// and so loads the config before the page code starts.
+let extensionConfig = null;
+let extensionNotify = null;
+let extensionFetch = null;
+let extensionLoadImage = null;
+
+/**
+ * Let the browser extension provide the config and notifications, which the
+ * userscript manager provides as `GM_*` functions.
+ *
+ * The extension also provides `fetch` and `loadImage`, because Firefox applies
+ * the page's CORS rules to requests from content scripts. Its background script
+ * makes them instead, with the permissions in the manifest.
+ *
+ * @param {{config: CodebaseConfig, notify: function(object): void, fetch: typeof fetch, loadImage: function(string): Promise<string>}} platform
+ */
+export function setPlatform({ config, notify, fetch, loadImage }) {
+    extensionConfig = config;
+    extensionNotify = notify;
+    extensionFetch = fetch;
+    extensionLoadImage = loadImage;
+}
+
+/**
+ * `fetch`, made by the extension's background script when running as one.
+ *
+ * @param {string} url
+ * @param {RequestInit} [options]
+ * @return {Promise<Response>}
+ */
+export function request(url, options) {
+    return (extensionFetch ?? fetch)(url, options);
+}
+
+/**
+ * An address the browser can load the pixels of an image from. Usually the
+ * address itself, but the extension has to fetch images from other sites.
+ *
+ * @param {string} src
+ * @return {Promise<string>}
+ */
+export async function loadImage(src) {
+    return extensionLoadImage ? extensionLoadImage(src) : src;
+}
+
+/**
+ * Claim the page for the userscript or the browser extension, so that they
+ * don't both decorate it. The marker is a DOM attribute, which both can see
+ * (the extension's content script has its own JavaScript globals).
+ *
+ * @param {'userscript'|'extension'} [owner] Defaults to what is running.
+ *
+ * @return {boolean} False if the other one has already claimed the page.
+ */
+export function claimPage(owner = extensionNotify ? 'extension' : 'userscript') {
+    const root = document.documentElement;
+    const current = root.dataset.cbEnhancer;
+    if (current && current !== owner) {
+        log(`The ${current} is already running, the ${owner} stays disabled. Disable one of them.`);
+        return false;
+    }
+    root.dataset.cbEnhancer = owner;
+    return true;
+}
+
+/**
  * @typedef {Object} CodebaseConfig
  * @property {string} cbapi_key
  * @property {string} cbapi_base_url
@@ -143,24 +218,22 @@ export function getURLContext() {
  * @return {CodebaseConfig}
  */
 export function getCodebaseConfig() {
+    let values;
     if (typeof GM_getValues === 'function') {
-        const values = GM_getValues(['cbapi_key', 'cbapi_base_url', 'cb_username', 'cb_key']);
-        Object.entries(values).forEach(([key, value]) => {
-            if (!value) {
-                throw new Error(`Missing configuration value for key ${key}.`);
-            }
-        })
-        return {
-            cbapi_key: values.cbapi_key,
-            cbapi_base_url: values.cbapi_base_url,
-            cb_username: values.cb_username,
-            cb_key: values.cb_key
-        };
+        values = GM_getValues(CONFIG_KEYS);
+    }
+    else if (extensionConfig) {
+        values = extensionConfig;
     }
     else {
         throw new Error('No Codebase API config found.');
     }
-
+    CONFIG_KEYS.forEach((key) => {
+        if (!values[key]) {
+            throw new Error(`Missing configuration value for key ${key}.`);
+        }
+    });
+    return Object.fromEntries(CONFIG_KEYS.map((key) => [key, values[key]]));
 }
 
 /**

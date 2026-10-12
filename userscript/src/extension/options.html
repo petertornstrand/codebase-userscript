@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Codebase settings</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="options.css">
+</head>
+<body>
+    <main>
+        <h1>Codebase settings</h1>
+        <p>
+            The ticket page uses the Codebase API Gateway. Without these
+            settings the ticket page improvements are disabled. They are stored
+            in this browser only.
+        </p>
+        <form id="form">
+            <label>API gateway URL
+                <input name="cbapi_base_url" type="url" required autocomplete="off"
+                       placeholder="https://cbapi.example.com">
+            </label>
+            <label>API gateway key
+                <input name="cbapi_key" type="password" required autocomplete="off">
+            </label>
+            <label>Codebase API username
+                <input name="cb_username" type="text" required autocomplete="off">
+            </label>
+            <label>Codebase API key
+                <input name="cb_key" type="password" required autocomplete="off">
+            </label>
+            <button type="submit">Save</button>
+            <span id="status" role="status"></span>
+        </form>
+    </main>
+    <script src="options.js"></script>
+</body>
+</html>

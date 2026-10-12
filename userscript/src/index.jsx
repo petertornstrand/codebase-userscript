@@ -16,9 +16,8 @@ import initDashboard from './pages/dashboard';
 import initMilestones from './pages/milestones';
 import initTickets from './pages/tickets';
 import initUsers from './pages/users';
-import { awaitElement, log, addLocationChangeCallback } from './utils';
+import { awaitElement, log, addLocationChangeCallback, claimPage, getCodebaseConfig } from './utils';
 
-log('React script has successfully started');
 
 /**
  * Render the React ticket components.
@@ -36,6 +35,9 @@ async function renderTicket() {
 
     let Ticket;
     try {
+        // Checked here and not when the ticket module loads: in the browser
+        // extension all modules are evaluated at once, when the script starts.
+        getCodebaseConfig();
         ({ default: Ticket } = await import('./Ticket'));
     } catch (e) {
         // Typically missing userscript configuration.
@@ -80,11 +82,24 @@ async function main() {
     }
 }
 
-// Call `main()` every time the page URL changes, including on the first load.
-addLocationChangeCallback(() => {
-    // Greasemonkey doesn't bubble errors up to the main console,
-    // so we have to catch them manually and log them.
-    main().catch((e) => {
-        log(e);
+/**
+ * Start the page improvements. Called by the entry point (the userscript or
+ * the browser extension) once it is ready, not when this module loads: the
+ * browser extension bundles everything into one script that evaluates all
+ * modules at once.
+ */
+export function start() {
+    if (!claimPage()) {
+        return;
+    }
+    log('React script has successfully started');
+
+    // Call `main()` every time the page URL changes, including on the first load.
+    addLocationChangeCallback(() => {
+        // Greasemonkey doesn't bubble errors up to the main console,
+        // so we have to catch them manually and log them.
+        main().catch((e) => {
+            log(e);
+        });
     });
-});
+}

@@ -1,0 +1,9 @@
+:root { color-scheme: light dark; font-family: system-ui, sans-serif; }
+body { margin: 0; }
+main { max-width: 32rem; margin: 2rem auto; padding: 0 1rem; }
+form { display: grid; gap: 1rem; }
+label { display: grid; gap: .25rem; font-weight: 600; }
+input { font: inherit; padding: .4rem .5rem; }
+button { justify-self: start; font: inherit; padding: .4rem 1rem; }
+#status { color: green; }
+#status:not(:empty) { margin-left: .5rem; }
