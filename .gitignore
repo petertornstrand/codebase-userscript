@@ -1,3 +1,5 @@
 dist/
 !dist/codebase-harvest-dev.user.js
 .idea/
+.env
+docs/
